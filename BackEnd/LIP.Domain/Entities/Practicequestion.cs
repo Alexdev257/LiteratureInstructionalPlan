@@ -30,4 +30,8 @@ public partial class Practicequestion
     public virtual Bookseries? Series { get; set; }
 
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

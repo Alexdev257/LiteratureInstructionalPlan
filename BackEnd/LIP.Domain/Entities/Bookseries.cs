@@ -14,4 +14,8 @@ public partial class Bookseries
     public virtual ICollection<Practicequestion> Practicequestions { get; set; } = new List<Practicequestion>();
 
     public virtual ICollection<Template> Templates { get; set; } = new List<Template>();
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

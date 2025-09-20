@@ -19,14 +19,18 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Answerguide?> GetAsync(AnswerguideGetQuery query)
         {
             return await _context.Answerguides
+                .AsNoTracking()
                 .Include(a => a.Exam)
+                .Where(a => !a.IsDeleted)
                 .FirstOrDefaultAsync(a => a.AnswerGuideId == query.AnswerGuideId);
         }
 
         public async Task<IEnumerable<Answerguide>> GetAllAsync(AnswerguideGetAllQuery query)
         {
             var answerguides = _context.Answerguides
+                .AsNoTracking()
                 .Include(a => a.Exam)
+                .Where(a => !a.IsDeleted)
                 .AsQueryable();
 
             if (query.ExamId.HasValue)
@@ -55,7 +59,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(AnswerguideUpdateCommand command)
         {
             var answerguide = await _context.Answerguides.FindAsync(command.AnswerGuideId);
-            if (answerguide == null) return false;
+            if (answerguide == null || answerguide.IsDeleted) return false;
 
             answerguide.ExamId = command.ExamId;
             answerguide.KeyPoints = command.KeyPoints;
@@ -70,7 +74,8 @@ namespace LIP.Infrastructure.Repositories
             var answerguide = await _context.Answerguides.FindAsync(command.AnswerGuideId);
             if (answerguide == null) return false;
 
-            _context.Answerguides.Remove(answerguide);
+            answerguide.IsDeleted = true;
+            answerguide.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

@@ -28,4 +28,8 @@ public partial class Examattempt
     public virtual ICollection<Examanswer> Examanswers { get; set; } = new List<Examanswer>();
 
     public virtual User? User { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

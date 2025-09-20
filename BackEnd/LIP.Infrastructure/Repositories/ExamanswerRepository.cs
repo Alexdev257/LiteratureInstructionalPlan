@@ -19,16 +19,20 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Examanswer?> GetAsync(ExamanswerGetQuery query)
         {
             return await _context.Examanswers
+                .AsNoTracking()
                 .Include(e => e.Attempt)
                 .Include(e => e.Question)
+                .Where(e => !e.IsDeleted)
                 .FirstOrDefaultAsync(e => e.AnswerId == query.AnswerId);
         }
 
         public async Task<IEnumerable<Examanswer>> GetAllAsync(ExamanswerGetAllQuery query)
         {
             var examanswers = _context.Examanswers
+                .AsNoTracking()
                 .Include(e => e.Attempt)
                 .Include(e => e.Question)
+                .Where(e => !e.IsDeleted)
                 .AsQueryable();
 
             if (query.AttemptId.HasValue)
@@ -57,7 +61,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(ExamanswerUpdateCommand command)
         {
             var examanswer = await _context.Examanswers.FindAsync(command.AnswerId);
-            if (examanswer == null) return false;
+            if (examanswer == null || examanswer.IsDeleted) return false;
 
             examanswer.AttemptId = command.AttemptId;
             examanswer.QuestionId = command.QuestionId;
@@ -72,7 +76,8 @@ namespace LIP.Infrastructure.Repositories
             var examanswer = await _context.Examanswers.FindAsync(command.AnswerId);
             if (examanswer == null) return false;
 
-            _context.Examanswers.Remove(examanswer);
+            examanswer.IsDeleted = true;
+            examanswer.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

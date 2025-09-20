@@ -14,4 +14,8 @@ public partial class Answerguide
     public int? MaxScore { get; set; }
 
     public virtual Exam? Exam { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

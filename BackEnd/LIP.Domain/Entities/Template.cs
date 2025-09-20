@@ -24,4 +24,8 @@ public partial class Template
     public virtual Gradelevel? GradeLevel { get; set; }
 
     public virtual Bookseries? Series { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }
