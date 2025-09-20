@@ -30,4 +30,9 @@ public partial class User
     public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 
     public virtual ICollection<Template> Templates { get; set; } = new List<Template>();
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
+
 }

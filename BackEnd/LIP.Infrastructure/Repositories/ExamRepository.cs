@@ -19,6 +19,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Exam?> GetAsync(ExamGetQuery query)
         {
             return await _context.Exams
+                .AsNoTracking()
                 .Include(e => e.CreatedByNavigation)
                 .Include(e => e.ExamType)
                 .Include(e => e.GradeLevel)
@@ -27,16 +28,19 @@ namespace LIP.Infrastructure.Repositories
                 .Include(e => e.Examattempts)
                 .Include(e => e.Submissions)
                 .Include(e => e.Questions)
+                .Where(e => !e.IsDeleted)
                 .FirstOrDefaultAsync(e => e.ExamId == query.ExamId);
         }
 
         public async Task<IEnumerable<Exam>> GetAllAsync(ExamGetAllQuery query)
         {
             var exams = _context.Exams
+                .AsNoTracking()
                 .Include(e => e.CreatedByNavigation)
                 .Include(e => e.ExamType)
                 .Include(e => e.GradeLevel)
                 .Include(e => e.Series)
+                .Where(e => !e.IsDeleted)
                 .AsQueryable();
 
             if (query.GradeLevelId.HasValue)
@@ -76,7 +80,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(ExamUpdateCommand command)
         {
             var exam = await _context.Exams.FindAsync(command.ExamId);
-            if (exam == null) return false;
+            if (exam == null || exam.IsDeleted) return false;
 
             exam.Title = command.Title;
             exam.Description = command.Description;
@@ -96,7 +100,8 @@ namespace LIP.Infrastructure.Repositories
             var exam = await _context.Exams.FindAsync(command.ExamId);
             if (exam == null) return false;
 
-            _context.Exams.Remove(exam);
+            exam.IsDeleted = true;
+            exam.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

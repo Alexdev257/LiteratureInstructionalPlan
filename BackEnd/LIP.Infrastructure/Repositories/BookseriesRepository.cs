@@ -19,15 +19,20 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Bookseries?> GetAsync(BookseriesGetQuery query)
         {
             return await _context.Bookseries
+                .AsNoTracking()
                 .Include(b => b.Exams)
                 .Include(b => b.Practicequestions)
                 .Include(b => b.Templates)
+                .Where(b => !b.IsDeleted)
                 .FirstOrDefaultAsync(b => b.SeriesId == query.SeriesId);
         }
 
         public async Task<IEnumerable<Bookseries>> GetAllAsync(BookseriesGetAllQuery query)
         {
-            var bookseries = _context.Bookseries.AsQueryable();
+            var bookseries = _context.Bookseries
+                .AsNoTracking()
+                .Where(b => !b.IsDeleted)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(query.Name))
                 bookseries = bookseries.Where(b => b.Name!.Contains(query.Name));
@@ -50,7 +55,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(BookseriesUpdateCommand command)
         {
             var bookseries = await _context.Bookseries.FindAsync(command.SeriesId);
-            if (bookseries == null) return false;
+            if (bookseries == null || bookseries.IsDeleted) return false;
 
             bookseries.Name = command.Name;
 
@@ -63,7 +68,8 @@ namespace LIP.Infrastructure.Repositories
             var bookseries = await _context.Bookseries.FindAsync(command.SeriesId);
             if (bookseries == null) return false;
 
-            _context.Bookseries.Remove(bookseries);
+            bookseries.IsDeleted = true;
+            bookseries.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

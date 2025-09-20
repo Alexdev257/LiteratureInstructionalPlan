@@ -19,19 +19,23 @@ namespace LIP.Infrastructure.Repositories
         public async Task<User?> GetAsync(UserGetQuery query)
         {
             return await _context.Users
+                .AsNoTracking()
                 .Include(u => u.Role)
                 .Include(u => u.Examattempts)
                 .Include(u => u.Exams)
                 .Include(u => u.Practicequestions)
                 .Include(u => u.Submissions)
                 .Include(u => u.Templates)
+                .Where(u => !u.IsDeleted)
                 .FirstOrDefaultAsync(u => u.UserId == query.UserId);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(UserGetAllQuery query)
         {
             var users = _context.Users
+                .AsNoTracking()
                 .Include(u => u.Role)
+                .Where(u => !u.IsDeleted)
                 .AsQueryable();
 
             if (query.RoleId.HasValue)
@@ -63,7 +67,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(UserUpdateCommand command)
         {
             var user = await _context.Users.FindAsync(command.UserId);
-            if (user == null) return false;
+            if (user == null || user.IsDeleted) return false;
 
             user.UserName = command.UserName;
             user.FullName = command.FullName;
@@ -81,7 +85,8 @@ namespace LIP.Infrastructure.Repositories
             var user = await _context.Users.FindAsync(command.UserId);
             if (user == null) return false;
 
-            _context.Users.Remove(user);
+            user.IsDeleted = true;
+            user.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }
