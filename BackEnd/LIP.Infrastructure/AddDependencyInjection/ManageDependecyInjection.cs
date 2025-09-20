@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using LIP.Application.CQRS.Pipeline;
 namespace LIP.Infrastructure.AddDependencyInjection
 {
     public static class ManageDependecyInjection
@@ -41,6 +42,9 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(applicationAssembly);
+                cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
+                cfg.AddOpenBehavior(typeof(CustomValidationBehavior<,>));
+
                 //cfg.LicenseKey = config["LicenseKey"];
             });
         }
