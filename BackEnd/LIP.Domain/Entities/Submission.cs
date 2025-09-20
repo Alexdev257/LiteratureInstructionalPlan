@@ -24,4 +24,8 @@ public partial class Submission
     public virtual Exam? Exam { get; set; }
 
     public virtual User? Student { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

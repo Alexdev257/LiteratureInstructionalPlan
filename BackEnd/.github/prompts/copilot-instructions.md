@@ -41,6 +41,7 @@
     - Implements `I[Model]Repository`.
     - Contains actual database logic (EF Core / Dapper).
     - Follow async/await pattern.
+    - Queries (`GetAsync`, `GetAllAsync`) must use `.AsNoTracking()`.
     - Example:
 
       ```csharp
@@ -55,12 +56,16 @@
 
           public async Task<AccountDto> GetAsync(AccountGetQuery query)
           {
-              return await _context.Accounts.FindAsync(query.Id);
+              return await _context.Accounts
+                  .AsNoTracking()
+                  .FirstOrDefaultAsync(a => a.Id == query.Id);
           }
 
           public async Task<IEnumerable<AccountDto>> GetAllAsync(AccountGetAllQuery query)
           {
-              return await _context.Accounts.ToListAsync();
+              return await _context.Accounts
+                  .AsNoTracking()
+                  .ToListAsync();
           }
 
           public async Task<bool> CreateAsync(AccountCreateCommand command)
@@ -105,9 +110,40 @@
 
 ---
 
+## Rule: Soft Delete
+
+- If an entity has a **Soft Delete** field (e.g., `IsDeleted`, `DeletedAt`), then:
+  - Create a Command: `[Model]SoftDeleteCommand.cs`
+  - Create a Handler: `[Model]SoftDeleteHandler.cs`
+- Repository interface `I[Model]Repository` must have:
+  ```csharp
+  Task<bool> SoftDeleteAsync([Model]SoftDeleteCommand command);
+  ```
+- Repository implementation `[Model]Repository.cs` must implement logic:
+  - Find entity by `Id`.
+  - Set `IsDeleted = true` and `DeletedAt = DateTime.UtcNow`.
+  - Save changes with `_context.SaveChangesAsync()`.
+- Example:
+
+  ```csharp
+  public async Task<bool> SoftDeleteAsync(AccountSoftDeleteCommand command)
+  {
+      var account = await _context.Accounts.FindAsync(command.Id);
+      if (account == null) return false;
+
+      account.IsDeleted = true;
+      account.DeletedAt = DateTime.UtcNow;
+
+      await _context.SaveChangesAsync();
+      return true;
+  }
+  ```
+
+---
+
 ## Naming Conventions
 
-- Commands: `[Model][Action]Command`
+- Commands: `[Model][Action]Command` (including `SoftDeleteCommand`)
 - Queries: `[Model][Action]Query`
 - Interfaces: `I[Model]Repository`
 - Implementations: `[Model]Repository`
@@ -122,3 +158,4 @@ If the model is **Account**:
 - Query: `AccountGetQuery.cs` in `LIP.Application/CQRS/Query/Account`
 - Interface: `IAccountRepository.cs` in `LIP.Application/Interface/Repository`
 - Repository: `AccountRepository.cs` in `LIP.Infrastructure/Repositories`
+- Soft Delete: `AccountSoftDeleteCommand.cs` + `SoftDeleteAsync` method in repository

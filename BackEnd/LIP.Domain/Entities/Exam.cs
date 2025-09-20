@@ -38,4 +38,8 @@ public partial class Exam
     public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 
     public virtual ICollection<Practicequestion> Questions { get; set; } = new List<Practicequestion>();
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

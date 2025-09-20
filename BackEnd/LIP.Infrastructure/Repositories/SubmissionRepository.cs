@@ -19,16 +19,20 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Submission?> GetAsync(SubmissionGetQuery query)
         {
             return await _context.Submissions
+                .AsNoTracking()
                 .Include(s => s.Exam)
                 .Include(s => s.Student)
+                .Where(s => !s.IsDeleted)
                 .FirstOrDefaultAsync(s => s.SubmissionId == query.SubmissionId);
         }
 
         public async Task<IEnumerable<Submission>> GetAllAsync(SubmissionGetAllQuery query)
         {
             var submissions = _context.Submissions
+                .AsNoTracking()
                 .Include(s => s.Exam)
                 .Include(s => s.Student)
+                .Where(s => !s.IsDeleted)
                 .AsQueryable();
 
             if (query.ExamId.HasValue)
@@ -64,7 +68,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(SubmissionUpdateCommand command)
         {
             var submission = await _context.Submissions.FindAsync(command.SubmissionId);
-            if (submission == null) return false;
+            if (submission == null || submission.IsDeleted) return false;
 
             submission.ExamId = command.ExamId;
             submission.StudentId = command.StudentId;
@@ -83,7 +87,8 @@ namespace LIP.Infrastructure.Repositories
             var submission = await _context.Submissions.FindAsync(command.SubmissionId);
             if (submission == null) return false;
 
-            _context.Submissions.Remove(submission);
+            submission.IsDeleted = true;
+            submission.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

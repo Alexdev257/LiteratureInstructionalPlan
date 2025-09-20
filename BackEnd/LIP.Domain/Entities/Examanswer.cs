@@ -16,4 +16,8 @@ public partial class Examanswer
     public virtual Examattempt? Attempt { get; set; }
 
     public virtual Practicequestion? Question { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
+
+    public DateTime DeletedAt { get; set; }
 }

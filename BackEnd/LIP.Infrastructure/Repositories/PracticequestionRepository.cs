@@ -19,20 +19,24 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Practicequestion?> GetAsync(PracticequestionGetQuery query)
         {
             return await _context.Practicequestions
+                .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
                 .Include(p => p.Series)
                 .Include(p => p.Examanswers)
                 .Include(p => p.Exams)
+                .Where(p => !p.IsDeleted)
                 .FirstOrDefaultAsync(p => p.QuestionId == query.QuestionId);
         }
 
         public async Task<IEnumerable<Practicequestion>> GetAllAsync(PracticequestionGetAllQuery query)
         {
             var questions = _context.Practicequestions
+                .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
                 .Include(p => p.Series)
+                .Where(p => !p.IsDeleted)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(query.QuestionType))
@@ -71,7 +75,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(PracticequestionUpdateCommand command)
         {
             var question = await _context.Practicequestions.FindAsync(command.QuestionId);
-            if (question == null) return false;
+            if (question == null || question.IsDeleted) return false;
 
             question.Content = command.Content;
             question.QuestionType = command.QuestionType;
@@ -90,7 +94,8 @@ namespace LIP.Infrastructure.Repositories
             var question = await _context.Practicequestions.FindAsync(command.QuestionId);
             if (question == null) return false;
 
-            _context.Practicequestions.Remove(question);
+            question.IsDeleted = true;
+            question.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

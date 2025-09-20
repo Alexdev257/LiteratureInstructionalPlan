@@ -19,18 +19,22 @@ namespace LIP.Infrastructure.Repositories
         public async Task<Template?> GetAsync(TemplateGetQuery query)
         {
             return await _context.Templates
+                .AsNoTracking()
                 .Include(t => t.CreatedByNavigation)
                 .Include(t => t.GradeLevel)
                 .Include(t => t.Series)
+                .Where(t => !t.IsDeleted)
                 .FirstOrDefaultAsync(t => t.TemplateId == query.TemplateId);
         }
 
         public async Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query)
         {
             var templates = _context.Templates
+                .AsNoTracking()
                 .Include(t => t.CreatedByNavigation)
                 .Include(t => t.GradeLevel)
                 .Include(t => t.Series)
+                .Where(t => !t.IsDeleted)
                 .AsQueryable();
 
             if (query.GradeLevelId.HasValue)
@@ -65,7 +69,7 @@ namespace LIP.Infrastructure.Repositories
         public async Task<bool> UpdateAsync(TemplateUpdateCommand command)
         {
             var template = await _context.Templates.FindAsync(command.TemplateId);
-            if (template == null) return false;
+            if (template == null || template.IsDeleted) return false;
 
             template.Title = command.Title;
             template.FilePath = command.FilePath;
@@ -83,7 +87,8 @@ namespace LIP.Infrastructure.Repositories
             var template = await _context.Templates.FindAsync(command.TemplateId);
             if (template == null) return false;
 
-            _context.Templates.Remove(template);
+            template.IsDeleted = true;
+            template.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }
