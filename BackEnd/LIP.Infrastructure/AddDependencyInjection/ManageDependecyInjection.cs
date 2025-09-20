@@ -1,17 +1,13 @@
 ﻿using LIP.Infrastructure.Persistency;
+using LIP.Application.Interface.Repository;
+using LIP.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LIP.Infrastructure.AddDependencyInjection
 {
-    public static class ManageDDependecyInjection
+    public static class ManageDependecyInjection
     {
         public static void AddDatabase(this IServiceCollection service, IConfiguration config)
         {
@@ -24,6 +20,18 @@ namespace LIP.Infrastructure.AddDependencyInjection
 
         public static void AddScopedInterface(this IServiceCollection service)
         {
+            service.AddScoped<IUserRepository, UserRepository>();
+            service.AddScoped<IExamRepository, ExamRepository>();
+            service.AddScoped<ISubmissionRepository, SubmissionRepository>();
+            service.AddScoped<IRoleRepository, RoleRepository>();
+            service.AddScoped<IPracticequestionRepository, PracticequestionRepository>();
+            service.AddScoped<ITemplateRepository, TemplateRepository>();
+            service.AddScoped<IGradelevelRepository, GradelevelRepository>();
+            service.AddScoped<IBookseriesRepository, BookseriesRepository>();
+            service.AddScoped<IExamtypeRepository, ExamtypeRepository>();
+            service.AddScoped<IExamattemptRepository, ExamattemptRepository>();
+            service.AddScoped<IExamanswerRepository, ExamanswerRepository>();
+            service.AddScoped<IAnswerguideRepository, AnswerguideRepository>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
