@@ -1,6 +1,8 @@
 ﻿using LIP.Application.CQRS.Command.Auth;
+using LIP.Application.DTOs.Response.Auth;
 using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
+using LIP.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,56 +13,24 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.CQRS.Handler.Auth
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IBcryptHelper _bcryptHelper;
-        public RegisterCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper)
+        private readonly IEmailHelper _emailHelper;
+        private readonly ISessionExtensions _sessionExtensions;
+        private readonly IOtpHelper _otpHelper;
+        //private readonly IWebHostEnvironment _webHostEnvironment;
+        public RegisterCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper, IEmailHelper emailHelper, ISessionExtensions sessionExtensions, IOtpHelper otpHelper)
         {
             _userRepository = userRepository;
             _bcryptHelper = bcryptHelper;
+            _emailHelper = emailHelper;
+            _sessionExtensions = sessionExtensions;
+            _otpHelper = otpHelper;
         }
-        public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            //check empty fields
-            if (string.IsNullOrEmpty(request.UserName))
-            {
-                Console.WriteLine("Username is required!");
-                return false;
-            }
-            if (string.IsNullOrEmpty(request.FullName))
-            {
-                Console.WriteLine("Fullname is required!");
-                return false;
-            }
-            if (string.IsNullOrEmpty(request.Email))
-            {
-                Console.WriteLine("Email is required!");
-                return false;
-            }
-            if (string.IsNullOrEmpty(request.Password))
-            {
-                Console.WriteLine("Email is required!");
-                return false;
-            }
-
-            if(!Regex.IsMatch(request.UserName, @"([a-zA-Z\d]+)"))
-            {
-                Console.WriteLine("Username is not allowed specail characters!");
-                return false;
-            }
-
-            if (!Regex.IsMatch(request.FullName, @"([a-zA-Z\s]+)"))
-            {
-                Console.WriteLine("Fullname is not allowed special characters and digits!");
-                return false;
-            }
-
-            if (!Regex.IsMatch(request.Email, @"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"))
-            {
-                Console.WriteLine("Email is not valid!");
-                return false;
-            }
             var hashedPassword = _bcryptHelper.HashPassword(request.Password);
             var user = new LIP.Domain.Entities.User
             {
@@ -71,7 +41,31 @@ namespace LIP.Application.CQRS.Handler.Auth
                 RoleId = 1,
                 CreatedAt = DateTime.UtcNow
             };
-            return await _userRepository.RegisterAsync(user);
+            var otp = _otpHelper.GenerateOtpAsync(6);
+            var dictionary = new Dictionary<string, string>
+            {
+                { "OTP", otp},
+            };
+            var body = $"Your OTP is {otp}. It will expire in 5 minutes.";
+            var rs = await _emailHelper.SendEmailAsync(request.Email, "Welcome to LIP", body, dictionary);
+            //var rs = await _userRepository.RegisterAsync(user);
+            if (rs)
+            {
+                _sessionExtensions.Set<string>($"OTP_{otp}", otp);
+                _sessionExtensions.Set<LIP.Domain.Entities.User>($"User_{otp}", user);
+                return new RegisterResponse
+                {
+                    IsSuccess = true,
+                    Message = "Sending OTP to email successfully!",
+                };
+            }
+            else return new RegisterResponse
+            {
+                IsSuccess = false,
+                Message = "Some errors occurred while sending OTP through email"
+            };
+
+
         }
     }
 }

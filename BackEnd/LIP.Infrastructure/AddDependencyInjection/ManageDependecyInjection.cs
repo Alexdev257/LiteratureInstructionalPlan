@@ -37,6 +37,9 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IAnswerguideRepository, AnswerguideRepository>();
             service.AddScoped<IBcryptHelper, BCryptHelper>();
             service.AddScoped<IJwtHelper, JwtHelper>();
+            service.AddScoped<IEmailHelper, EmailHelper>();
+            service.AddScoped<ISessionExtensions, SessionExtensions>();
+            service.AddScoped<IOtpHelper, OtpHelper>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
@@ -50,6 +53,17 @@ namespace LIP.Infrastructure.AddDependencyInjection
                 cfg.AddOpenBehavior(typeof(CustomValidationBehavior<,>));
 
                 //cfg.LicenseKey = config["LicenseKey"];
+            });
+        }
+
+        public static void AddSesstionExtensions(this IServiceCollection service)
+        {
+            service.AddDistributedMemoryCache();
+            service.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
         }
     }

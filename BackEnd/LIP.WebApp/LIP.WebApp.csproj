@@ -19,4 +19,8 @@
     <ProjectReference Include="..\LIP.Infrastructure\LIP.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Templates\" />
+  </ItemGroup>
+
 </Project>
