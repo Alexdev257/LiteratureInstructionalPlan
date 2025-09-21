@@ -4,6 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Turn off log Database
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
+
 builder.Services.AddControllers();
 
 builder.Services.AddDatabase(builder.Configuration);
