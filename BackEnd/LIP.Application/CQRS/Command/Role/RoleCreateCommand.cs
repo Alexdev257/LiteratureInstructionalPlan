@@ -15,11 +15,10 @@ namespace LIP.Application.CQRS.Command.Role
 
             if (string.IsNullOrEmpty(this.RoleName))
             {
-
                 response.ListErrors.Add(new Errors
                 {
                     Field = "Rolename",
-                    Detail = "Role is null or empty"
+                    Detail = "Rolename is null or empty"
                 });
             }
 

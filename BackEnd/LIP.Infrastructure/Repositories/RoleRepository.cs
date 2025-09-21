@@ -27,9 +27,6 @@ namespace LIP.Infrastructure.Repositories
         {
             var roles = _context.Roles.AsQueryable();
 
-            if (!string.IsNullOrEmpty(query.RoleName))
-                roles = roles.Where(r => r.RoleName.Contains(query.RoleName));
-
             return await roles.ToListAsync();
         }
 
