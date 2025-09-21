@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Implements\Repositories\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
