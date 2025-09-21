@@ -6,12 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint ./src/ --ext .ts,.tsx",
+    "lint:fix": "eslint ./src --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "prepare": "husky",
-    "commit": "git add . && git commit"
+    "prepare": "husky"
   },
   "dependencies": {
     "husky": "^9.1.7",
