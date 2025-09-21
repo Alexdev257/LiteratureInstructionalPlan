@@ -1,4 +1,2 @@
 #!/bin/sh
-cd FrontEnd && npm run lint
-
-cd FrontEnd && npm run build
+cd FrontEnd && npm run lint && npm run build
