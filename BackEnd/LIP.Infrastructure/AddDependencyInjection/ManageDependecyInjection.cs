@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using LIP.Application.CQRS.Pipeline;
+using LIP.Application.Interface.Helpers;
+using LIP.Infrastructure.Implements.Helpers;
 namespace LIP.Infrastructure.AddDependencyInjection
 {
     public static class ManageDependecyInjection
@@ -33,6 +35,8 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IExamattemptRepository, ExamattemptRepository>();
             service.AddScoped<IExamanswerRepository, ExamanswerRepository>();
             service.AddScoped<IAnswerguideRepository, AnswerguideRepository>();
+            service.AddScoped<IBcryptHelper, BCryptHelper>();
+            service.AddScoped<IJwtHelper, JwtHelper>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
