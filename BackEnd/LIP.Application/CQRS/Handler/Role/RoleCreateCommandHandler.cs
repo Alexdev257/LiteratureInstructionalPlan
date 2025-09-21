@@ -31,7 +31,7 @@ namespace LIP.Application.CQRS.Handler.Role
             else return new RoleCreateResponse
             {
                 IsSuccess = false,
-                Message = "Some problem occurs"
+                Message = "some errors occurred while update"
             };
         }
     }

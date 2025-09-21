@@ -1,10 +1,10 @@
 using MediatR;
-using LIP.Domain.Entities;
+using LIP.Application.DTOs.Response.Role;
 
 namespace LIP.Application.CQRS.Query.Role
 {
-    public class RoleGetAllQuery : IRequest<IEnumerable<LIP.Domain.Entities.Role>>
+    public class RoleGetAllQuery : IRequest<RoleGetAllResponse>
     {
-        public string? RoleName { get; set; }
+
     }
 }
