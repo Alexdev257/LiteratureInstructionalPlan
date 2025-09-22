@@ -4,7 +4,7 @@ const configSchema = z.object({
 })
 
 const configProject = configSchema.safeParse({
-    VITE_BASE_URL: process.env.VITE_BASE_URL,
+    VITE_BASE_URL: import.meta.env.VITE_BASE_URL,
 
 })
 if (!configProject.success) {

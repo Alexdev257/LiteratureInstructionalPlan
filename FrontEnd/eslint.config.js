@@ -32,4 +32,10 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
     },
   },
+  {
+    files: ['src/lib/api/baseFetch.ts'], 
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  }
 ])
