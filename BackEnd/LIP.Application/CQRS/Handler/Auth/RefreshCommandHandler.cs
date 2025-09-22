@@ -25,15 +25,15 @@ namespace LIP.Application.CQRS.Handler.Auth
 
         public async Task<RefreshResponse> Handle(RefreshCommand request, CancellationToken cancellationToken)
         {
-            //var rs = _jwtHelper.ValidateToken(request.AccessToken);
-            //if (!rs.Item1)
-            //{
-            //    return new RefreshResponse
-            //    {
-            //        IsSuccess = false,
-            //        Message = rs.Item2
-            //    };
-            //}
+            var rs = _jwtHelper.ValidateToken(request.AccessToken);
+            if (!rs.Item1)
+            {
+                return new RefreshResponse
+                {
+                    IsSuccess = false,
+                    Message = rs.Item2
+                };
+            }
 
             var RefreshToken = _sessionExtensions.Get<string>($"RT_{request.Id}");
             if(string.IsNullOrEmpty(RefreshToken))

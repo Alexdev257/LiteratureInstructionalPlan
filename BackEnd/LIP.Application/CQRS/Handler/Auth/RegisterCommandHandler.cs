@@ -44,9 +44,9 @@ namespace LIP.Application.CQRS.Handler.Auth
             var otp = _otpHelper.GenerateOtpAsync(6);
             var dictionary = new Dictionary<string, string>
             {
-                { "OTP", otp},
+                { "otp", otp},
             };
-            var body = $"Your OTP is {otp}. It will expire in 5 minutes.";
+            var body = $"Your OTP is otp. It will expire in 5 minutes.";
             var rs = await _emailHelper.SendEmailAsync(request.Email, "Welcome to LIP", body, dictionary);
             //var rs = await _userRepository.RegisterAsync(user);
             if (rs)

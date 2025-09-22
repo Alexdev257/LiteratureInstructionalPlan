@@ -53,13 +53,25 @@ namespace LIP.WebApp.Controllers
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
+        [HttpPost("login-google")]
+        public async Task<IActionResult> LoginGoogle([FromBody] LoginGoogleRequest request)
+        {
+            var result = await _mediator.Send(new LoginGoogleCommand
+            {
+                GoogleToken = request.GoogleToken,
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshRequest request)
         {
             var result = await _mediator.Send(new RefreshCommand
             {
                 Id = request.Id,
-                RefreshToken = request.RefreshToken
+                AccessToken = request.AccessToken,
+                RefreshToken = request.RefreshToken, 
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
@@ -84,6 +96,19 @@ namespace LIP.WebApp.Controllers
             {
                 Email = request.Email,
                 OTP = request.OTP,
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var result = await _mediator.Send(new ChangePasswordCommand
+            {
+                Email = request.Email,
+                Password = request.Password,
+                NewPassword = request.NewPassword,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

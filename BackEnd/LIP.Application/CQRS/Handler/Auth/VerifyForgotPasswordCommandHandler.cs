@@ -45,6 +45,8 @@ namespace LIP.Application.CQRS.Handler.Auth
                     Password = user.Password,
                     RoleId = user.RoleId,
                     CreatedAt = user.CreatedAt,
+                    DeletedAt = user.DeletedAt,
+                    IsDeleted = user.IsDeleted
                 });
                 _sessionExtensions.Remove($"FP_{otp}");
                 _sessionExtensions.Remove($"FPOJ_{otp}");
