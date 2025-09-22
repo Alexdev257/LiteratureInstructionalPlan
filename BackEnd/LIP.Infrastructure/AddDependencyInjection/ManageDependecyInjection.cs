@@ -40,6 +40,7 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IEmailHelper, EmailHelper>();
             service.AddScoped<ISessionExtensions, SessionExtensions>();
             service.AddScoped<IOtpHelper, OtpHelper>();
+            service.AddScoped<IGoogleOAuthHelper, GoogleOAuthHelper>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)

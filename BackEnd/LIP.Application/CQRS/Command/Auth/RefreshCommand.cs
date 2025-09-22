@@ -43,14 +43,14 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Id is not a number"
                 });
             }
-            //if (string.IsNullOrEmpty(this.AccessToken))
-            //{
-            //    response.ListErrors.Add(new Errors
-            //    {
-            //        Field = "AccessToken",
-            //        Detail = "AccessToken is null or empty"
-            //    });
-            //}
+            if (string.IsNullOrEmpty(this.AccessToken))
+            {
+                response.ListErrors.Add(new Errors
+                {
+                    Field = "AccessToken",
+                    Detail = "AccessToken is null or empty"
+                });
+            }
             if (string.IsNullOrEmpty(this.RefreshToken))
             {
                 response.ListErrors.Add(new Errors

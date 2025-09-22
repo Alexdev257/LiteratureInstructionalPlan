@@ -11,5 +11,7 @@ namespace LIP.Application.CQRS.Command.User
         public string Password { get; set; } = null!;
         public int? RoleId { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }
