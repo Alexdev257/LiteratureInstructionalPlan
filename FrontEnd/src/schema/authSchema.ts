@@ -15,28 +15,34 @@ export const registerSchema = z.object({
       if (val.length < 8) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Password must be at least 8 characters!",
+          message: "Mật khẩu phải có ít nhất 8 ký tự!",
           path: ["Password"],
         });
       }
       if (!/[A-Z]/.test(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Password must contain at least 1 Upper character!",
+          message: "Mật khẩu phải chứa ít nhất 1 chữ cái viết hoa!",
           path: ["Password"],
+        });
+      }
+      if (!/[0-9]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải chứa ít nhất 1 chữ số!",
         });
       }
       if (!/[a-z]/.test(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Password must contain at least 1 Lower character!",
+          message: "Mật khẩu phải chứa ít nhất 1 chữ cái viết thường!",
           path: ["Password"],
         });
       }
       if (!/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Password must contain at least 1 special character(!@#$%^&*(),.?\":{}|<>)!",
+          message: "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt!",
           path: ["Password"],
         });
       }
@@ -46,8 +52,8 @@ export const registerSchema = z.object({
 
 
 export const loginSchema = z.object({
-    email: z.email("Email không hợp lệ"),
-    password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  email: z.email("Email không hợp lệ"),
+  password: z.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
 });
 
 
@@ -59,11 +65,63 @@ export const otpSchema = z.object({
     .regex(/^\d+$/, "OTP chỉ được chứa chữ số"),
 });
 
+
+export const forgotPasswordEmailSchema = z.object({
+  email: z.email("Email không hợp lệ"),
+});
+
+
+export const resetPasswordSchema = z.object({
+  email: z.email("Email không hợp lệ"),
+  newPassword: z
+    .string()
+    .superRefine((val, ctx) => {
+      if (val.length < 8) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải có ít nhất 8 ký tự!",
+        });
+      }
+      if (!/[0-9]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải chứa ít nhất 1 chữ số!",
+        });
+      }
+      if (!/[A-Z]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải chứa ít nhất 1 chữ cái viết hoa!",
+        });
+      }
+      if (!/[a-z]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải chứa ít nhất 1 chữ cái viết thường!",
+        });
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt!",
+        });
+      }
+    }),
+  confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Mật khẩu xác nhận không khớp",
+  path: ["confirmPassword"],
+});
+
+
+
+
+
+
+
 export type OtpInput = z.infer<typeof otpSchema>;
-
+export type ForgotPasswordEmailInput = z.infer<typeof forgotPasswordEmailSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
-
-
-
 export type LoginInput = z.infer<typeof loginSchema>;
 

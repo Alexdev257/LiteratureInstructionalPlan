@@ -5,13 +5,14 @@ import { Route as testRoute } from "./test";
 import { Route as authRoute } from "./auth/_layout";
 import { Route as loginRoute } from "./auth/login";
 import { Route as registerRoute } from "./auth/register";
-
+import { Route as forgotPasswordRoute } from "./auth/forgotpassword";
 // Main router với auth routes có layout riêng
 const routeTree = rootRoute.addChildren([
     testRoute,
     authRoute.addChildren([
         loginRoute,
         registerRoute,
+        forgotPasswordRoute,
     ]),
 ]);
 

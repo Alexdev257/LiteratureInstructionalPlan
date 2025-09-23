@@ -25,7 +25,7 @@ export function RegisterClientWrapper() {
           toast.success(res.message || "Đăng ký thành công!")
           setEmail(data.email)
           setStep("verify")
-        } 
+        }
       },
       onError: (error) => {
         toast.error(error.message || "Đăng ký thất bại. Vui lòng thử lại!")
@@ -42,7 +42,7 @@ export function RegisterClientWrapper() {
           setStep("register")
           setEmail("")
           router.navigate({ to: "/auth/login" })
-        } 
+        }
       },
       onError: (error) => {
         toast.error(error.message || "Xác thực thất bại. Vui lòng thử lại!");
@@ -52,18 +52,23 @@ export function RegisterClientWrapper() {
 
   // Gửi lại OTP
   const handleResendCode = async () => {
-    try {
-      setIsResending(true)
-      // Fake call API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.success("Mã xác thực mới đã được gửi!")
-    } catch (error) {
-      console.error("Resend OTP error:", error)
-      toast.error("Không thể gửi lại mã. Vui lòng thử lại!")
-    } finally {
-      setIsResending(false)
-    }
-  }
+    // try {
+    setIsResending(true);
+
+    //   const res = await sendEmail.mutateAsync({ email });
+
+    //   if (res.isSuccess) {
+    //     toast.success(res.message || "Mã xác thực mới đã được gửi!");
+    //   } else {
+    //     toast.error(res.message || "Không thể gửi lại mã. Vui lòng thử lại!");
+    //   }
+    // } catch (error: any) {
+    //   console.error("Resend OTP error:", error);
+    //   toast.error(error?.message || "Không thể gửi lại mã. Vui lòng thử lại!");
+    // } finally {
+    //   setIsResending(false);
+    // }
+  };
 
   const handleGoBack = () => setStep("register")
   const handleNavigateToLogin = () => router.navigate({ to: "/auth/login" })
