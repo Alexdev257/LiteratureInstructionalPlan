@@ -1,8 +1,13 @@
 
-import type { ResponseData } from "@/utils/type";
-import { tokenSession } from "../session";
+import type { ResponseData, ResponseLogin } from "@/utils/type";
+import { tokenSession, userSession } from "../session";
 import { normalizePath } from "../utils";
 import envconfig from "./config";
+import { AUTH_ENDPOINT } from "./endpoint";
+import Cookies from "js-cookie";
+import { setCookies } from "@/utils/setCookies";
+import { toast } from "sonner";
+
 
 export class BaseApi {
   protected createUrl(
@@ -44,24 +49,58 @@ export class BaseApi {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
     body?: Record<string, any>
   ): Promise<ResponseData<T>> {
+    // check refresh token
+    await this.refreshToken();
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(),
       body: body ? JSON.stringify(body) : undefined,
-      credentials: "include", // gửi cookie HttpOnly nếu có
+      // credentials: "include", // gửi cookie HttpOnly nếu có
     });
 
     if (!res.ok) {
       const error = await res.json();
-      throw error
+      throw error;
     }
 
     return res.json() as Promise<ResponseData<T>>;
   }
 
+  // refresh Token 
+  protected async refreshToken(): Promise<void> {
+    const token: string | null = tokenSession.value;
+    if (!token) {
+      window.location.href = '/auth/login';
+      return;
+    }
 
+    const exp = userSession.value?.exp;
+    const currentTime = Math.floor(Date.now() / 1000);
 
-  
+    // Nếu token còn hạn → không refresh
+    if (exp && exp > currentTime) return;
+
+    const url = this.createUrl(AUTH_ENDPOINT.REFRESH_TOKEN);
+    const refreshToken = Cookies.get('refreshToken');
+    if (!refreshToken) {
+      window.location.href = '/auth/login';
+      return;
+    }
+    try {
+      const res = await this.postData<ResponseLogin>(url, { refreshToken });
+      if (res.isSuccess) {
+        setCookies(res);
+      }
+    } catch (error) {
+      const errorMessage =
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as { message?: string }).message
+          : undefined;
+      toast.error(errorMessage);
+      window.location.href = '/auth/login';
+    }
+  }
+
 
   protected getData<T>(url: string): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "GET");

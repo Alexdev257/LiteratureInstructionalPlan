@@ -26,8 +26,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { useAuth } from "@/hooks/useAuth"
-import { tokenSession, userSession } from "@/lib/session"
-import Cookies from "js-cookie"
+import { setCookies } from "@/utils/setCookies"
+
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
@@ -48,11 +48,7 @@ export function LoginForm() {
         if (res.isSuccess) {
           toast.success(res.message || "Đăng nhập thành công!");
           router.navigate({ to: "/" });
-          userSession.setFromToken(res.data.accessToken);
-          tokenSession.value = res.data.accessToken;
-          userSession.setFromToken(res.data.accessToken);
-          Cookies.set("token", res.data.accessToken, { expires: 7 });
-          Cookies.set("refreshToken", res.data.refreshToken, { expires: 7 });
+          setCookies(res);
         } else {
           toast.error(res.message || "Đăng nhập thất bại. Vui lòng thử lại!");
         }
