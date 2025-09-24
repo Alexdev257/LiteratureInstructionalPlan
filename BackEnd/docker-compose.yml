@@ -28,7 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: "12345" # Must match the password in the connection string
       MYSQL_DATABASE: "swd392" # Creates the database on startup
     ports:
-      - "3306:3306" # Expose the database port to the host for direct access if needed
+      - "3333:3306" # Expose the database port to the host for direct access if needed
     volumes:
       - mysql_data:/var/lib/mysql # Persist database data
     healthcheck:
