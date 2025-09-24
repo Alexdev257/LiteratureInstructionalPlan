@@ -1,5 +1,5 @@
 import { userSession, tokenSession } from "@/lib/session";
-import Cookies from "node_modules/@types/js-cookie";
+import Cookies from "js-cookie";
 import type { ResponseData, ResponseLogin } from "./type";
 
 export function setCookies(res: ResponseData<ResponseLogin>): void {

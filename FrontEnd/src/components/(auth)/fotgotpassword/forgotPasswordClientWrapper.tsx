@@ -12,10 +12,10 @@ import VerifyCode from "./verifyCode"
 import { useAuth } from "@/hooks/useAuth"
 
 
-type Step = "reset-password" | "verify-otp"
+
 
 export default function ForgotPasswordClientWrapper() {
-  const [currentStep, setCurrentStep] = useState<Step>("reset-password")
+  const [currentStep, setCurrentStep] = useState<"reset-password" | "verify-otp">("reset-password")
   const [email, setEmail] = useState<string>("")
   const [newPassword, setNewPassword] = useState<string>("")
   const [isResending, setIsResending] = useState<boolean>(false)

@@ -89,13 +89,13 @@ export default function VerifyCode({
             Quay lại
           </Button>
         </div>
-        
+
         <div className="flex justify-center">
           <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
             <Shield className="h-6 w-6 text-primary" />
           </div>
         </div>
-        
+
         <CardTitle className="text-2xl font-bold text-center">
           Xác thực đặt lại mật khẩu
         </CardTitle>
@@ -107,7 +107,7 @@ export default function VerifyCode({
           Nhập mã để hoàn tất việc đặt lại mật khẩu
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -121,13 +121,17 @@ export default function VerifyCode({
                     <div className="flex justify-center">
                       <InputOTP
                         maxLength={6}
-                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
                         disabled={isLoading}
                       >
                         <InputOTPGroup>
                           <InputOTPSlot index={0} />
                           <InputOTPSlot index={1} />
                           <InputOTPSlot index={2} />
+                        </InputOTPGroup>
+                        <div className="mx-2 text-gray-300 text-xl">•</div>
+                        <InputOTPGroup>
                           <InputOTPSlot index={3} />
                           <InputOTPSlot index={4} />
                           <InputOTPSlot index={5} />
@@ -162,8 +166,8 @@ export default function VerifyCode({
                 {isResending
                   ? "Đang gửi..."
                   : countdown > 0
-                  ? `Gửi lại sau ${countdown}s`
-                  : "Gửi lại mã"
+                    ? `Gửi lại sau ${countdown}s`
+                    : "Gửi lại mã"
                 }
               </Button>
             </div>
