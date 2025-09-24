@@ -37,6 +37,16 @@ namespace LIP.Application.CQRS.Handler.Auth
                     Message = "Account does not exist!",
                 };
             }
+            var userList = await _userRepository.GetAllAsync(new Query.User.UserGetAllQuery { Email = request.NewEmail });
+            var existEmailUser = userList.FirstOrDefault();
+            if (existEmailUser != null)
+            {
+                return new ChangeEmailResponse
+                {
+                    IsSuccess = false,
+                    Message = "Email is exist in the system!"
+                };
+            }
 
             var updatedUser = new LIP.Domain.Entities.User
             {
