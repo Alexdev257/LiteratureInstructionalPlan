@@ -1,10 +1,11 @@
 using LIP.Application.CQRS.Command.User;
+using LIP.Application.DTOs.Response.User;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
 namespace LIP.Application.CQRS.Handler.User
 {
-    public class UserDeleteCommandHandler : IRequestHandler<UserDeleteCommand, bool>
+    public class UserDeleteCommandHandler : IRequestHandler<UserDeleteCommand, UserDeleteResponse>
     {
         private readonly IUserRepository _userRepository;
 
@@ -13,9 +14,35 @@ namespace LIP.Application.CQRS.Handler.User
             _userRepository = userRepository;
         }
 
-        public async Task<bool> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
+        public async Task<UserDeleteResponse> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
         {
-            return await _userRepository.DeleteAsync(request);
+            var user = await _userRepository.GetAsync(new Query.User.UserGetQuery { UserId = request.UserId });
+            if (user == null)
+            {
+                return new UserDeleteResponse
+                {
+                    IsSuccess = false,
+                    Message = "User is not found!"
+                };
+            }
+
+            var rs = await _userRepository.DeleteAsync(request);
+            if (rs)
+            {
+                return new UserDeleteResponse
+                {
+                    IsSuccess = true,
+                    Message = "Delete User successfully!"
+                };
+            }
+            else
+            {
+                return new UserDeleteResponse
+                {
+                    IsSuccess = false,
+                    Message = "Delete User failed!"
+                };
+            }
         }
     }
 }

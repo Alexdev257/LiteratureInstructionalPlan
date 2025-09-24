@@ -16,52 +16,6 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        //public async Task<bool> CreateAsync(User user)
-        //{
-        //    _context.Users.Add(user);
-        //    return await _context.SaveChangesAsync() > 0;
-        //}
-
-        //public Task<bool> DeleteAsync(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public async Task<IEnumerable<User>?> GetAllAsync()
-        //{
-        //    var users = _context.Users
-        //        .AsNoTracking()
-        //        .Include(u => u.Role)
-        //        .Where(u => !u.IsDeleted)
-        //        .AsQueryable();
-
-        //    //if (query.RoleId.HasValue)
-        //    //    users = users.Where(u => u.RoleId == query.RoleId);
-
-        //    //if (!string.IsNullOrEmpty(query.Email))
-        //    //    users = users.Where(u => u.Email == query.Email);
-
-        //    return await users.ToListAsync();
-        //}
-
-        //public async Task<User?> GetAsync(int id)
-        //{
-        //    return await _context.Users
-        //        .AsNoTracking()
-        //        .Include(u => u.Role)
-        //        .Include(u => u.Examattempts)
-        //        .Include(u => u.Exams)
-        //        .Include(u => u.Practicequestions)
-        //        .Include(u => u.Submissions)
-        //        .Include(u => u.Templates)
-        //        .Where(u => !u.IsDeleted)
-        //        .FirstOrDefaultAsync(u => u.UserId == id) ?? null!;
-        //}
-
-        //public Task<bool> UpdateAsync(User user)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public async Task<User?> GetAsync(UserGetQuery query)
         {
@@ -107,8 +61,8 @@ namespace LIP.Infrastructure.Repositories
             };
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(UserUpdateCommand command)
@@ -123,8 +77,8 @@ namespace LIP.Infrastructure.Repositories
             user.RoleId = command.RoleId;
             user.CreatedAt = command.CreatedAt;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> DeleteAsync(UserDeleteCommand command)
