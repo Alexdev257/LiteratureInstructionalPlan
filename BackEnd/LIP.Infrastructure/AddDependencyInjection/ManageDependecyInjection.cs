@@ -8,6 +8,9 @@ using System.Reflection;
 using LIP.Application.CQRS.Pipeline;
 using LIP.Application.Interface.Helpers;
 using LIP.Infrastructure.Implements.Helpers;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 namespace LIP.Infrastructure.AddDependencyInjection
 {
     public static class ManageDependecyInjection
@@ -67,5 +70,106 @@ namespace LIP.Infrastructure.AddDependencyInjection
                 options.Cookie.IsEssential = true;
             });
         }
+
+        public static void AddCorsExtentions(this IServiceCollection service)
+        {
+            service.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy => policy.AllowAnyOrigin()
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader());
+            });
+        }
+
+        public static void AddJwtAuthentication(this IServiceCollection service, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]!);
+
+            service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.SaveToken = true;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true, // Bắt buộc kiểm tra hạn sử dụng của token
+                            ClockSkew = TimeSpan.Zero, // Không cho phép trễ hạn (default là 5 phút)
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtSettings["Issuer"],
+                            ValidAudience = jwtSettings["Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(key)
+                        };
+
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnAuthenticationFailed = context =>
+                            {
+                                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                                {
+                                    context.Response.Headers.Add("Token Expired", "true");
+                                }
+                                return Task.CompletedTask;
+                            }
+                        };
+                    });
+        }
+
+        public static void AddAuthorizationRole(this IServiceCollection service)
+        {
+            service.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                {
+                    policy.RequireClaim("Role", "Admin".ToLower());
+                });
+
+                options.AddPolicy("TeacherOnly", policy =>
+                {
+                    policy.RequireClaim("Role", "Teacher".ToLower());
+                });
+
+                options.AddPolicy("StudentOnly", policy =>
+                {
+                    policy.RequireClaim("Role", "Student".ToLower());
+                });
+
+                options.AddPolicy("AdminOrTeacher", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    //return roleClaim != "User";
+                    return roleClaim == "Admin".ToLower() || roleClaim == "Teacher".ToLower();
+                }));
+
+                options.AddPolicy("AdminOrStudent", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    //return roleClaim != "User";
+                    return roleClaim == "Admin".ToLower() || roleClaim == "Student".ToLower();
+                }));
+
+                options.AddPolicy("TeacherOrStudent", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    //return roleClaim != "User";
+                    return roleClaim == "Teacher".ToLower() || roleClaim == "Student".ToLower();
+                }));
+
+                options.AddPolicy("AllRole", policy =>
+                policy.RequireAssertion(context =>
+                {
+                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    //return roleClaim != "Admin";
+                    return roleClaim == "Admin" || roleClaim == "Teacher" || roleClaim == "Student";
+                }));
+            });
+        }
+
     }
 }

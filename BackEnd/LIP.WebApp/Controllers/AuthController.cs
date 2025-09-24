@@ -113,5 +113,29 @@ namespace LIP.WebApp.Controllers
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
+
+        [HttpPost("change-email")]
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailRequest request)
+        {
+            var result = await _mediator.Send(new ChangeEmailCommand
+            {
+                UserId = request.UserId,
+                NewEmail = request.NewEmail,
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPost("verify-change-email")]
+        public async Task<IActionResult> VerifyChangeEmail([FromBody]  VerifyChangeEmailRequest request)
+        {
+            var result = await _mediator.Send(new VerifyChangeEmailCommand
+            {
+                NewEmail = request.NewEmail,
+                OTP = request.OTP,
+            });
+            if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
     }
 }

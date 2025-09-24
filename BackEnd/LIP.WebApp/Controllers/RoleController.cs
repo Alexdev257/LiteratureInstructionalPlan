@@ -3,6 +3,7 @@ using LIP.Application.CQRS.Query.Role;
 using LIP.Application.DTOs.Request.Role;
 using LIP.Application.DTOs.Response.Role;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace LIP.WebApp.Controllers
             _mediator = mediator;
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] RoleCreateRequest request)
         {
@@ -46,6 +48,7 @@ namespace LIP.WebApp.Controllers
             else return StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
+        //[Authorize(Policy = "StudentOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAllRole()
         {
