@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="DTOs/Request/Role/RoleGetRequestcs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\LIP.Domain\LIP.Domain.csproj" />
   </ItemGroup>
 
