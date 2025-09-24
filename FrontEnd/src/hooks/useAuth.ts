@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { ResponseData, ResponseLogin, ResponseNull } from "@/utils/type";
 import type {  LoginInput, OtpInput, RegisterInput, ResetPasswordInput } from "@/schema/authSchema";
 import { authApi } from "@/lib/api/auth/auth";
+import type { CredentialResponse } from "@react-oauth/google";
 
 export const useAuth = () => {
   const register = useMutation<ResponseData<ResponseNull>, Error, RegisterInput>({
@@ -33,6 +34,11 @@ export const useAuth = () => {
       return await authApi.verifyResetPasswordCode(data);
     },
   });
+  const loginGoogle = useMutation<ResponseData<ResponseLogin>, Error, CredentialResponse>({
+    mutationFn: async (credentialResponse: CredentialResponse) => {
+      return await authApi.loginGoogle(credentialResponse);
+    },
+  });
 
-  return { register, verifyCode, login, resetPassword, verifyResetPasswordCode };
+  return { register, verifyCode, login, resetPassword, verifyResetPasswordCode, loginGoogle };
 };

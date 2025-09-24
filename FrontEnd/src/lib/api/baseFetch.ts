@@ -2,7 +2,7 @@
 import type { ResponseData, ResponseLogin } from "@/utils/type";
 import { tokenSession, userSession } from "../session";
 import { normalizePath } from "../utils";
-import envconfig from "./config";
+import envconfig from "../config";
 import { AUTH_ENDPOINT } from "./endpoint";
 import Cookies from "js-cookie";
 import { setCookies } from "@/utils/setCookies";
