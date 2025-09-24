@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # The .NET Web App service
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80" # Map host port 8080 to container port 80
+    environment:
+      # Override the connection string to connect to the 'db' service
+      - ConnectionStrings__DefaultConnection=server=db;port=3306;database=swd392;user=root;password=12345
+      # Configure ASP.NET Core to use HTTP only in development
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      db:
+        condition: service_healthy # Wait for database to be healthy
+    networks:
+      - lip-network
+
+  # The MySQL database service
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345" # Must match the password in the connection string
+      MYSQL_DATABASE: "swd392" # Creates the database on startup
+    ports:
+      - "3333:3306" # Expose the database port to the host for direct access if needed
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist database data
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - lip-network
+
+volumes:
+  mysql_data:
+
+networks:
+  lip-network:
+    driver: bridge

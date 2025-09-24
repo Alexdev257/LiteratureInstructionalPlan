@@ -1,4 +1,6 @@
 using LIP.Infrastructure.AddDependencyInjection;
+using LIP.Infrastructure.Persistency;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,14 @@ builder.Services.AddSesstionExtensions();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,7 +40,7 @@ if (app.Environment.IsDevelopment())
 //read file in wwwroot
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
