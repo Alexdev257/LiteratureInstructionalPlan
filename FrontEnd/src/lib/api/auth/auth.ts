@@ -1,7 +1,8 @@
-import type {  LoginInput, OtpInput, RegisterInput, ResetPasswordInput } from "@/schema/authSchema";
+import type { LoginInput, OtpInput, RegisterInput, ResetPasswordInput } from "@/schema/authSchema";
 import { BaseApi } from "../baseFetch";
 import { AUTH_ENDPOINT } from "../endpoint";
 import type { ResponseData, ResponseLogin, ResponseNull } from "@/utils/type";
+import type { CredentialResponse } from "@react-oauth/google";
 class AuthApi extends BaseApi {
     async register(data: RegisterInput): Promise<ResponseData<ResponseNull>> {
         const url = this.createUrl(AUTH_ENDPOINT.REGISTER);
@@ -23,6 +24,11 @@ class AuthApi extends BaseApi {
     async verifyResetPasswordCode(data: OtpInput): Promise<ResponseData<ResponseNull>> {
         const url = this.createUrl(AUTH_ENDPOINT.VERIFY_FORGOT_PASSWORD);
         return this.postData<ResponseNull>(url, data);
+    }
+    async loginGoogle(credentialResponse: CredentialResponse): Promise<ResponseData<ResponseLogin>> {
+        const id_token = credentialResponse.credential;
+        const url = this.createUrl(AUTH_ENDPOINT.LOGIN_GOOGLE);
+        return this.postData<ResponseLogin>(url, { idToken: id_token });
     }
 }
 export const authApi = new AuthApi();

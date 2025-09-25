@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { useAuth } from "@/hooks/useAuth"
 import { setCookies } from "@/utils/setCookies"
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -40,7 +41,7 @@ export function LoginForm() {
     },
   })
 
-  const { login } = useAuth()
+  const { login, loginGoogle } = useAuth()
 
   const handleSubmit = (data: LoginInput) => {
     login.mutate(data, {
@@ -58,20 +59,36 @@ export function LoginForm() {
       },
     })
   }
-
+  const handleLoginGoogle = (credentialResponse: CredentialResponse) => {
+    console.log(credentialResponse);
+    loginGoogle.mutate(credentialResponse, {
+      onSuccess: (res) => {
+        if (res.isSuccess) {
+          toast.success(res.message || "Đăng nhập thành công!");
+          router.navigate({ to: "/" });
+          setCookies(res);
+        } else {
+          toast.error(res.message || "Đăng nhập thất bại. Vui lòng thử lại!");
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  }
   return (
-    <Card className="w-full shadow-lg border-0 bg-white/95 backdrop-blur-sm">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">
-          Đăng nhập
-        </CardTitle>
-        <CardDescription className="text-center">
+    <Card className="w-full max-w-md mx-auto mt-16 shadow-xl rounded-2xl border-0 bg-white/90 backdrop-blur-md">
+      <CardHeader className="space-y-2 text-center">
+        <CardTitle className="text-3xl font-extrabold">Đăng nhập</CardTitle>
+        <CardDescription>
           Nhập email và mật khẩu để đăng nhập vào tài khoản của bạn
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+
             {/* Email */}
             <FormField
               control={form.control}
@@ -81,12 +98,12 @@ export function LoginForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                       <Input
                         {...field}
                         type="email"
                         placeholder="Nhập email của bạn"
-                        className="pl-10"
+                        className="pl-12"
                         disabled={login.isPending}
                       />
                     </div>
@@ -105,12 +122,12 @@ export function LoginForm() {
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                       <Input
                         {...field}
                         type={showPassword ? "text" : "password"}
                         placeholder="Nhập mật khẩu của bạn"
-                        className="pl-10 pr-10"
+                        className="pl-12 pr-12"
                         disabled={login.isPending}
                       />
                       <Button
@@ -121,11 +138,7 @@ export function LoginForm() {
                         onClick={() => setShowPassword(!showPassword)}
                         disabled={login.isPending}
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
+                        {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
                       </Button>
                     </div>
                   </FormControl>
@@ -134,11 +147,12 @@ export function LoginForm() {
               )}
             />
 
-            <div className="flex items-center justify-end">
+            {/* Forgot password */}
+            <div className="flex justify-end">
               <Button
                 type="button"
                 variant="link"
-                className="px-0 font-normal h-auto"
+                className="px-0 text-sm font-medium"
                 disabled={login.isPending}
                 onClick={() => router.navigate({ to: "/auth/forgot-password" })}
               >
@@ -149,27 +163,45 @@ export function LoginForm() {
             {/* Submit */}
             <Button
               type="submit"
-              className="w-full"
+              className="w-full py-3 text-lg font-semibold"
               disabled={login.isPending}
             >
               {login.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
 
-            <div className="text-center text-sm">
-              <span className="text-muted-foreground">Chưa có tài khoản? </span>
+            {/* Divider */}
+            <div className="flex items-center my-4">
+              <span className="flex-1 h-px bg-gray-300" />
+              <span className="mx-3 text-gray-400 text-sm">hoặc</span>
+              <span className="flex-1 h-px bg-gray-300" />
+            </div>
+
+            {/* Google Login */}
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={(credentialResponse) => handleLoginGoogle(credentialResponse)}
+                onError={() => toast.error("Login Google thất bại")}
+              />
+            </div>
+
+            {/* Register link */}
+            <div className="text-center mt-4 text-sm text-gray-600">
+              Chưa có tài khoản?{" "}
               <Button
                 type="button"
                 variant="link"
-                className="px-0 font-normal h-auto"
+                className="px-0 font-medium"
                 disabled={login.isPending}
                 onClick={() => router.navigate({ to: "/auth/register" })}
               >
                 Đăng ký ngay
               </Button>
             </div>
+
           </form>
         </Form>
       </CardContent>
     </Card>
   )
+
 }
