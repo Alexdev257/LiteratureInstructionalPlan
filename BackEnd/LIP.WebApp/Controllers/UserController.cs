@@ -24,13 +24,13 @@ namespace LIP.WebApp.Controllers
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
-        //[HttpGet("get/{id}")]
-        //public async Task<IActionResult> GetUserAsync([FromQuery] GetUserQuery request)
-        //{
-        //    var result = await _mediator.Send(request);
-        //    if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-        //    else return StatusCode(StatusCodes.Status400BadRequest, result);
-        //}
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetUserAsync(int id)
+        {
+            var result = await _mediator.Send(new GetUserQuery { UserId = id});
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
 
 
         [HttpPost("create-user")]

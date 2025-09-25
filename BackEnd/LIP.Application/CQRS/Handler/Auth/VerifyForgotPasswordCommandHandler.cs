@@ -16,15 +16,20 @@ namespace LIP.Application.CQRS.Handler.Auth
     {
         private readonly IUserRepository _userRepository;
         private readonly ISessionExtensions _sessionExtensions;
-        public VerifyForgotPasswordCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions)
+        private readonly IRedisHelper _redisHelper;
+        public VerifyForgotPasswordCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions, IRedisHelper redisHelper)
         {
             _userRepository = userRepository;
             _sessionExtensions = sessionExtensions;
+            _redisHelper = redisHelper;
+
         }
         public async Task<VerifyForgotPasswordResponse> Handle(VerifyForgotPasswordCommand request, CancellationToken cancellationToken)
         {
-            var otp = _sessionExtensions.Get<string>($"FP_{request.OTP}");
-            var user = _sessionExtensions.Get<LIP.Domain.Entities.User>($"FPOJ_{request.OTP}");
+            //var otp = _sessionExtensions.Get<string>($"FP_{request.OTP}");
+            //var user = _sessionExtensions.Get<LIP.Domain.Entities.User>($"FPOJ_{request.OTP}");
+            var otp = await _redisHelper.GetAsync<string>($"FP_{request.OTP}");
+            var user = await _redisHelper.GetAsync<LIP.Domain.Entities.User>($"FPOJ_{request.OTP}");
 
             if(otp == null || user == null)
             {
@@ -48,8 +53,10 @@ namespace LIP.Application.CQRS.Handler.Auth
                     DeletedAt = user.DeletedAt,
                     IsDeleted = user.IsDeleted
                 });
-                _sessionExtensions.Remove($"FP_{otp}");
-                _sessionExtensions.Remove($"FPOJ_{otp}");
+                //_sessionExtensions.Remove($"FP_{otp}");
+                //_sessionExtensions.Remove($"FPOJ_{otp}");
+                await _redisHelper.RemoveAsync($"FP_{request.OTP}");
+                await _redisHelper.RemoveAsync($"FPOJ_{request.OTP}");
                 if (rs)
                 {
                     return new VerifyForgotPasswordResponse

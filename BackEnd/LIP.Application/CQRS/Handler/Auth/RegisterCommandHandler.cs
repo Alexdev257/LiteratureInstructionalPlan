@@ -20,14 +20,16 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly IEmailHelper _emailHelper;
         private readonly ISessionExtensions _sessionExtensions;
         private readonly IOtpHelper _otpHelper;
+        private readonly IRedisHelper _redisHelper;
         //private readonly IWebHostEnvironment _webHostEnvironment;
-        public RegisterCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper, IEmailHelper emailHelper, ISessionExtensions sessionExtensions, IOtpHelper otpHelper)
+        public RegisterCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper, IEmailHelper emailHelper, ISessionExtensions sessionExtensions, IOtpHelper otpHelper, IRedisHelper redisHelper)
         {
             _userRepository = userRepository;
             _bcryptHelper = bcryptHelper;
             _emailHelper = emailHelper;
             _sessionExtensions = sessionExtensions;
             _otpHelper = otpHelper;
+            _redisHelper = redisHelper;
         }
         public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
@@ -51,8 +53,11 @@ namespace LIP.Application.CQRS.Handler.Auth
             //var rs = await _userRepository.RegisterAsync(user);
             if (rs)
             {
-                _sessionExtensions.Set<string>($"OTP_{otp}", otp);
-                _sessionExtensions.Set<LIP.Domain.Entities.User>($"User_{otp}", user);
+                //_sessionExtensions.Set<string>($"OTP_{otp}", otp);
+                //_sessionExtensions.Set<LIP.Domain.Entities.User>($"User_{otp}", user);
+                await _redisHelper.SetAsync<string>($"OTP_{otp}", otp);
+                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"User_{otp}", user);
+
                 return new RegisterResponse
                 {
                     IsSuccess = true,

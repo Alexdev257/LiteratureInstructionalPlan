@@ -17,12 +17,15 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly IJwtHelper _jwtHelper;
         private readonly IBcryptHelper _bcryptHelper;
         private readonly ISessionExtensions _sessionExtensions;
-        public LoginCommandHandler(IUserRepository userRepository, IJwtHelper jwtHelper, IBcryptHelper bcryptHelper, ISessionExtensions sessionExtensions)
+        private readonly IRedisHelper _redisHelper;
+        public LoginCommandHandler(IUserRepository userRepository, IJwtHelper jwtHelper, IBcryptHelper bcryptHelper, ISessionExtensions sessionExtensions, IRedisHelper redisHelper)
         {
             _userRepository = userRepository;
             _jwtHelper = jwtHelper;
             _bcryptHelper = bcryptHelper;
             _sessionExtensions = sessionExtensions;
+            _redisHelper = redisHelper;
+
         }
         public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
@@ -48,7 +51,8 @@ namespace LIP.Application.CQRS.Handler.Auth
             {
                 var accessToken = _jwtHelper.GenerateAccessToken(user);
                 var refreshToken = _jwtHelper.GenerateRefreshToken();
-                _sessionExtensions.Set<string>($"RT_{user.UserId}", refreshToken);
+                //_sessionExtensions.Set<string>($"RT_{user.UserId}", refreshToken);
+                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", refreshToken);
                 return new LoginResponse
                 {
                     IsSuccess = true,

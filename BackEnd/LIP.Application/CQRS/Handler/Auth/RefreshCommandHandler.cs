@@ -16,11 +16,14 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly ISessionExtensions _sessionExtensions;
         private readonly IJwtHelper _jwtHelper;
         private readonly IUserRepository _userRepository;
-        public RefreshCommandHandler(ISessionExtensions sessionExtensions, IJwtHelper jwtHelper, IUserRepository userRepository)
+        private readonly IRedisHelper _redisHelper;
+        public RefreshCommandHandler(ISessionExtensions sessionExtensions, IJwtHelper jwtHelper, IUserRepository userRepository, IRedisHelper redisHelper)
         {
             _sessionExtensions = sessionExtensions;
             _jwtHelper = jwtHelper;
             _userRepository = userRepository;
+            _redisHelper = redisHelper;
+
         }
 
         public async Task<RefreshResponse> Handle(RefreshCommand request, CancellationToken cancellationToken)
@@ -35,7 +38,8 @@ namespace LIP.Application.CQRS.Handler.Auth
                 };
             }
 
-            var RefreshToken = _sessionExtensions.Get<string>($"RT_{request.Id}");
+            //var RefreshToken = _sessionExtensions.Get<string>($"RT_{request.Id}");
+            var RefreshToken = await _redisHelper.GetAsync<string>($"RT_{request.Id}");
             if(string.IsNullOrEmpty(RefreshToken))
             {
                 return new RefreshResponse
@@ -47,7 +51,8 @@ namespace LIP.Application.CQRS.Handler.Auth
             else
             {
                 var user = await _userRepository.GetAsync(new Query.User.UserGetQuery() { UserId = request.Id });
-                _sessionExtensions.Remove($"RT_{request.Id}");
+                //_sessionExtensions.Remove($"RT_{request.Id}");
+                await _redisHelper.RemoveAsync($"RT_{request.Id}");
                 return new RefreshResponse
                 {
                     IsSuccess = true,

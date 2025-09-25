@@ -40,7 +40,7 @@ namespace LIP.Infrastructure.Implements.Helpers
                     new Claim("UserId", user.UserId.ToString()),
                     new Claim("Username", user.UserName.ToString()),
                     new Claim("RoleId", user.RoleId.ToString()),
-                    new Claim("Role", user.Role.RoleName.ToString().ToLower()),
+                    //new Claim("Role", user.Role.RoleName.ToString().ToLower()),
                 }),
 
                 // expire in 1 hours

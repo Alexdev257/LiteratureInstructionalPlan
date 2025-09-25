@@ -16,15 +16,20 @@ namespace LIP.Application.CQRS.Handler.Auth
     {
         private readonly IUserRepository _userRepository;
         private readonly ISessionExtensions _sessionExtensions;
-        public VerifyChangeEmailCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions)
+        private readonly IRedisHelper _redisHelper;
+        public VerifyChangeEmailCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions, IRedisHelper redisHelper)
         {
             _userRepository = userRepository;
             _sessionExtensions = sessionExtensions;
+            _redisHelper = redisHelper;
+
         }
         public async Task<VerifyChangeEmailResponse> Handle(VerifyChangeEmailCommand request, CancellationToken cancellationToken)
         {
-            var otp = _sessionExtensions.Get<string>($"OTP_{request.OTP}");
-            var user = _sessionExtensions.Get<LIP.Domain.Entities.User>($"UdU_{request.OTP}");
+            //var otp = _sessionExtensions.Get<string>($"OTP_{request.OTP}");
+            //var user = _sessionExtensions.Get<LIP.Domain.Entities.User>($"UdU_{request.OTP}");
+            var otp = await _redisHelper.GetAsync<string>($"OTP_{request.OTP}");
+            var user = await _redisHelper.GetAsync<LIP.Domain.Entities.User>($"UdU_{request.OTP}");
             if(request.NewEmail != user.Email)
             {
                 return new VerifyChangeEmailResponse
@@ -55,8 +60,10 @@ namespace LIP.Application.CQRS.Handler.Auth
                     IsDeleted = user.IsDeleted,
                     RoleId = user.RoleId,
                 });
-                _sessionExtensions.Remove($"OTP_{request.OTP}");
-                _sessionExtensions.Remove($"UdU_{request.OTP}");
+                //_sessionExtensions.Remove($"OTP_{request.OTP}");
+                //_sessionExtensions.Remove($"UdU_{request.OTP}");
+                await _redisHelper.RemoveAsync($"OTP_{otp}");
+                await _redisHelper.RemoveAsync($"UdU_{otp}");
                 if (rs)
                 {
                     return new VerifyChangeEmailResponse
