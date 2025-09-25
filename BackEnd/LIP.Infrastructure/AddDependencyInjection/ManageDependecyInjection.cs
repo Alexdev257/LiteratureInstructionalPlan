@@ -208,5 +208,12 @@ namespace LIP.Infrastructure.AddDependencyInjection
             });
         }
 
+        public static void AddCloundinary(this IServiceCollection service, IConfiguration configuration)
+        {
+            service.Configure<AccountCloundinary>(
+                configuration.GetSection("Cloudinary"));
+
+            service.AddSingleton<ICloudinaryUpload, CloudinaryUpload>();
+        }
     }
 }

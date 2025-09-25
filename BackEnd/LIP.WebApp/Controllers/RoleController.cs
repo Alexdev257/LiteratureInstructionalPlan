@@ -20,7 +20,7 @@ namespace LIP.WebApp.Controllers
             _mediator = mediator;
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] RoleCreateRequest request)
         {

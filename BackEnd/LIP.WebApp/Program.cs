@@ -23,6 +23,7 @@ builder.Services.AddAuthorizationRole();
 builder.Services.AddMediatRInfrastructure(builder.Configuration);
 builder.Services.AddSesstionExtensions();
 builder.Services.AddRedisConfiguration(builder.Configuration);
+builder.Services.AddCloundinary(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -64,12 +65,16 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-//auto update db while running
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+
+    if (db.Database.GetPendingMigrations().Any())
+    {
+        db.Database.Migrate();
+    }
 }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
