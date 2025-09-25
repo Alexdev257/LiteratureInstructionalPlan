@@ -28,7 +28,7 @@ export const AuthProvider = ({ children, initialToken }: AuthProviderProps) => {
             setTokenAndUser(initialToken);
         }
         setLoading(false);
-    }, [initialToken])
+    }, [])
 
     const setTokenAndUser = (token: string) => {
         tokenSession.value = token;
@@ -39,8 +39,8 @@ export const AuthProvider = ({ children, initialToken }: AuthProviderProps) => {
         tokenSession.clear()
         userSession.clear();
         // delete cookie
-        Cookies.remove("token");
-        Cookies.remove("refreshToken");
+        Cookies.remove("accesstoken");
+        Cookies.remove("refreshtoken");
     };
 
     return (

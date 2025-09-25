@@ -8,5 +8,11 @@ export const AUTH_ENDPOINT = {
     VERIFY_FORGOT_PASSWORD: "Auth/verify-forgot-password",
     REFRESH_TOKEN: "Auth/refresh-token",
     CHANGE_PASSWORD: "Auth/change-password",
-    LOGIN_GOOGLE: "Auth/google-login"
+    LOGIN_GOOGLE: "Auth/login-google"
 };
+
+
+export const PUBLIC_ENDPOINT = {
+    LOGIN: "Auth/login",
+    LOGIN_GOOGLE: "Auth/login-google"
+}

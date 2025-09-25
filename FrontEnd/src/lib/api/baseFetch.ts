@@ -3,10 +3,12 @@ import type { ResponseData, ResponseLogin } from "@/utils/type";
 import { tokenSession, userSession } from "../session";
 import { normalizePath } from "../utils";
 import envconfig from "../config";
-import { AUTH_ENDPOINT } from "./endpoint";
+import { AUTH_ENDPOINT} from "./endpoint";
 import Cookies from "js-cookie";
 import { setCookies } from "@/utils/setCookies";
 import { toast } from "sonner";
+import { router } from "@/routes";
+import { isPublicEndpoint } from "@/utils/helper";
 
 
 export class BaseApi {
@@ -50,7 +52,7 @@ export class BaseApi {
     body?: Record<string, any>
   ): Promise<ResponseData<T>> {
     // check refresh token
-    await this.refreshToken();
+    // await this.refreshToken(url);
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(),
@@ -67,10 +69,11 @@ export class BaseApi {
   }
 
   // refresh Token 
-  protected async refreshToken(): Promise<void> {
+  protected async refreshToken(endpoint:string): Promise<void> {
     const token: string | null = tokenSession.value;
+    if(isPublicEndpoint(endpoint))  return
     if (!token) {
-      window.location.href = '/auth/login';
+      router.navigate({ to: '/auth/login' });
       return;
     }
 
@@ -83,7 +86,7 @@ export class BaseApi {
     const url = this.createUrl(AUTH_ENDPOINT.REFRESH_TOKEN);
     const refreshToken = Cookies.get('refreshToken');
     if (!refreshToken) {
-      window.location.href = '/auth/login';
+      router.navigate({ to: '/auth/login' });
       return;
     }
     try {
@@ -97,9 +100,11 @@ export class BaseApi {
           ? (error as { message?: string }).message
           : undefined;
       toast.error(errorMessage);
-      window.location.href = '/auth/login';
+      router.navigate({ to: '/auth/login' });
     }
   }
+
+
 
 
   protected getData<T>(url: string): Promise<ResponseData<T>> {

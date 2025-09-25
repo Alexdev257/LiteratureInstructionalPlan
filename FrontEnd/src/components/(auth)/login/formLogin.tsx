@@ -60,7 +60,6 @@ export function LoginForm() {
     })
   }
   const handleLoginGoogle = (credentialResponse: CredentialResponse) => {
-    console.log(credentialResponse);
     loginGoogle.mutate(credentialResponse, {
       onSuccess: (res) => {
         if (res.isSuccess) {
@@ -105,6 +104,7 @@ export function LoginForm() {
                         placeholder="Nhập email của bạn"
                         className="pl-12"
                         disabled={login.isPending}
+                        autoComplete="email"
                       />
                     </div>
                   </FormControl>
@@ -129,6 +129,7 @@ export function LoginForm() {
                         placeholder="Nhập mật khẩu của bạn"
                         className="pl-12 pr-12"
                         disabled={login.isPending}
+                        autoComplete="current-password"
                       />
                       <Button
                         type="button"
@@ -137,6 +138,7 @@ export function LoginForm() {
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                         onClick={() => setShowPassword(!showPassword)}
                         disabled={login.isPending}
+
                       >
                         {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
                       </Button>

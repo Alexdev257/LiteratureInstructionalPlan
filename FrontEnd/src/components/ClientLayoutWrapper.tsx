@@ -11,6 +11,7 @@ import { AuthProvider } from "@/context/authContext";
 import { ThemeProvider } from "@/components/theme-provider"
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import envconfig from "@/lib/config";
+
 export default function ClientLayoutWrapper() {
   const [queryClient] = useState(
     () =>
@@ -24,13 +25,14 @@ export default function ClientLayoutWrapper() {
         },
       })
   );
-  const cookie = Cookies.get("token");
+
+  const cookie = Cookies.get("accesstoken");
   return (
     <GoogleOAuthProvider clientId={envconfig.VITE_GOOGLE_CLIENT_ID}>
       <AuthProvider initialToken={cookie || null}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <RouterProvider router={router} />
+            <RouterProvider router={router}  />
           </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
           <Toaster richColors duration={2000} />

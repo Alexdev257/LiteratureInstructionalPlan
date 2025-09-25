@@ -9,7 +9,10 @@ export function setCookies(res: ResponseData<ResponseLogin>): void {
   userSession.setFromToken(accessToken);
   tokenSession.value = accessToken;
 
-  // Lưu cookie
-  Cookies.set("token", accessToken, { expires: 7 });
-  Cookies.set("refreshToken", refreshToken, { expires: 7 });
+
+  // lưu token vào cookie
+  const oneHour = new Date(new Date().getTime() + 60 * 60 * 1000);
+  Cookies.set("accesstoken", accessToken, { expires: oneHour });
+  Cookies.set("refreshtoken", refreshToken, { expires: oneHour });
+
 }

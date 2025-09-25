@@ -28,7 +28,7 @@ class AuthApi extends BaseApi {
     async loginGoogle(credentialResponse: CredentialResponse): Promise<ResponseData<ResponseLogin>> {
         const id_token = credentialResponse.credential;
         const url = this.createUrl(AUTH_ENDPOINT.LOGIN_GOOGLE);
-        return this.postData<ResponseLogin>(url, { idToken: id_token });
+        return this.postData<ResponseLogin>(url, { googleToken: id_token });
     }
 }
 export const authApi = new AuthApi();

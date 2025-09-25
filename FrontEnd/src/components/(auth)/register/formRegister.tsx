@@ -162,9 +162,7 @@ export function RegisterForm({ onSubmit, isLoading = false, onNavigateToLogin }:
                     </div>
                   </FormControl>
                   <FormMessage />
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và ký tự đặc biệt
-                  </div>
+                  <div className="mt-1"/>
                 </FormItem>
               )}
             />
