@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LIP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDBSoftDelete : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
