@@ -11,6 +11,8 @@ using LIP.Infrastructure.Implements.Helpers;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
+using System.Security.Authentication;
 namespace LIP.Infrastructure.AddDependencyInjection
 {
     public static class ManageDependecyInjection
@@ -44,6 +46,7 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<ISessionExtensions, SessionExtensions>();
             service.AddScoped<IOtpHelper, OtpHelper>();
             service.AddScoped<IGoogleOAuthHelper, GoogleOAuthHelper>();
+            service.AddScoped<IRedisHelper, RedisHelper>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
@@ -69,6 +72,37 @@ namespace LIP.Infrastructure.AddDependencyInjection
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+        }
+
+        public static void AddRedisConfiguration(this IServiceCollection service, IConfiguration configuration)
+        {
+            //var redisConnection = configuration.GetConnectionString("Redis");
+            //service.AddSingleton<IConnectionMultiplexer>( sp =>
+            //    ConnectionMultiplexer.Connect(redisConnection));
+
+            var redisConnection = configuration.GetConnectionString("Redis");
+            var options = ConfigurationOptions.Parse(redisConnection);
+            options.Ssl = false;
+            options.AbortOnConnectFail = false;
+            options.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+
+            service.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(options));
+
+            //service.AddSingleton<IConnectionMultiplexer>(sp =>
+            //{
+            //    var config = new ConfigurationOptions()
+            //    {
+            //        EndPoints = { "redis-11906.c334.asia-southeast2-1.gce.redns.redis-cloud.com:11906" },
+            //        User = "default",
+            //        Password = "SGSWaKdUaKuBEITMiHAsA03ebzE3bmQa",
+            //        Ssl = true,
+            //        AbortOnConnectFail = false,
+            //        SslProtocols = SslProtocols.Tls12
+            //    };
+
+            //    return ConnectionMultiplexer.Connect(config);
+            //});
         }
 
         public static void AddCorsExtentions(this IServiceCollection service)
@@ -120,53 +154,56 @@ namespace LIP.Infrastructure.AddDependencyInjection
 
         public static void AddAuthorizationRole(this IServiceCollection service)
         {
+            //1 admin
+            //2 teacher
+            //3 sttudent
             service.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOnly", policy =>
                 {
-                    policy.RequireClaim("Role", "Admin".ToLower());
+                    policy.RequireClaim("RoleId", "1".ToLower());
                 });
 
                 options.AddPolicy("TeacherOnly", policy =>
                 {
-                    policy.RequireClaim("Role", "Teacher".ToLower());
+                    policy.RequireClaim("RoleId", "2".ToLower());
                 });
 
                 options.AddPolicy("StudentOnly", policy =>
                 {
-                    policy.RequireClaim("Role", "Student".ToLower());
+                    policy.RequireClaim("RoleId", "3".ToLower());
                 });
 
                 options.AddPolicy("AdminOrTeacher", policy =>
                 policy.RequireAssertion(context =>
                 {
-                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    var roleClaim = context.User.FindFirst(c => c.Type == "RoleId")?.Value;
                     //return roleClaim != "User";
-                    return roleClaim == "Admin".ToLower() || roleClaim == "Teacher".ToLower();
+                    return roleClaim == "1".ToLower() || roleClaim == "2".ToLower();
                 }));
 
                 options.AddPolicy("AdminOrStudent", policy =>
                 policy.RequireAssertion(context =>
                 {
-                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    var roleClaim = context.User.FindFirst(c => c.Type == "RoleId")?.Value;
                     //return roleClaim != "User";
-                    return roleClaim == "Admin".ToLower() || roleClaim == "Student".ToLower();
+                    return roleClaim == "1".ToLower() || roleClaim == "3".ToLower();
                 }));
 
                 options.AddPolicy("TeacherOrStudent", policy =>
                 policy.RequireAssertion(context =>
                 {
-                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    var roleClaim = context.User.FindFirst(c => c.Type == "RoleId")?.Value;
                     //return roleClaim != "User";
-                    return roleClaim == "Teacher".ToLower() || roleClaim == "Student".ToLower();
+                    return roleClaim == "2".ToLower() || roleClaim == "3".ToLower();
                 }));
 
                 options.AddPolicy("AllRole", policy =>
                 policy.RequireAssertion(context =>
                 {
-                    var roleClaim = context.User.FindFirst(c => c.Type == "Role")?.Value;
+                    var roleClaim = context.User.FindFirst(c => c.Type == "RoleId")?.Value;
                     //return roleClaim != "Admin";
-                    return roleClaim == "Admin" || roleClaim == "Teacher" || roleClaim == "Student";
+                    return roleClaim == "1".ToLower() || roleClaim == "2".ToLower() || roleClaim == "3".ToLower();
                 }));
             });
         }

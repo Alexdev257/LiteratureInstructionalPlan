@@ -18,13 +18,16 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly ISessionExtensions _sessionExtensions;
         private readonly IEmailHelper _emailHelper;
         private readonly IOtpHelper _otpHelper;
+        private readonly IRedisHelper _redisHelper;
 
-        public ChangeEmailCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions, IEmailHelper emailHelper, IOtpHelper otpHelper)
+        public ChangeEmailCommandHandler(IUserRepository userRepository, ISessionExtensions sessionExtensions, IEmailHelper emailHelper, IOtpHelper otpHelper, IRedisHelper redisHelper)
         {
             _userRepository = userRepository;
             _sessionExtensions = sessionExtensions;
             _emailHelper = emailHelper;
             _otpHelper = otpHelper;
+            _redisHelper = redisHelper;
+
         }
         public async Task<ChangeEmailResponse> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
         {
@@ -70,8 +73,10 @@ namespace LIP.Application.CQRS.Handler.Auth
             var rs = await _emailHelper.SendEmailAsync(request.NewEmail, "Change Email Confirmation", body, dictionary);
             if (rs)
             {
-                _sessionExtensions.Set<string>($"OTP_{otp}", otp);
-                _sessionExtensions.Set<LIP.Domain.Entities.User>($"UdU_{otp}", updatedUser);
+                //_sessionExtensions.Set<string>($"OTP_{otp}", otp);
+                //_sessionExtensions.Set<LIP.Domain.Entities.User>($"UdU_{otp}", updatedUser);
+                await _redisHelper.SetAsync<string>($"OTP_{otp}", otp);
+                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"UdU_{otp}", updatedUser);
                 return new ChangeEmailResponse
                 {
                     IsSuccess = true,

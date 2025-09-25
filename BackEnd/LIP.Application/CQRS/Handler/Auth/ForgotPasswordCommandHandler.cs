@@ -19,13 +19,16 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly IOtpHelper _otpHelper;
         private readonly IUserRepository _userRepository;
         private readonly IBcryptHelper _bcryptHelper;
-        public ForgotPasswordCommandHandler(ISessionExtensions sessionExtensions, IEmailHelper emailHelper, IOtpHelper otpHelper, IUserRepository userRepository, IBcryptHelper bcryptHelper)
+        private readonly IRedisHelper _redisHelper;
+        public ForgotPasswordCommandHandler(ISessionExtensions sessionExtensions, IEmailHelper emailHelper, IOtpHelper otpHelper, IUserRepository userRepository, IBcryptHelper bcryptHelper, IRedisHelper redisHelper)
         {
             _sessionExtensions = sessionExtensions;
             _emailHelper = emailHelper;
             _otpHelper = otpHelper;
             _userRepository = userRepository;
             _bcryptHelper = bcryptHelper;
+            _redisHelper = redisHelper;
+
         }
         public async Task<ForgotPasswordResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
         {
@@ -62,8 +65,10 @@ namespace LIP.Application.CQRS.Handler.Auth
             var rs = await _emailHelper.SendEmailAsync(request.Email, "Forgot password LIP Company", body, dictionary);
             if (rs)
             {
-                _sessionExtensions.Set<string>($"FP_{otp}", otp);
-                _sessionExtensions.Set<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser);
+                //_sessionExtensions.Set<string>($"FP_{otp}", otp);
+                //_sessionExtensions.Set<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser);
+                await _redisHelper.SetAsync<string>($"FP_{otp}", otp);
+                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser);
                 return new ForgotPasswordResponse
                 {
                     IsSuccess = true,
