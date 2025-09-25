@@ -2,7 +2,7 @@
 "use client";
 import { tokenSession, userSession } from "@/lib/session";
 import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 
 
 
@@ -10,7 +10,6 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 interface AuthContextType {
     setTokenAndUser: (token: string) => void;
     logout: () => void;
-    loading: boolean;
 }
 
 interface AuthProviderProps {
@@ -21,14 +20,11 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children, initialToken }: AuthProviderProps) => {
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        setLoading(true);
         if (initialToken) {
             setTokenAndUser(initialToken);
         }
-        setLoading(false);
-    }, [])
+    }, [initialToken]);
 
     const setTokenAndUser = (token: string) => {
         tokenSession.value = token;
@@ -44,7 +40,7 @@ export const AuthProvider = ({ children, initialToken }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ logout, setTokenAndUser, loading }}>
+        <AuthContext.Provider value={{ logout, setTokenAndUser }}>
             {children}
         </AuthContext.Provider>
     );
