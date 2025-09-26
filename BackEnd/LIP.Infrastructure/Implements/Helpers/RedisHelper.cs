@@ -35,6 +35,9 @@ namespace LIP.Infrastructure.Implements.Helpers
             await _database.KeyDeleteAsync(key);
         }
 
-        
+        public async Task<bool> ExistAsync(string key)
+        {
+            return await _database.KeyExistsAsync(key);
+        }
     }
 }

@@ -21,13 +21,15 @@ namespace LIP.Application.CQRS.Handler.Auth
         private readonly IUserRepository _userRepository;
         private readonly IBcryptHelper _bcryptHelper;
         private readonly IEmailHelper _emailHelper;
-        public LoginGoogleCommandHandler(IGoogleOAuthHelper googleOAuthHelper, IJwtHelper jwtHelper, IUserRepository userRepository, IBcryptHelper bcryptHelper, IEmailHelper emailHelper)
+        private readonly IRedisHelper _redisHelper;
+        public LoginGoogleCommandHandler(IGoogleOAuthHelper googleOAuthHelper, IJwtHelper jwtHelper, IUserRepository userRepository, IBcryptHelper bcryptHelper, IEmailHelper emailHelper, IRedisHelper redisHelper)
         {
             _googleOAuthHelper = googleOAuthHelper;
             _jwtHelper = jwtHelper;
             _userRepository = userRepository;
             _bcryptHelper = bcryptHelper;
             _emailHelper = emailHelper;
+            _redisHelper = redisHelper;
         }
 
         public async Task<LoginGoogleResponse> Handle(LoginGoogleCommand request, CancellationToken cancellationToken)
@@ -68,33 +70,43 @@ namespace LIP.Application.CQRS.Handler.Auth
                     RoleId = user.RoleId,
                     Password = user.Password,
                 });
+
+                var userListEmail = await _userRepository.GetAllAsync(new Query.User.UserGetAllQuery { Email= validatedResult.Email });
+                var userEmail = userList.ToList().FirstOrDefault();
+
                 var dictionnary = new Dictionary<string, string>
                     {
                         {"PASSWORD", "123" },
                     };
                 var body = $"Your account has been created successfully. Your username is {user.UserName} and your password is PASSWORD. Please change your password after logging in.";
                 var rsEmail = await _emailHelper.SendEmailAsync(user.Email, "Welcome to LIP Company", body, dictionnary);
+                var AccessToken = _jwtHelper.GenerateAccessToken(user);
+                var RefreshToken = _jwtHelper.GenerateRefreshToken();
+                await _redisHelper.SetAsync<string>($"RT_{userEmail?.UserId}", RefreshToken);
                 return new LoginGoogleResponse
                 {
                     IsSuccess = true,
                     Message = "Login with Google successfully! Please check your email to get your password.",
                     Data = new LoginGoogleResponseDTO
                     {
-                        AccessToken = _jwtHelper.GenerateAccessToken(user),
-                        RefreshToken = _jwtHelper.GenerateRefreshToken(),
+                        AccessToken = AccessToken,
+                        RefreshToken = RefreshToken,
                     }
                 };
             }
             else
             {
+                var AccessToken = _jwtHelper.GenerateAccessToken(user);
+                var RefreshToken = _jwtHelper.GenerateRefreshToken();
+                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", RefreshToken);
                 return new LoginGoogleResponse
                 {
                     IsSuccess = true,
                     Message = "Login with Google successfully!",
                     Data = new LoginGoogleResponseDTO
                     {
-                        AccessToken = _jwtHelper.GenerateAccessToken(user),
-                        RefreshToken = _jwtHelper.GenerateRefreshToken(),
+                        AccessToken = AccessToken,
+                        RefreshToken = RefreshToken,
                     }
                 };
             }
