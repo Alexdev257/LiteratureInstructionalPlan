@@ -1,5 +1,5 @@
 
-import type { ResponseData, ResponseLogin } from "@/utils/type";
+import type { BodyRefreshToken, ResponseData, ResponseLogin } from "@/utils/type";
 import { tokenSession, userSession } from "../session";
 import { normalizePath } from "../utils";
 import envconfig from "../config";
@@ -52,7 +52,7 @@ export class BaseApi {
     body?: Record<string, any>
   ): Promise<ResponseData<T>> {
     // check refresh token
-    // await this.refreshToken(url);
+    await this.refreshToken(url);
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(),
@@ -89,8 +89,14 @@ export class BaseApi {
       router.navigate({ to: '/auth/login' });
       return;
     }
+    
     try {
-      const res = await this.postData<ResponseLogin>(url, { refreshToken });
+      const data:BodyRefreshToken={
+        id: Number(userSession.value?.UserId) || 0,
+        accessToken: token,
+        refreshToken: refreshToken
+      }
+      const res = await this.postData<ResponseLogin>(url, data);
       if (res.isSuccess) {
         setCookies(res);
       }

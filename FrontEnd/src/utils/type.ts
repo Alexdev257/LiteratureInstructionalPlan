@@ -42,3 +42,9 @@ export type User = {
     aud: string;
 
 }
+
+export type BodyRefreshToken = {
+    id:number;
+    accessToken: string;
+    refreshToken: string;
+}
