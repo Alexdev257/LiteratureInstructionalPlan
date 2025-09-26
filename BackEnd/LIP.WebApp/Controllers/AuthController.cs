@@ -137,5 +137,16 @@ namespace LIP.WebApp.Controllers
             if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
+        {
+            var result = await _mediator.Send(new LogoutCommand
+            {
+                UserId = request.UserId
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
     }
 }

@@ -76,33 +76,19 @@ namespace LIP.Infrastructure.AddDependencyInjection
 
         public static void AddRedisConfiguration(this IServiceCollection service, IConfiguration configuration)
         {
+
             //var redisConnection = configuration.GetConnectionString("Redis");
-            //service.AddSingleton<IConnectionMultiplexer>( sp =>
-            //    ConnectionMultiplexer.Connect(redisConnection));
-
-            var redisConnection = configuration.GetConnectionString("Redis");
-            var options = ConfigurationOptions.Parse(redisConnection);
-            options.Ssl = false;
-            options.AbortOnConnectFail = false;
-            options.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
-
-            service.AddSingleton<IConnectionMultiplexer>(sp =>
-                ConnectionMultiplexer.Connect(options));
+            //var options = ConfigurationOptions.Parse(redisConnection);
+            //options.Ssl = false;
+            //options.AbortOnConnectFail = false;
+            //options.SslProtocols = System.Security.Authentication.SslProtocols.Tls12;
 
             //service.AddSingleton<IConnectionMultiplexer>(sp =>
-            //{
-            //    var config = new ConfigurationOptions()
-            //    {
-            //        EndPoints = { "redis-11906.c334.asia-southeast2-1.gce.redns.redis-cloud.com:11906" },
-            //        User = "default",
-            //        Password = "SGSWaKdUaKuBEITMiHAsA03ebzE3bmQa",
-            //        Ssl = true,
-            //        AbortOnConnectFail = false,
-            //        SslProtocols = SslProtocols.Tls12
-            //    };
+            //    ConnectionMultiplexer.Connect(options));
 
-            //    return ConnectionMultiplexer.Connect(config);
-            //});
+            var redisConnection = configuration.GetConnectionString("UptashRedis");
+            service.AddSingleton<IConnectionMultiplexer>(sp =>
+                    ConnectionMultiplexer.Connect(redisConnection));
         }
 
         public static void AddCorsExtentions(this IServiceCollection service)
