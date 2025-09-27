@@ -1,333 +1,414 @@
-import { 
-  BookOpen, 
-  Users, 
-  Calendar, 
-  FileText, 
-  Award, 
-  TrendingUp, 
-  Clock,
-  Plus,
-  Search,
-  Filter,
-  MoreVertical
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
-interface HomePageProps {
-  user: {
-    name: string;
-    role: string;
-  };
-}
+import { BookOpen, Users, Trophy, ArrowRight, Star, Clock} from 'lucide-react';
+import { features, mockExams, mockLeaderboard } from '@/utils/mockAPi';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
-export const HomePage = ({ user }: HomePageProps) => {
-  const stats = [
-    {
-      title: 'Active Lesson Plans',
-      value: '12',
-      icon: BookOpen,
-      change: '+2 this week',
-      color: 'text-blue-600',
-      bg: 'bg-blue-100',
-    },
-    {
-      title: 'Students Enrolled',
-      value: '156',
-      icon: Users,
-      change: '+8 new students',
-      color: 'text-green-600',
-      bg: 'bg-green-100',
-    },
-    {
-      title: 'Upcoming Classes',
-      value: '8',
-      icon: Calendar,
-      change: 'Next: 2:00 PM',
-      color: 'text-orange-600',
-      bg: 'bg-orange-100',
-    },
-    {
-      title: 'Assignments Due',
-      value: '23',
-      icon: FileText,
-      change: '5 due today',
-      color: 'text-purple-600',
-      bg: 'bg-purple-100',
-    },
-  ];
 
-  const recentPlans = [
-    {
-      id: 1,
-      title: 'Shakespearean Sonnets Analysis',
-      subject: 'Poetry',
-      grade: 'Grade 11',
-      progress: 75,
-      dueDate: '2024-01-15',
-      status: 'active',
-    },
-    {
-      id: 2,
-      title: 'Modern American Literature',
-      subject: 'Literature',
-      grade: 'Grade 12',
-      progress: 45,
-      dueDate: '2024-01-20',
-      status: 'draft',
-    },
-    {
-      id: 3,
-      title: 'Creative Writing Workshop',
-      subject: 'Writing',
-      grade: 'Grade 10',
-      progress: 100,
-      dueDate: '2024-01-10',
-      status: 'completed',
-    },
-  ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+
+
+export const HomePage = () => {
+  const featuredExams = mockExams.slice(0, 3);
+  const topPerformers = mockLeaderboard.slice(0, 5);
+
+  
+
+  // Helper function
+
 
   return (
-    <div className="min-h-screen bg-gray-50 rounded-2xl">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">
-                Welcome back, {user.name}!
-              </h1>
-              <p className="text-blue-100 text-lg">
-                Ready to create inspiring literature lessons today?
-              </p>
-            </div>
-            <div className="mt-4 md:mt-0">
-              <Button size="lg" variant="secondary" className="bg-white text-blue-700 hover:bg-blue-50">
-                <Plus className="w-5 h-5 mr-2" />
-                Create New Plan
-              </Button>
-            </div>
+    <>
+      {/* Hero Section */}
+      <section className="relative py-28 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/10 ">
+        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25" />
+        <div className="container relative mx-auto text-center max-w-5xl">
+          <Badge variant="secondary" className="mb-8 text-sm font-medium px-4 py-2 bg-secondary/10 text-secondary border-secondary/20">
+            🎓 Nền tảng luyện thi hàng đầu Việt Nam
+          </Badge>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-balance mb-8 leading-[1.1]">
+            Chinh phục kỳ thi
+            <span className="text-primary block mt-2 drop-shadow-sm">Văn học Việt Nam</span>
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground text-pretty mb-12 max-w-3xl mx-auto leading-relaxed">
+            Hệ thống đề thi đa dạng, giải thích chi tiết và lộ trình học tập cá nhân hóa giúp bạn đạt điểm cao trong kỳ
+            thi đại học.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" className="text-base px-8 py-4 h-auto shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90">
+              Bắt đầu luyện thi
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button variant="outline" size="lg" className="text-base px-8 py-4 h-auto border-2 border-primary/20 hover:bg-primary/5 hover:border-primary/30">
+              Xem đề thi mẫu
+            </Button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bg}`}>
-                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+      {/* Stats Section */}
+      <section className="py-20 px-4 ">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-background/90 backdrop-blur-sm hover:border-primary/20 group">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-4xl font-bold text-primary mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <BookOpen className="w-8 h-8 mr-2 text-secondary" />
+                  500+
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {stat.value}
-                </div>
-                <p className="text-sm text-gray-600">{stat.change}</p>
+                <div className="text-muted-foreground font-medium">Đề thi</div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Lesson Plans */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Recent Lesson Plans</CardTitle>
-                    <CardDescription>
-                      Your latest instructional materials and progress
-                    </CardDescription>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="sm">
-                      <Search className="w-4 h-4 mr-2" />
-                      Search
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Filter className="w-4 h-4 mr-2" />
-                      Filter
-                    </Button>
-                  </div>
+            <Card className="text-center border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-background/90 backdrop-blur-sm hover:border-primary/20 group">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-4xl font-bold text-primary mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Users className="w-8 h-8 mr-2 text-secondary" />
+                  50K+
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentPlans.map((plan) => (
+                <div className="text-muted-foreground font-medium">Học sinh</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-background/90 backdrop-blur-sm hover:border-primary/20 group">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-4xl font-bold text-primary mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Trophy className="w-8 h-8 mr-2 text-accent" />
+                  95%
+                </div>
+                <div className="text-muted-foreground font-medium">Tỷ lệ đỗ</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center border border-primary/10 shadow-md hover:shadow-lg transition-all duration-300 bg-background/90 backdrop-blur-sm hover:border-primary/20 group">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-4xl font-bold text-primary mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Star className="w-8 h-8 mr-2 text-accent" />
+                  4.9/5
+                </div>
+                <div className="text-muted-foreground font-medium">Đánh giá</div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 px-4 ">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 border-secondary/30 text-secondary">
+              ✨ Tại sao chọn chúng tôi?
+            </Badge>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
+              Nền tảng học tập
+              <span className="text-primary block drop-shadow-sm">hiện đại nhất</span>
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Chúng tôi cung cấp môi trường luyện thi trực tuyến hiện đại và hiệu quả nhất
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="text-center group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 bg-gradient-to-br from-background to-primary/5">
+                  <CardContent className="pt-8 pb-6">
+                    <div className="bg-secondary/10 p-4 rounded-2xl inline-flex mb-6 group-hover:bg-secondary/20 transition-all duration-300 group-hover:scale-110">
+                      <Icon className="h-8 w-8 text-secondary" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-4 text-foreground">{feature.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Exams Section */}
+      <section className="py-24 px-4 ">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 border-accent/30 text-accent bg-accent/5">
+              🔥 Đề thi hot
+            </Badge>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">
+              Đề thi nổi bật
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Những đề thi được lựa chọn và làm nhiều nhất
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {featuredExams.map((exam) => (
+              <Card key={exam.id} className="group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 overflow-hidden bg-gradient-to-br from-background to-secondary/5">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20 border-secondary/20">
+                      Lớp {exam.grade}
+                    </Badge>
+                    <div className="flex items-center text-sm text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
+                      <Users className="h-4 w-4 mr-1" />
+                      {exam.attempts}
+                    </div>
+                  </div>
+                  <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors line-clamp-1">
+                    {exam.title}
+                  </CardTitle>
+                  <CardDescription className="text-sm leading-relaxed line-clamp-1">
+                    {exam.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-6 p-3 bg-muted/30 rounded-lg">
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-2 text-primary" />
+                      <span className="font-medium">{exam.duration} phút</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 mr-2 text-yellow-500 fill-current" />
+                      <span className="font-medium">{exam.averageScore}/10</span>
+                    </div>
+                  </div>
+                  <Button className="w-full group-hover:shadow-lg transition-all duration-300 bg-primary hover:bg-primary/90">
+                    Làm bài thi
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button size="lg" variant="outline" className="px-8 py-4 h-auto text-base border-2 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
+              Xem tất cả đề thi
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Performers Card Section */}
+      <section className="py-20 px-4 ">
+        <div className="container mx-auto max-w-7xl ">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4 border-accent/30 text-accent bg-accent/10">
+              🏆 Top Performers
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
+              Học sinh xuất sắc
+              <span className="text-primary block drop-shadow-sm">nhất tháng</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Những học sinh có thành tích cao nhất được vinh danh
+            </p>
+          </div>
+
+          {/* Top performers grid */}
+          <div className="flex justify-center items-end gap-8 flex-wrap max-w-6xl mx-auto mb-12">
+            {topPerformers.map((performer, index) => {
+              const isFirst = index === 0;
+              const isSecond = index === 1;
+              const isThird = index === 2;
+              const isForth = index === 3;
+              const isFith = index === 4;
+
+              let rankStyle = "";
+              let badgeStyle = "";
+              let cardStyle =
+                "border hover:border-primary/30 transition-all duration-500 group relative overflow-hidden hover:-translate-y-2 hover:scale-105";
+
+              // Height + màu sắc theo rank - width tăng lên cho phù hợp
+              if (isFirst) {
+                rankStyle =
+                  "bg-gradient-to-br from-yellow-400 to-yellow-600 text-yellow-900";
+                badgeStyle = "bg-yellow-100 text-yellow-800 border-yellow-300";
+                cardStyle +=
+                  " w-56 h-80 border-2 border-yellow-200 shadow-xl shadow-yellow-100/50 bg-gradient-to-br from-yellow-50/50 to-background";
+              } else if (isSecond) {
+                rankStyle =
+                  "bg-gradient-to-br from-gray-400 to-gray-600 text-gray-900";
+                badgeStyle = "bg-gray-100 text-gray-800 border-gray-300";
+                cardStyle +=
+                  " w-52 h-[19rem] border-2 border-gray-200 shadow-lg shadow-gray-100/50 bg-gradient-to-br from-gray-50/30 to-background";
+              } else if (isThird) {
+                rankStyle =
+                  "bg-gradient-to-br from-amber-400 to-amber-600 text-amber-900";
+                badgeStyle = "bg-amber-100 text-amber-800 border-amber-300";
+                cardStyle +=
+                  " w-48 h-[18rem] border-2 border-amber-200 shadow-lg shadow-amber-100/50 bg-gradient-to-br from-amber-50/30 to-background";
+              } else if (isForth) {
+                rankStyle =
+                  "bg-gradient-to-br from-green-400 to-green-600 text-green-900";
+                badgeStyle = "bg-green-100 text-green-800 border-green-300";
+                cardStyle +=
+                  " w-44 h-[17rem] border-2 border-green-200 shadow-lg shadow-green-100/50 bg-gradient-to-br from-green-50/30 to-background";
+              } else if (isFith) {
+                rankStyle =
+                  "bg-gradient-to-br from-blue-400 to-blue-600 text-blue-900";
+                badgeStyle = "bg-blue-100 text-blue-800 border-blue-300";
+                cardStyle +=
+                  " w-44 h-[16rem] border-2 border-blue-200 shadow-lg shadow-blue-100/50 bg-gradient-to-br from-blue-50/30 to-background";
+              }
+
+
+              return (
+                <Card
+                  key={performer.userId}
+                  className={cardStyle}
+                >
+                  {/* Rank Badge */}
+                  <div className="absolute top-4 right-4 z-10">
                     <div
-                      key={plan.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-lg ${rankStyle}`}
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold text-gray-900">
-                            {plan.title}
-                          </h3>
-                          <Badge className={getStatusColor(plan.status)}>
-                            {plan.status}
-                          </Badge>
+                      #{performer.rank}
+                    </div>
+                  </div>
+
+                  {/* Decorative gradient */}
+                  <div
+                    className={`absolute inset-0 opacity-5 ${isFirst
+                      ? "bg-gradient-to-br from-yellow-400 to-yellow-600"
+                      : isSecond
+                        ? "bg-gradient-to-br from-gray-400 to-gray-600"
+                        : "bg-gradient-to-br from-amber-400 to-amber-600"
+                      }`}
+                  />
+
+                  {/* Card content */}
+                  <CardContent className="relative h-full flex flex-col justify-between p-4 text-center">
+                    {/* Avatar */}
+                    <div className="flex justify-center mb-3">
+                      <div className="relative">
+                        <Avatar
+                          className={`${isFirst
+                            ? "w-20 h-20"
+                            : isSecond
+                              ? "w-18 h-18"
+                              : isThird
+                                ? "w-16 h-16"
+                                : "w-14 h-14"
+                            } shadow-xl border-2 ${isFirst
+                              ? "border-yellow-300"
+                              : isSecond
+                                ? "border-gray-300"
+                                : isThird
+                                  ? "border-amber-300"
+                                  : isForth
+                                    ? "border-green-300"
+                                    : "border-blue-300"
+                            } group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <AvatarFallback
+                            className={`${isFirst
+                              ? "text-lg"
+                              : isSecond
+                                ? "text-base"
+                                : isThird
+                                  ? "text-sm"
+                                  : "text-xs"
+                              } font-bold ${isFirst
+                                ? "bg-yellow-50 text-yellow-700"
+                                : isSecond
+                                  ? "bg-gray-50 text-gray-700"
+                                  : isThird
+                                    ? "bg-amber-50 text-amber-700"
+                                    : isForth
+                                      ? "bg-green-50 text-green-700"
+                                      : "bg-blue-50 text-blue-700"
+                              }`}
+                          >
+                            {performer.userName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        {/* Trophy icon for first place */}
+                        {isFirst && (
+                          <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                            <Trophy className="w-4 h-4 text-yellow-900" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Name */}
+                    <h3
+                      className={`${isFirst
+                        ? "text-lg"
+                        : isSecond
+                          ? "text-base"
+                          : isThird
+                            ? "text-sm"
+                            : "text-xs"
+                        } font-bold mb-3 text-foreground group-hover:text-primary transition-colors leading-tight truncate px-2`}
+                      title={performer.userName}
+                    >
+                      {performer.userName}
+                    </h3>
+
+                    {/* Score */}
+                    <div
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full border ${badgeStyle} mb-3`}
+                    >
+                      <Star
+                        className={`${isFirst
+                          ? "w-4 h-4"
+                          : isSecond
+                            ? "w-3 h-3"
+                            : "w-2 h-2"
+                          }`}
+                      />
+                      <span
+                        className={`${isFirst
+                          ? "text-base"
+                          : isSecond
+                            ? "text-sm"
+                            : "text-xs"
+                          } font-bold`}
+                      >
+                        {performer.averageScore.toFixed(1)}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="text-center p-2 bg-muted/30 rounded-lg">
+                        <div
+                          className={`${isFirst
+                            ? "text-base"
+                            : isSecond
+                              ? "text-sm"
+                              : "text-xs"
+                            } font-bold text-foreground`}
+                        >
+                          {performer.totalExams}
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                          <span>{plan.subject}</span>
-                          <span>•</span>
-                          <span>{plan.grade}</span>
-                          <span>•</span>
-                          <span>Due: {plan.dueDate}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Progress value={plan.progress} className="flex-1 max-w-32" />
-                          <span className="text-sm text-gray-600 min-w-0">
-                            {plan.progress}%
-                          </span>
+                        <div className={`${isFirst || isSecond ? "text-xs" : "text-xs"} text-muted-foreground`}>
+                          bài thi
                         </div>
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit Plan</DropdownMenuItem>
-                          <DropdownMenuItem>Share</DropdownMenuItem>
-                          <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  New Lesson Plan
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <FileText className="w-4 h-4 mr-2" />
-                  Create Assignment
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Users className="w-4 h-4 mr-2" />
-                  Manage Students
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Award className="w-4 h-4 mr-2" />
-                  Grade Submissions
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Performance Overview */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="w-5 h-5 mr-2" />
-                  This Week
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Lessons Completed</span>
-                  <span className="font-semibold">8/10</span>
-                </div>
-                <Progress value={80} />
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Student Engagement</span>
-                  <span className="font-semibold">92%</span>
-                </div>
-                <Progress value={92} />
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Assignments Graded</span>
-                  <span className="font-semibold">15/18</span>
-                </div>
-                <Progress value={83} />
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      <span className="font-medium">Sarah Johnson</span> submitted her essay
-                    </p>
-                    <p className="text-xs text-gray-500">2 hours ago</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      New comment on <span className="font-medium">Poetry Analysis</span>
-                    </p>
-                    <p className="text-xs text-gray-500">4 hours ago</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      <span className="font-medium">Grade 11 Literature</span> class scheduled
-                    </p>
-                    <p className="text-xs text-gray-500">1 day ago</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Call to action */}
+          <div className="text-center">
+            <Button size="lg" variant="outline" className="px-8 py-4 h-auto text-base border-2 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
+              Xem tất cả học sinh xuất sắc
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+    </>
   );
 };

@@ -43,71 +43,71 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: oklch(1 0 0); /* #FFFFFF - Trắng sáng */
+  --foreground: oklch(0.13 0 0); /* #1A1A1A - Text chính */
+  --card: oklch(1 0 0); /* #FFFFFF - Trắng sáng */
+  --card-foreground: oklch(0.13 0 0); /* #1A1A1A - Text chính */
+  --popover: oklch(1 0 0); /* #FFFFFF - Trắng sáng */
+  --popover-foreground: oklch(0.13 0 0); /* #1A1A1A - Text chính */
+  --primary: oklch(0.39 0.14 263); /* #3F51B5 - Xanh tím nhạt */
+  --primary-foreground: oklch(1 0 0); /* Trắng cho text trên primary */
+  --secondary: oklch(0.55 0.12 174); /* #009688 - Xanh ngọc */
+  --secondary-foreground: oklch(1 0 0); /* Trắng cho text trên secondary */
+  --muted: oklch(0.97 0 0); /* Xám nhạt */
+  --muted-foreground: oklch(0.42 0 0); /* #616161 - Text phụ */
+  --accent: oklch(0.82 0.15 85); /* #FFC107 - Vàng nhẹ */
+  --accent-foreground: oklch(0.13 0 0); /* #1A1A1A - Text trên accent */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: oklch(0.92 0 0); /* Border nhẹ */
+  --input: oklch(0.97 0 0); /* Input background */
+  --ring: oklch(0.39 0.14 263); /* Ring color giống primary */
+  --chart-1: oklch(0.39 0.14 263); /* Primary color */
+  --chart-2: oklch(0.55 0.12 174); /* Secondary color */
+  --chart-3: oklch(0.82 0.15 85); /* Accent color */
+  --chart-4: oklch(0.42 0 0); /* Muted foreground */
+  --chart-5: oklch(0.13 0 0); /* Foreground */
+  --sidebar: oklch(0.99 0 0); /* Sidebar background nhẹ */
+  --sidebar-foreground: oklch(0.13 0 0); /* #1A1A1A - Text chính */
+  --sidebar-primary: oklch(0.39 0.14 263); /* #3F51B5 - Primary */
+  --sidebar-primary-foreground: oklch(1 0 0); /* Trắng */
+  --sidebar-accent: oklch(0.82 0.15 85); /* #FFC107 - Accent */
+  --sidebar-accent-foreground: oklch(0.13 0 0); /* #1A1A1A */
+  --sidebar-border: oklch(0.92 0 0); /* Border nhẹ */
+  --sidebar-ring: oklch(0.39 0.14 263); /* Primary color */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.13 0 0); /* Tối hơn cho dark mode */
+  --foreground: oklch(0.95 0 0); /* Trắng nhạt cho text */
+  --card: oklch(0.18 0 0); /* Card tối */
+  --card-foreground: oklch(0.95 0 0); /* Text trắng trên card */
+  --popover: oklch(0.18 0 0); /* Popover tối */
+  --popover-foreground: oklch(0.95 0 0); /* Text trắng */
+  --primary: oklch(0.5 0.14 263); /* #3F51B5 sáng hơn cho dark mode */
+  --primary-foreground: oklch(1 0 0); /* Trắng */
+  --secondary: oklch(0.65 0.12 174); /* #009688 sáng hơn cho dark mode */
+  --secondary-foreground: oklch(1 0 0); /* Trắng */
+  --muted: oklch(0.25 0 0); /* Muted tối */
+  --muted-foreground: oklch(0.7 0 0); /* Text muted sáng */
+  --accent: oklch(0.85 0.15 85); /* #FFC107 giữ nguyên độ sáng */
+  --accent-foreground: oklch(0.13 0 0); /* Text tối trên accent */
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: oklch(1 0 0 / 15%); /* Border nhẹ */
+  --input: oklch(1 0 0 / 10%); /* Input background */
+  --ring: oklch(0.5 0.14 263); /* Ring color giống primary */
+  --chart-1: oklch(0.5 0.14 263); /* Primary sáng */
+  --chart-2: oklch(0.65 0.12 174); /* Secondary sáng */
+  --chart-3: oklch(0.85 0.15 85); /* Accent */
+  --chart-4: oklch(0.7 0 0); /* Muted foreground */
+  --chart-5: oklch(0.95 0 0); /* Foreground */
+  --sidebar: oklch(0.16 0 0); /* Sidebar tối */
+  --sidebar-foreground: oklch(0.95 0 0); /* Text sáng */
+  --sidebar-primary: oklch(0.5 0.14 263); /* Primary sáng */
+  --sidebar-primary-foreground: oklch(1 0 0); /* Trắng */
+  --sidebar-accent: oklch(0.85 0.15 85); /* Accent */
+  --sidebar-accent-foreground: oklch(0.13 0 0); /* Text tối */
+  --sidebar-border: oklch(1 0 0 / 15%); /* Border nhẹ */
+  --sidebar-ring: oklch(0.5 0.14 263); /* Primary */
 }
 
 @layer base {
@@ -116,5 +116,31 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 }

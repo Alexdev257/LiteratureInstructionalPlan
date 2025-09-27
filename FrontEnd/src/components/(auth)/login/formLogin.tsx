@@ -76,10 +76,10 @@ export function LoginForm() {
     })
   }
   return (
-    <Card className="w-full max-w-md mx-auto mt-16 shadow-xl rounded-2xl border-0 bg-white/90 backdrop-blur-md">
+    <Card className="w-full max-w-md mx-auto mt-16 shadow-xl rounded-2xl border border-primary/10 bg-background/95 backdrop-blur-md">
       <CardHeader className="space-y-2 text-center">
-        <CardTitle className="text-3xl font-extrabold">Đăng nhập</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-3xl font-extrabold text-primary">Đăng nhập</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Nhập email và mật khẩu để đăng nhập vào tài khoản của bạn
         </CardDescription>
       </CardHeader>
@@ -97,12 +97,12 @@ export function LoginForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                      <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                       <Input
                         {...field}
                         type="email"
                         placeholder="Nhập email của bạn"
-                        className="pl-12"
+                        className="pl-12 border-primary/20 focus:border-primary"
                         disabled={login.isPending}
                         autoComplete="email"
                       />
@@ -122,12 +122,12 @@ export function LoginForm() {
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                      <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                       <Input
                         {...field}
                         type={showPassword ? "text" : "password"}
                         placeholder="Nhập mật khẩu của bạn"
-                        className="pl-12 pr-12"
+                        className="pl-12 pr-12 border-primary/20 focus:border-primary"
                         disabled={login.isPending}
                         autoComplete="current-password"
                       />
@@ -140,7 +140,7 @@ export function LoginForm() {
                         disabled={login.isPending}
 
                       >
-                        {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
+                        {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
                       </Button>
                     </div>
                   </FormControl>
@@ -154,7 +154,7 @@ export function LoginForm() {
               <Button
                 type="button"
                 variant="link"
-                className="px-0 text-sm font-medium"
+                className="px-0 text-sm font-medium text-secondary hover:text-secondary/80"
                 disabled={login.isPending}
                 onClick={() => router.navigate({ to: "/auth/forgot-password" })}
               >
@@ -165,7 +165,7 @@ export function LoginForm() {
             {/* Submit */}
             <Button
               type="submit"
-              className="w-full py-3 text-lg font-semibold"
+              className="w-full py-3 text-lg font-semibold bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
               disabled={login.isPending}
             >
               {login.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
@@ -173,9 +173,9 @@ export function LoginForm() {
 
             {/* Divider */}
             <div className="flex items-center my-4">
-              <span className="flex-1 h-px bg-gray-300" />
-              <span className="mx-3 text-gray-400 text-sm">hoặc</span>
-              <span className="flex-1 h-px bg-gray-300" />
+              <span className="flex-1 h-px bg-border" />
+              <span className="mx-3 text-muted-foreground text-sm">hoặc</span>
+              <span className="flex-1 h-px bg-border" />
             </div>
 
             {/* Google Login */}
@@ -187,12 +187,12 @@ export function LoginForm() {
             </div>
 
             {/* Register link */}
-            <div className="text-center mt-4 text-sm text-gray-600">
+            <div className="text-center mt-4 text-sm text-muted-foreground">
               Chưa có tài khoản?{" "}
               <Button
                 type="button"
                 variant="link"
-                className="px-0 font-medium"
+                className="px-0 font-medium text-primary hover:text-primary/80"
                 disabled={login.isPending}
                 onClick={() => router.navigate({ to: "/auth/register" })}
               >
