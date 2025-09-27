@@ -8,10 +8,7 @@ const HeroSection = () => {
 
             <div className="container relative mx-auto text-center max-w-5xl">
                 {/* Badge */}
-                <Badge
-                    variant="outline"
-                    className="mb-8 text-sm font-medium px-4 py-2 border-primary/30 text-primary bg-primary/10"
-                >
+                  <Badge variant="secondary" className="mb-8 text-sm font-medium px-4 py-2 bg-secondary/10 text-secondary border-secondary/20">
                     📚 Ngân hàng đề thi
                 </Badge>
 
