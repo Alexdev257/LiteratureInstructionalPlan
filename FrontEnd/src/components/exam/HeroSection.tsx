@@ -1,7 +1,5 @@
 
 import { Badge } from "../ui/badge";
-
-
 const HeroSection = () => {
     return (
         <section className="relative py-28 px-4 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/10">

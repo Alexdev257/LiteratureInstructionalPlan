@@ -1,9 +1,5 @@
 import { BookOpen, Users, Trophy, Star } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
-
-
-
-
 const StatsSection = () => {
     return (
         <section className="py-20 px-4 ">

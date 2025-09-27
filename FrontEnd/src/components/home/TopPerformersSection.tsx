@@ -1,3 +1,4 @@
+"use client";
 import { ArrowRight,  Star, Trophy } from "lucide-react";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";

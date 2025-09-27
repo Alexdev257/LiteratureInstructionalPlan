@@ -1,3 +1,4 @@
+"use client";
 import type { ExamData } from "@/utils/type";
 import { ArrowRight, BookOpen, Clock, FileText, GraduationCap, Star, Target, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -60,7 +61,7 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
                                         </Badge>
                                     </div>
 
-                                    <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                                    <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors line-clamp-1">
                                         {exam.title}
                                     </CardTitle>
 

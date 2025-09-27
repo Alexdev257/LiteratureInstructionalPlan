@@ -1,4 +1,4 @@
-
+"use client";
 import type { Features } from "@/utils/type";
 import { Badge } from "../ui/badge";
 import { Card, CardContent } from "../ui/card";

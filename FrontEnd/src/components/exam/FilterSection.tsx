@@ -1,24 +1,51 @@
-import { mockGradeLevels, mockExamTypes, filterExams } from "@/utils/mockAPi";
+
+"use client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Filter, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import type { ExamFilters } from "@/utils/type";
+import type { ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
 import { useMemo, useState } from "react";
+
 import RenderResults from "./RenderResults";
 
 
-const FilterSection = () => {
+type Props ={
+    examData: ExamData[];
+    mockGradeLevels: GradeLevel[];
+    mockExamTypes: ExamType[];
+}
+const FilterSection = ({ examData, mockGradeLevels, mockExamTypes }: Props) => {
     const [filters, setFilters] = useState<ExamFilters>({});
     const [searchTerm, setSearchTerm] = useState("");
 
     // Filtered exams based on current filters
     const filteredExams = useMemo(() => {
-        return filterExams({
-            ...filters,
-            search: searchTerm
-        });
-    }, [filters, searchTerm]);
+        // Start with all exams, then apply filters
+        let result = examData;
+        
+        if (filters.gradeLevel) {
+            result = result.filter(exam => exam.gradeLevelId === filters.gradeLevel);
+        }
+        
+        if (filters.difficulty) {
+            result = result.filter(exam => exam.difficulty === filters.difficulty);
+        }
+        
+        if (filters.examType) {
+            result = result.filter(exam => exam.examTypeId === filters.examType);
+        }
+        
+        if (searchTerm) {
+            const searchLower = searchTerm.toLowerCase();
+            result = result.filter(exam => 
+                exam.title.toLowerCase().includes(searchLower) ||
+                exam.description.toLowerCase().includes(searchLower)
+            );
+        }
+        
+        return result;
+    }, [examData, filters, searchTerm]);
 
     const handleFilterChange = (key: keyof ExamFilters, value: any) => {
         setFilters(prev => ({
