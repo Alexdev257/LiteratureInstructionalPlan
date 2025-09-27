@@ -1,5 +1,5 @@
 import { BookOpen, Clock, CheckCircle, Trophy } from "lucide-react";
-import type { Exam, ExamResult, LeaderboardEntry, Question } from "./type";
+import type { Exam, ExamResult, Features, LeaderboardEntry, Question, ExamData, GradeLevel, BookSeries, ExamType, ExamFilters } from "./type";
 
 
 export const mockUsers= [
@@ -133,7 +133,7 @@ export const mockLeaderboard: LeaderboardEntry[] = [
   { userId: '5', userName: 'Hoàng Văn E', totalScore: 98, totalExams: 13, averageScore: 7.5, rank: 5 }
 ];
 
-export const features = [
+export const mockfeatures: Features[] = [
     {
       icon: BookOpen,
       title: 'Ngân hàng đề thi phong phú',
@@ -155,3 +155,176 @@ export const features = [
       description: 'Theo dõi tiến độ và cạnh tranh với bạn bè trên bảng xếp hạng'
     }
   ];
+
+// Mock data for new exam system
+export const mockGradeLevels: GradeLevel[] = [
+  { gradeLevelId: 1, gradeName: 'Lớp 10', description: 'Chương trình lớp 10' },
+  { gradeLevelId: 2, gradeName: 'Lớp 11', description: 'Chương trình lớp 11' },
+  { gradeLevelId: 3, gradeName: 'Lớp 12', description: 'Chương trình lớp 12' }
+];
+
+export const mockBookSeries: BookSeries[] = [
+  { seriesId: 1, seriesName: 'Sách giáo khoa', description: 'Chương trình sách giáo khoa chuẩn' },
+  { seriesId: 2, seriesName: 'Sách bài tập', description: 'Bộ sách bài tập nâng cao' },
+  { seriesId: 3, seriesName: 'Sách tham khảo', description: 'Sách tham khảo và ôn thi' }
+];
+
+export const mockExamTypes: ExamType[] = [
+  { examTypeId: 1, typeName: 'Trắc nghiệm', description: 'Đề thi trắc nghiệm' },
+  { examTypeId: 2, typeName: 'Tự luận', description: 'Đề thi tự luận' },
+  { examTypeId: 3, typeName: 'Đọc hiểu', description: 'Đề thi đọc hiểu văn bản' },
+  { examTypeId: 4, typeName: 'Nghị luận xã hội', description: 'Đề thi nghị luận xã hội' },
+  { examTypeId: 5, typeName: 'Nghị luận văn học', description: 'Đề thi nghị luận về tác phẩm văn học' }
+];
+
+export const mockExamData: ExamData[] = [
+  {
+    examId: 1,
+    title: 'Đề thi thử THPT Quốc gia môn Ngữ văn 2024',
+    description: 'Đề thi thử toàn diện với các dạng bài nghị luận xã hội và văn học, bao gồm đọc hiểu và làm văn.',
+    durationMinutes: 120,
+    gradeLevelId: 3,
+    seriesId: 3,
+    examTypeId: 2,
+    createdBy: 1,
+    createdAt: '2024-01-10T08:00:00Z',
+    attempts: 245,
+    averageScore: 7.8,
+    difficulty: 'hard',
+    totalQuestions: 3
+  },
+  {
+    examId: 2,
+    title: 'Luyện tập Đọc hiểu văn bản nghị luận',
+    description: 'Bộ đề luyện tập kỹ năng đọc hiểu và phân tích văn bản nghị luận, giúp học sinh nắm vững cấu trúc và nội dung.',
+    durationMinutes: 90,
+    gradeLevelId: 2,
+    seriesId: 2,
+    examTypeId: 3,
+    createdBy: 1,
+    createdAt: '2024-01-15T09:00:00Z',
+    attempts: 189,
+    averageScore: 8.2,
+    difficulty: 'medium',
+    totalQuestions: 5
+  },
+  {
+    examId: 3,
+    title: 'Nghị luận văn học - Tác phẩm Số đỏ',
+    description: 'Đề thi chuyên sâu về tác phẩm Số đỏ của Vũ Trọng Phụng, phân tích nhân vật và nghệ thuật viết.',
+    durationMinutes: 150,
+    gradeLevelId: 3,
+    seriesId: 1,
+    examTypeId: 5,
+    createdBy: 2,
+    createdAt: '2024-01-20T10:00:00Z',
+    attempts: 156,
+    averageScore: 7.5,
+    difficulty: 'hard',
+    totalQuestions: 2
+  },
+  {
+    examId: 4,
+    title: 'Trắc nghiệm Ngữ pháp tiếng Việt',
+    description: 'Bộ câu hỏi trắc nghiệm về ngữ pháp, từ vựng và cách dùng từ trong tiếng Việt.',
+    durationMinutes: 60,
+    gradeLevelId: 1,
+    seriesId: 1,
+    examTypeId: 1,
+    createdBy: 3,
+    createdAt: '2024-01-25T14:00:00Z',
+    attempts: 312,
+    averageScore: 8.5,
+    difficulty: 'easy',
+    totalQuestions: 40
+  },
+  {
+    examId: 5,
+    title: 'Nghị luận xã hội - Vấn đề giáo dục',
+    description: 'Đề thi nghị luận về các vấn đề giáo dục trong xã hội hiện đại, yêu cầu tư duy phản biện.',
+    durationMinutes: 120,
+    gradeLevelId: 3,
+    seriesId: 2,
+    examTypeId: 4,
+    createdBy: 1,
+    createdAt: '2024-02-01T08:30:00Z',
+    attempts: 198,
+    averageScore: 7.9,
+    difficulty: 'medium',
+    totalQuestions: 1
+  },
+  {
+    examId: 6,
+    title: 'Đọc hiểu văn bản thuyết minh',
+    description: 'Luyện tập đọc hiểu các văn bản thuyết minh khoa học, xã hội với nhiều dạng câu hỏi đa dạng.',
+    durationMinutes: 75,
+    gradeLevelId: 2,
+    seriesId: 2,
+    examTypeId: 3,
+    createdBy: 2,
+    createdAt: '2024-02-05T11:00:00Z',
+    attempts: 167,
+    averageScore: 8.1,
+    difficulty: 'medium',
+    totalQuestions: 6
+  },
+  {
+    examId: 7,
+    title: 'Tổng hợp kiến thức lớp 10',
+    description: 'Đề thi tổng hợp toàn bộ kiến thức văn học và ngữ văn lớp 10, chuẩn bị cho kỳ thi cuối năm.',
+    durationMinutes: 90,
+    gradeLevelId: 1,
+    seriesId: 1,
+    examTypeId: 2,
+    createdBy: 3,
+    createdAt: '2024-02-10T09:30:00Z',
+    attempts: 289,
+    averageScore: 7.6,
+    difficulty: 'medium',
+    totalQuestions: 4
+  },
+  {
+    examId: 8,
+    title: 'Phân tích tác phẩm Chí Phèo',
+    description: 'Đề thi chuyên sâu về tác phẩm Chí Phèo, phân tích tâm lý nhân vật và ý nghĩa xã hội.',
+    durationMinutes: 135,
+    gradeLevelId: 3,
+    seriesId: 3,
+    examTypeId: 5,
+    createdBy: 1,
+    createdAt: '2024-02-15T08:00:00Z',
+    attempts: 134,
+    averageScore: 7.3,
+    difficulty: 'hard',
+    totalQuestions: 2
+  }
+];
+
+// Helper function to get full exam data with relationships
+export const getExamWithDetails = (examId: number): ExamData | undefined => {
+  const exam = mockExamData.find(e => e.examId === examId);
+  if (!exam) return undefined;
+
+  return {
+    ...exam,
+    gradeLevel: mockGradeLevels.find(g => g.gradeLevelId === exam.gradeLevelId),
+    bookSeries: mockBookSeries.find(s => s.seriesId === exam.seriesId),
+    examType: mockExamTypes.find(t => t.examTypeId === exam.examTypeId)
+  };
+};
+
+// Helper function to filter exams
+export const filterExams = (filters: ExamFilters): ExamData[] => {
+  return mockExamData.filter(exam => {
+    if (filters.gradeLevel && exam.gradeLevelId !== filters.gradeLevel) return false;
+    if (filters.difficulty && exam.difficulty !== filters.difficulty) return false;
+    if (filters.examType && exam.examTypeId !== filters.examType) return false;
+    if (filters.bookSeries && exam.seriesId !== filters.bookSeries) return false;
+    if (filters.search) {
+      const searchTerm = filters.search.toLowerCase();
+      return exam.title.toLowerCase().includes(searchTerm) || 
+             exam.description.toLowerCase().includes(searchTerm);
+    }
+    return true;
+  });
+};

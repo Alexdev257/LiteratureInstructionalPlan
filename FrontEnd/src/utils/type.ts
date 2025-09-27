@@ -50,6 +50,46 @@ export type BodyRefreshToken = {
 }
 
 
+// Database Types
+export interface GradeLevel {
+    gradeLevelId: number;
+    gradeName: string;
+    description: string;
+}
+
+export interface BookSeries {
+    seriesId: number;
+    seriesName: string;
+    description: string;
+}
+
+export interface ExamType {
+    examTypeId: number;
+    typeName: string;
+    description: string;
+}
+
+export interface ExamData {
+    examId: number;
+    title: string;
+    description: string;
+    durationMinutes: number;
+    gradeLevelId: number;
+    gradeLevel?: GradeLevel;
+    seriesId: number;
+    bookSeries?: BookSeries;
+    examTypeId: number;
+    examType?: ExamType;
+    createdBy: number;
+    createdAt: string;
+    // Additional computed fields
+    attempts?: number;
+    averageScore?: number;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    totalQuestions?: number;
+}
+
+// Legacy Exam interface for backward compatibility
 export interface Exam {
     id: string;
     title: string;
@@ -63,6 +103,15 @@ export interface Exam {
     createdAt: string;
     attempts: number;
     averageScore: number;
+}
+
+// Filter types
+export interface ExamFilters {
+    gradeLevel?: number;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    examType?: number;
+    bookSeries?: number;
+    search?: string;
 }
 
 export interface Question {
@@ -95,4 +144,10 @@ export interface LeaderboardEntry {
     totalExams: number;
     averageScore: number;
     rank: number;
+}
+
+export interface Features {
+    title: string;
+    description: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }

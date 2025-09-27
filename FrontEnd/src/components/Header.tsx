@@ -41,18 +41,18 @@ export default function Header() {
             <p className="text-sm text-muted-foreground">Vững vàng kiến thức</p>
           </div>
         </div>
-          <nav className="hidden md:flex items-center gap-6">
-          <Link to="/exams" className="text-foreground hover:text-primary transition-colors">
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/" className="text-foreground hover:text-primary transition-colors">
+            Trang chủ
+          </Link>
+          <Link to="/exam" className="text-foreground hover:text-primary transition-colors">
             Đề thi
           </Link>
           <Link to="/practice" className="text-foreground hover:text-primary transition-colors">
             Luyện tập
           </Link>
-          <Link to="/results" className="text-foreground hover:text-primary transition-colors">
-            Kết quả
-          </Link>
-          <Link to="/profile" className="text-foreground hover:text-primary transition-colors">
-            Hồ sơ
+          <Link to="*" className="text-foreground hover:text-primary transition-colors">
+            Giáo án
           </Link>
         </nav>
         {/* Right controls */}
