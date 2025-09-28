@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Filter, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import type { ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
+import type {  ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
 import { useMemo, useState } from "react";
 
 import RenderResults from "./RenderResults";
@@ -47,7 +47,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes }: Props) => {
         return result;
     }, [examData, filters, searchTerm]);
 
-    const handleFilterChange = (key: keyof ExamFilters, value: any) => {
+    const handleFilterChange = (key: keyof ExamFilters, value: ExamFilters[keyof ExamFilters] | "all") => {
         setFilters(prev => ({
             ...prev,
             [key]: value === "all" ? undefined : value

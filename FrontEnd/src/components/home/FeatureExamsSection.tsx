@@ -4,12 +4,14 @@ import { Badge } from "../ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import type { Exam } from "@/utils/type";
+import { useRouter } from "@tanstack/react-router";
 
 type FeatureExamsSectionProps = {
     featuredExams: Exam[];
 };
 
 const FeatureExamsSection = ({ featuredExams }: FeatureExamsSectionProps) => {
+    const router = useRouter();
     return (
         <section className="py-24 px-4 ">
             <div className="container mx-auto max-w-7xl">
@@ -64,7 +66,7 @@ const FeatureExamsSection = ({ featuredExams }: FeatureExamsSectionProps) => {
                     ))}
                 </div>
                 <div className="text-center">
-                    <Button size="lg" variant="outline" className="px-8 py-4 h-auto text-base border-2 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
+                    <Button onClick={() => router.navigate({ to: "/exam" })} size="lg" variant="outline" className="cursor-pointer px-8 py-4 h-auto text-base border-2 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300">
                         Xem tất cả đề thi
                         <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>

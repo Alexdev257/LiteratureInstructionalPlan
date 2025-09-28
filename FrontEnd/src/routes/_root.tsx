@@ -4,13 +4,16 @@ import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 
 function RootComponent() {
   const location = useLocation();
+  
+  // Các routes có layout riêng, không cần Header/Footer của root
   const isAuthRoute = location.pathname.startsWith('/auth');
-
-  // Nếu là auth route thì chỉ render Outlet (không có Header/Footer)
-  if (isAuthRoute) {
+  const isExamAttemptRoute = /^\/exam\/[^\/]+\/[^\/]+/.test(location.pathname); // Matching /exam/[id]/[attemptId]
+  
+  // Nếu là route có layout riêng, chỉ render Outlet
+  if (isAuthRoute || isExamAttemptRoute) {
     return <Outlet />;
   }
-
+  
   // Các route khác render với Header/Footer
   return (
     <div className="flex flex-col min-h-screen">

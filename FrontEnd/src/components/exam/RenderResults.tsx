@@ -5,12 +5,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Badge } from "../ui/badge";
 import { mockGradeLevels, mockExamTypes } from "@/utils/mockAPi";
 import { Button } from "../ui/button";
+import { useRouter } from "@tanstack/react-router"
 
 type Props = {
     filteredExams: ExamData[];
     clearFilters: () => void;
 }
 const RenderResults = ({ filteredExams, clearFilters }: Props) => {
+    const router = useRouter();
+    const handleTakeExam = (examId: number) => {
+        router.navigate({
+            to: "/exam/$id", 
+            params: { id: examId.toString() },
+        })
+    }
     const getDifficultyColor = (difficulty?: string) => {
         switch (difficulty) {
             case 'easy': return 'bg-green-100 text-green-800 border-green-300';
@@ -97,8 +105,8 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
                                         </div>
                                     </div>
 
-                                    <Button className="w-full group-hover:shadow-lg transition-all duration-300 bg-primary hover:bg-primary/90">
-                                        Làm bài thi
+                                    <Button onClick={() => handleTakeExam(exam.examId)} className="cursor-pointer w-full group-hover:shadow-lg transition-all duration-300 bg-primary hover:bg-primary/90">
+                                        Xem đề thi
                                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </CardContent>

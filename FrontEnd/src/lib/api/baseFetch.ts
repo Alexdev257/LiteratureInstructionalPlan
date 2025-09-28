@@ -52,7 +52,7 @@ export class BaseApi {
     body?: Record<string, any>
   ): Promise<ResponseData<T>> {
     // check refresh token
-    await this.refreshToken(url);
+    // await this.refreshToken(url);
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(),
