@@ -3,7 +3,7 @@ import type { ExamData } from "@/utils/type";
 import { ArrowRight, BookOpen, Clock, FileText, GraduationCap, Star, Target, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { mockGradeLevels, mockExamTypes } from "@/utils/mockAPi";
+import { mockGradeLevels, mockExamTypes, mockBookSeries } from "@/utils/mockAPi";
 import { Button } from "../ui/button";
 import { useRouter } from "@tanstack/react-router"
 
@@ -12,6 +12,7 @@ type Props = {
     clearFilters: () => void;
 }
 const RenderResults = ({ filteredExams, clearFilters }: Props) => {
+    const seriBook = mockBookSeries;
     const router = useRouter();
     const handleTakeExam = (examId: number) => {
         router.navigate({
@@ -59,10 +60,16 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
                             <Card key={exam.examId} className="group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 overflow-hidden bg-gradient-to-br from-background to-secondary/5">
                                 <CardHeader className="pb-4">
                                     <div className="flex items-center justify-between mb-3">
-                                        <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
+                                      <div className="flex items-center gap-2">
+                                          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
                                             <GraduationCap className="w-3 h-3 mr-1" />
                                             {gradeLevel?.gradeName}
                                         </Badge>
+                                          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
+                                            <GraduationCap className="w-3 h-3 mr-1" />
+                                            {seriBook.find(ser => ser.seriesId === exam.seriesId)?.seriesName}
+                                        </Badge>
+                                      </div>
                                         <Badge className={`${getDifficultyColor(exam.difficulty)} border`}>
                                             <Target className="w-3 h-3 mr-1" />
                                             {getDifficultyText(exam.difficulty)}

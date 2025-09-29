@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Filter, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import type {  ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
+import type {  BookSeries, ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
 import { useMemo, useState } from "react";
 
 import RenderResults from "./RenderResults";
@@ -14,8 +14,9 @@ type Props ={
     examData: ExamData[];
     mockGradeLevels: GradeLevel[];
     mockExamTypes: ExamType[];
+    mockeBookSeries: BookSeries[];
 }
-const FilterSection = ({ examData, mockGradeLevels, mockExamTypes }: Props) => {
+const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeries }: Props) => {
     const [filters, setFilters] = useState<ExamFilters>({});
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -42,6 +43,9 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes }: Props) => {
                 exam.title.toLowerCase().includes(searchLower) ||
                 exam.description.toLowerCase().includes(searchLower)
             );
+        }
+        if(filters.bookSeries){
+            result = result.filter(exam => exam.seriesId === filters.bookSeries);
         }
         
         return result;
@@ -93,7 +97,25 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes }: Props) => {
                                     className="pl-10 border-primary/20 focus:border-primary"
                                 />
                             </div>
-
+                            {/* Type book */}
+                          <Select
+                                value={filters.gradeLevel?.toString() || "all"}
+                                onValueChange={(value: string) =>
+                                    handleFilterChange("gradeLevel", value === "all" ? undefined : parseInt(value))
+                                }
+                            >
+                                <SelectTrigger className="border-primary/20 focus:border-primary w-[160px]">
+                                    <SelectValue placeholder="Chọn lớp" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Tất cả sách</SelectItem>
+                                    {mockeBookSeries.map((book) => (
+                                        <SelectItem key={book.seriesId} value={book.seriesId.toString()}>
+                                            {book.seriesName}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             {/* Grade */}
                             <Select
                                 value={filters.gradeLevel?.toString() || "all"}

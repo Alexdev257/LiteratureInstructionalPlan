@@ -300,3 +300,9 @@ export const mockExamData: ExamData[] = [
   }
 ];
 
+export const mockeBookSeries =[
+  { seriesId: 1, seriesName: 'Sách giáo khoa', description: 'Chương trình sách giáo khoa chuẩn' },
+  { seriesId: 2, seriesName: 'Sách bài tập', description: 'Bộ sách bài tập nâng cao' },
+  { seriesId: 3, seriesName: 'Sách tham khảo', description: 'Sách tham khảo và ôn thi' }
+]
+
