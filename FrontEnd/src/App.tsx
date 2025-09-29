@@ -1,5 +1,5 @@
 
-import ClientLayoutWrapper from './components/ClientLayoutWrapper'
+import ClientLayoutWrapper from './components/layout/ClientLayoutWrapper'
 
 function App() {
 

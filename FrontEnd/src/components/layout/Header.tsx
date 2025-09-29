@@ -2,7 +2,7 @@
 
 import { useAuthContext } from "@/context/authContext";
 import { userSession } from "@/lib/session";
-import { ModeToggle } from "./mode-toggle";
+import { ModeToggle } from "../mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -53,21 +53,38 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
             >
               Trang chủ
             </Link>
-            <Link 
-              to="/exam" 
+            <Link
+              to="/exam"
               className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
             >
               Đề thi
             </Link>
-            <span className="text-sm font-medium text-muted-foreground cursor-not-allowed px-3 py-2">
-              Giáo án
-            </span>
+            {
+              user ? (
+                Number(user.RoleId) !== 1 ? (
+                  <Link
+                    to="*"
+                    className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+                  >
+                    Giáo án
+                  </Link>
+                ) : (
+                  <Link
+                    to="*"
+                    className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+                  >
+                    Kết quả
+                  </Link>
+                )
+              ) : null
+            }
+
           </nav>
 
           {/* Right controls */}
@@ -81,8 +98,8 @@ export default function Header() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="flex items-center gap-2 hover:bg-muted px-3 py-2 rounded-md"
                   >
                     <Avatar className="w-7 h-7">
@@ -96,12 +113,9 @@ export default function Header() {
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-28">
                   <DropdownMenuItem className="text-sm">
                     Hồ sơ cá nhân
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-sm">
-                    Cài đặt
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-sm text-destructive">
                     Đăng xuất
@@ -110,16 +124,16 @@ export default function Header() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Button 
-                  onClick={() => handleNavigate("/auth/login")} 
+                <Button
+                  onClick={() => handleNavigate("/auth/login")}
                   variant="ghost"
                   size="sm"
                   className="text-primary hover:bg-primary/10"
                 >
                   Đăng nhập
                 </Button>
-                <Button 
-                  onClick={() => handleNavigate("/auth/register")} 
+                <Button
+                  onClick={() => handleNavigate("/auth/register")}
                   size="sm"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
@@ -148,15 +162,15 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-border bg-background">
             <nav className="px-4 py-4 space-y-2">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
               >
                 Trang chủ
               </Link>
-              <Link 
-                to="/exam" 
+              <Link
+                to="/exam"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
               >

@@ -1,8 +1,8 @@
 import { createRoute } from "@tanstack/react-router";
 import { Route as examIdRoute } from "../index";
 import { Outlet } from "@tanstack/react-router";
-import { ExamHeader } from "@/components/ExamHeader";
-import ExamFooter from "@/components/ExamFooter";
+import { ExamHeader } from "@/components/layout/ExamHeader";
+import ExamFooter from "@/components/layout/ExamFooter";
 
 const TakeExamLayoutComponent = () => {
   return (
