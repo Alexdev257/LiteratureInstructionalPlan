@@ -82,7 +82,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                 var rsEmail = await _emailHelper.SendEmailAsync(user.Email, "Welcome to LIP Company", body, dictionnary);
                 var AccessToken = _jwtHelper.GenerateAccessToken(user);
                 var RefreshToken = _jwtHelper.GenerateRefreshToken();
-                await _redisHelper.SetAsync<string>($"RT_{userEmail?.UserId}", RefreshToken);
+                await _redisHelper.SetAsync<string>($"RT_{userEmail?.UserId}", RefreshToken, TimeSpan.FromHours(1));
                 return new LoginGoogleResponse
                 {
                     IsSuccess = true,
@@ -98,7 +98,7 @@ namespace LIP.Application.CQRS.Handler.Auth
             {
                 var AccessToken = _jwtHelper.GenerateAccessToken(user);
                 var RefreshToken = _jwtHelper.GenerateRefreshToken();
-                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", RefreshToken);
+                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", RefreshToken, TimeSpan.FromHours(1));
                 return new LoginGoogleResponse
                 {
                     IsSuccess = true,

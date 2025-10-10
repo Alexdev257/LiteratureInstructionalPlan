@@ -52,15 +52,18 @@ namespace LIP.Application.CQRS.Handler.Auth
             {
                 var user = await _userRepository.GetAsync(new Query.User.UserGetQuery() { UserId = request.Id });
                 //_sessionExtensions.Remove($"RT_{request.Id}");
+                var newAccessToken = _jwtHelper.GenerateAccessToken(user!);
+                var newRefreshToken = _jwtHelper.GenerateRefreshToken();
                 await _redisHelper.RemoveAsync($"RT_{request.Id}");
+                await _redisHelper.SetAsync<string>($"RT_{request.Id}", newRefreshToken);
                 return new RefreshResponse
                 {
                     IsSuccess = true,
                     Message = "Refresh successfully!",
                     Data = new RefreshResponseDTO
                     {
-                        AccessToken = _jwtHelper.GenerateAccessToken(user),
-                        RefreshToken = _jwtHelper.GenerateRefreshToken(),
+                        AccessToken = newAccessToken,
+                        RefreshToken = newRefreshToken,
                     }
                 };
                 

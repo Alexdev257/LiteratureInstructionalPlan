@@ -55,8 +55,8 @@ namespace LIP.Application.CQRS.Handler.Auth
             {
                 //_sessionExtensions.Set<string>($"OTP_{otp}", otp);
                 //_sessionExtensions.Set<LIP.Domain.Entities.User>($"User_{otp}", user);
-                await _redisHelper.SetAsync<string>($"OTP_{otp}", otp);
-                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"User_{otp}", user);
+                await _redisHelper.SetAsync<string>($"OTP_{otp}", otp, TimeSpan.FromMinutes(5));
+                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"User_{otp}", user, TimeSpan.FromMinutes(5));
 
                 return new RegisterResponse
                 {

@@ -67,8 +67,8 @@ namespace LIP.Application.CQRS.Handler.Auth
             {
                 //_sessionExtensions.Set<string>($"FP_{otp}", otp);
                 //_sessionExtensions.Set<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser);
-                await _redisHelper.SetAsync<string>($"FP_{otp}", otp);
-                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser);
+                await _redisHelper.SetAsync<string>($"FP_{otp}", otp, TimeSpan.FromMinutes(5));
+                await _redisHelper.SetAsync<LIP.Domain.Entities.User>($"FPOJ_{otp}", updatedUser, TimeSpan.FromMinutes(5));
                 return new ForgotPasswordResponse
                 {
                     IsSuccess = true,
