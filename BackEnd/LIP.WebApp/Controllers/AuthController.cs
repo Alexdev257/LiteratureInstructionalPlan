@@ -1,6 +1,7 @@
 ﻿using LIP.Application.CQRS.Command.Auth;
 using LIP.Application.DTOs.Request.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LIP.WebApp.Controllers
@@ -135,6 +136,20 @@ namespace LIP.WebApp.Controllers
                 OTP = request.OTP,
             });
             if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPut("change-profile/{id}")]
+        public async Task<IActionResult> ChangeProfile(int id, [FromBody] UpdateProfileRequest request)
+        {
+            var result = await _mediator.Send(new UpdateProfileCommand
+            {
+                UserId = id,
+                UserName = request.UserName,
+                FullName = request.FullName,
+            });
+
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 

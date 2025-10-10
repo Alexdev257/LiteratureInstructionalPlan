@@ -52,7 +52,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                 var accessToken = _jwtHelper.GenerateAccessToken(user);
                 var refreshToken = _jwtHelper.GenerateRefreshToken();
                 //_sessionExtensions.Set<string>($"RT_{user.UserId}", refreshToken);
-                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", refreshToken);
+                await _redisHelper.SetAsync<string>($"RT_{user.UserId}", refreshToken, TimeSpan.FromHours(1));
                 return new LoginResponse
                 {
                     IsSuccess = true,

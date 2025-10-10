@@ -38,7 +38,8 @@ namespace LIP.Infrastructure.Implements.Helpers
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, Math.Abs(BitConverter.ToInt64(Guid.NewGuid().ToByteArray())).ToString()),
                     new Claim("UserId", user.UserId.ToString()),
-                    new Claim("Username", user.UserName.ToString()),
+                    new Claim("FullName", user.FullName.ToString()),
+                    new Claim("Email", user.Email.ToString()),
                     new Claim("RoleId", user.RoleId.ToString()),
                     //new Claim("Role", user.Role.RoleName.ToString().ToLower()),
                 }),
