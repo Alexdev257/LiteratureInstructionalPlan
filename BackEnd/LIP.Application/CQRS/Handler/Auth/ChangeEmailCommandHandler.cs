@@ -31,8 +31,8 @@ namespace LIP.Application.CQRS.Handler.Auth
         }
         public async Task<ChangeEmailResponse> Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetAsync(new Query.User.UserGetQuery { UserId = request.UserId});
-            if(user == null)
+            var user = await _userRepository.GetAsync(new Query.User.UserGetQuery { UserId = request.UserId });
+            if (user == null)
             {
                 return new ChangeEmailResponse()
                 {
@@ -63,7 +63,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                 DeletedAt = user.DeletedAt,
                 IsDeleted = user.IsDeleted,
             };
-            
+
             var otp = _otpHelper.GenerateOtpAsync(6);
             var dictionary = new Dictionary<string, string>
             {

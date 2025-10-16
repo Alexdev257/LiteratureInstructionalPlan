@@ -34,7 +34,7 @@ namespace LIP.Application.CQRS.Handler.User
                 responseDTO.RoleId = r.RoleId;
                 dataList.Add(responseDTO);
             }
-            if(dataList.Count > 0)
+            if (dataList.Count > 0)
             {
 
                 return new GetAllUserResponse

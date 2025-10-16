@@ -93,7 +93,7 @@ namespace LIP.Application.CQRS.Command.Auth
                 });
             }
 
-            if(!Regex.IsMatch(this.Password, @"^(?=.*[A-Z]).+$"))
+            if (!Regex.IsMatch(this.Password, @"^(?=.*[A-Z]).+$"))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -101,7 +101,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Password must contain at least 1 Upper character!"
                 });
             }
-            if(!Regex.IsMatch(this.Password, @"^(?=.*[a-z]).+$"))
+            if (!Regex.IsMatch(this.Password, @"^(?=.*[a-z]).+$"))
             {
                 response.ListErrors.Add(new Errors
                 {

@@ -30,7 +30,7 @@ namespace LIP.Application.CQRS.Handler.Auth
             //var user = _sessionExtensions.Get<LIP.Domain.Entities.User>($"UdU_{request.OTP}");
             var otp = await _redisHelper.GetAsync<string>($"OTP_{request.OTP}");
             var user = await _redisHelper.GetAsync<LIP.Domain.Entities.User>($"UdU_{request.OTP}");
-            if(request.NewEmail != user.Email)
+            if (request.NewEmail != user.Email)
             {
                 return new VerifyChangeEmailResponse
                 {
@@ -38,7 +38,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                     Message = "New Email is not valid with the previous step!",
                 };
             }
-            if( otp== null || user == null )
+            if (otp == null || user == null)
             {
                 return new VerifyChangeEmailResponse
                 {

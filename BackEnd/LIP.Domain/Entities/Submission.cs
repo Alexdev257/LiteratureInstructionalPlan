@@ -21,11 +21,11 @@ public partial class Submission
 
     public DateTime? SubmitTime { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
+
     public virtual Exam? Exam { get; set; }
 
     public virtual User? Student { get; set; }
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
 }

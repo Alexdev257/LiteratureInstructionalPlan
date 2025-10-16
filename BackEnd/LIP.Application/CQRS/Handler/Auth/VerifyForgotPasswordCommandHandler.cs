@@ -31,7 +31,7 @@ namespace LIP.Application.CQRS.Handler.Auth
             var otp = await _redisHelper.GetAsync<string>($"FP_{request.OTP}");
             var user = await _redisHelper.GetAsync<LIP.Domain.Entities.User>($"FPOJ_{request.OTP}");
 
-            if(otp == null || user == null)
+            if (otp == null || user == null)
             {
                 return new VerifyForgotPasswordResponse
                 {
@@ -73,7 +73,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                         Message = "Forgot Password failed!"
                     };
                 }
-                
+
             }
         }
     }

@@ -19,10 +19,10 @@ namespace LIP.Application.CQRS.Handler.Auth
         }
         public async Task<LogoutResponse> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            
+
             //var result = await _redisHelper.GetAsync<string>($"RT_{request.UserId}");
             var result = await _redisHelper.ExistAsync($"RT_{request.UserId}");
-            if(result)
+            if (result)
             {
                 await _redisHelper.RemoveAsync($"RT_{request.UserId}");
                 return new LogoutResponse

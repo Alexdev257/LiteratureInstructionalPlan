@@ -83,7 +83,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                     Message = "Some errors occurred while sending OTP through email"
                 };
             }
-            
+
         }
     }
 }

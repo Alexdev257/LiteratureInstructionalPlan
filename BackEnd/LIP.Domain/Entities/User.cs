@@ -19,9 +19,17 @@ public partial class User
 
     public DateTime? CreatedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
+
     public virtual ICollection<Examattempt> Examattempts { get; set; } = new List<Examattempt>();
 
+    public virtual ICollection<Exammatrix> Exammatrices { get; set; } = new List<Exammatrix>();
+
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<Practicequestion> Practicequestions { get; set; } = new List<Practicequestion>();
 
@@ -29,10 +37,7 @@ public partial class User
 
     public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 
+    public virtual ICollection<Templatebooking> Templatebookings { get; set; } = new List<Templatebooking>();
+
     public virtual ICollection<Template> Templates { get; set; } = new List<Template>();
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
-
 }

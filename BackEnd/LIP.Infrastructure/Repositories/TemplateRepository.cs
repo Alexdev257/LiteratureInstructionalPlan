@@ -22,7 +22,7 @@ namespace LIP.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(t => t.CreatedByNavigation)
                 .Include(t => t.GradeLevel)
-                .Include(t => t.Series)
+                //.Include(t => t.Series)
                 .Where(t => !t.IsDeleted)
                 .FirstOrDefaultAsync(t => t.TemplateId == query.TemplateId);
         }
@@ -33,15 +33,15 @@ namespace LIP.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(t => t.CreatedByNavigation)
                 .Include(t => t.GradeLevel)
-                .Include(t => t.Series)
+                //.Include(t => t.Series)
                 .Where(t => !t.IsDeleted)
                 .AsQueryable();
 
             if (query.GradeLevelId.HasValue)
                 templates = templates.Where(t => t.GradeLevelId == query.GradeLevelId);
 
-            if (query.SeriesId.HasValue)
-                templates = templates.Where(t => t.SeriesId == query.SeriesId);
+            //if (query.SeriesId.HasValue)
+            //    templates = templates.Where(t => t.SeriesId == query.SeriesId);
 
             if (query.CreatedBy.HasValue)
                 templates = templates.Where(t => t.CreatedBy == query.CreatedBy);
@@ -56,7 +56,7 @@ namespace LIP.Infrastructure.Repositories
                 Title = command.Title,
                 FilePath = command.FilePath,
                 GradeLevelId = command.GradeLevelId,
-                SeriesId = command.SeriesId,
+                //SeriesId = command.SeriesId,
                 CreatedBy = command.CreatedBy,
                 CreatedAt = command.CreatedAt
             };
@@ -74,7 +74,7 @@ namespace LIP.Infrastructure.Repositories
             template.Title = command.Title;
             template.FilePath = command.FilePath;
             template.GradeLevelId = command.GradeLevelId;
-            template.SeriesId = command.SeriesId;
+            //template.SeriesId = command.SeriesId;
             template.CreatedBy = command.CreatedBy;
             template.CreatedAt = command.CreatedAt;
 

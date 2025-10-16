@@ -13,19 +13,19 @@ public partial class Template
 
     public int? GradeLevelId { get; set; }
 
-    public int? SeriesId { get; set; }
+    public float Price { get; set; }
 
     public int? CreatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
+
     public virtual User? CreatedByNavigation { get; set; }
 
     public virtual Gradelevel? GradeLevel { get; set; }
 
-    public virtual Bookseries? Series { get; set; }
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
+    public virtual ICollection<Templatebooking> Templatebookings { get; set; } = new List<Templatebooking>();
 }

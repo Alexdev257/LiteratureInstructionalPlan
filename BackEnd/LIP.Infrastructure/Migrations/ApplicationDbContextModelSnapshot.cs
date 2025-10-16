@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
+
 namespace LIP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -49,7 +50,7 @@ namespace LIP.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AnswerGuideId"));
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("ExamId")
                         .HasColumnType("int");
@@ -71,33 +72,6 @@ namespace LIP.Infrastructure.Migrations
                     b.ToTable("answerguides", (string)null);
                 });
 
-            modelBuilder.Entity("LIP.Domain.Entities.Bookseries", b =>
-                {
-                    b.Property<int>("SeriesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SeriesId"));
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .UseCollation("utf8mb3_general_ci");
-
-                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Name"), "utf8mb3");
-
-                    b.HasKey("SeriesId")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("bookseries", (string)null);
-                });
-
             modelBuilder.Entity("LIP.Domain.Entities.Exam", b =>
                 {
                     b.Property<int>("ExamId")
@@ -113,7 +87,7 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -134,7 +108,7 @@ namespace LIP.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("SeriesId")
+                    b.Property<int?>("MatrixId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -153,7 +127,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex(new[] { "GradeLevelId" }, "GradeLevelId");
 
-                    b.HasIndex(new[] { "SeriesId" }, "SeriesId");
+                    b.HasIndex(new[] { "MatrixId" }, "MatrixId");
 
                     b.ToTable("exams", (string)null);
                 });
@@ -173,7 +147,7 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
@@ -201,7 +175,7 @@ namespace LIP.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AttemptId"));
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime");
@@ -241,6 +215,84 @@ namespace LIP.Infrastructure.Migrations
                     b.HasIndex(new[] { "UserId" }, "UserId");
 
                     b.ToTable("examattempts", (string)null);
+                });
+
+            modelBuilder.Entity("LIP.Domain.Entities.Exammatrix", b =>
+                {
+                    b.Property<int>("MatrixId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MatrixId"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Difficulty")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("GradeLevelId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LessonName")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .UseCollation("utf8mb3_general_ci");
+
+                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("LessonName"), "utf8mb3");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .UseCollation("utf8mb3_general_ci");
+
+                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Notes"), "utf8mb3");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuestionType")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal?>("ScorePerQuestion")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .UseCollation("utf8mb3_general_ci");
+
+                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("Title"), "utf8mb3");
+
+                    b.HasKey("MatrixId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex(new[] { "CreatedBy" }, "CreatedBy")
+                        .HasDatabaseName("CreatedBy1");
+
+                    b.HasIndex(new[] { "GradeLevelId" }, "GradeLevelId")
+                        .HasDatabaseName("GradeLevelId1");
+
+                    b.ToTable("exammatrices", (string)null);
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Examtype", b =>
@@ -285,6 +337,47 @@ namespace LIP.Infrastructure.Migrations
                     b.ToTable("gradelevels", (string)null);
                 });
 
+            modelBuilder.Entity("LIP.Domain.Entities.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal?>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PaymentId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex(new[] { "UserId" }, "UserId")
+                        .HasDatabaseName("UserId1");
+
+                    b.ToTable("payments", (string)null);
+                });
+
             modelBuilder.Entity("LIP.Domain.Entities.Practicequestion", b =>
                 {
                     b.Property<int>("QuestionId")
@@ -306,7 +399,11 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Difficulty")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int?>("GradeLevelId")
                         .HasColumnType("int");
@@ -318,20 +415,14 @@ namespace LIP.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int?>("SeriesId")
-                        .HasColumnType("int");
-
                     b.HasKey("QuestionId")
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CreatedBy" }, "CreatedBy")
-                        .HasDatabaseName("CreatedBy1");
+                        .HasDatabaseName("CreatedBy2");
 
                     b.HasIndex(new[] { "GradeLevelId" }, "GradeLevelId")
-                        .HasDatabaseName("GradeLevelId1");
-
-                    b.HasIndex(new[] { "SeriesId" }, "SeriesId")
-                        .HasDatabaseName("SeriesId1");
+                        .HasDatabaseName("GradeLevelId2");
 
                     b.ToTable("practicequestions", (string)null);
                 });
@@ -376,7 +467,7 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("ExamId")
                         .HasColumnType("int");
@@ -420,7 +511,7 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("FilePath")
                         .HasMaxLength(500)
@@ -435,8 +526,8 @@ namespace LIP.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("SeriesId")
-                        .HasColumnType("int");
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
 
                     b.Property<string>("Title")
                         .HasMaxLength(255)
@@ -449,15 +540,55 @@ namespace LIP.Infrastructure.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "CreatedBy" }, "CreatedBy")
-                        .HasDatabaseName("CreatedBy2");
+                        .HasDatabaseName("CreatedBy3");
 
                     b.HasIndex(new[] { "GradeLevelId" }, "GradeLevelId")
-                        .HasDatabaseName("GradeLevelId2");
-
-                    b.HasIndex(new[] { "SeriesId" }, "SeriesId")
-                        .HasDatabaseName("SeriesId2");
+                        .HasDatabaseName("GradeLevelId3");
 
                     b.ToTable("templates", (string)null);
+                });
+
+            modelBuilder.Entity("LIP.Domain.Entities.Templatebooking", b =>
+                {
+                    b.Property<int>("BookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BookingId"));
+
+                    b.Property<DateTime?>("BookingDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookingId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex(new[] { "PaymentId" }, "PaymentId");
+
+                    b.HasIndex(new[] { "TemplateId" }, "TemplateId");
+
+                    b.HasIndex(new[] { "UserId" }, "UserId")
+                        .HasDatabaseName("UserId2");
+
+                    b.ToTable("templatebookings", (string)null);
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.User", b =>
@@ -472,7 +603,7 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -505,8 +636,8 @@ namespace LIP.Infrastructure.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
                         .UseCollation("utf8mb3_general_ci");
 
                     MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("UserName"), "utf8mb3");
@@ -557,17 +688,17 @@ namespace LIP.Infrastructure.Migrations
                     b.HasOne("LIP.Domain.Entities.Examtype", "ExamType")
                         .WithMany("Exams")
                         .HasForeignKey("ExamTypeId")
-                        .HasConstraintName("exams_ibfk_3");
+                        .HasConstraintName("exams_ibfk_2");
 
                     b.HasOne("LIP.Domain.Entities.Gradelevel", "GradeLevel")
                         .WithMany("Exams")
                         .HasForeignKey("GradeLevelId")
                         .HasConstraintName("exams_ibfk_1");
 
-                    b.HasOne("LIP.Domain.Entities.Bookseries", "Series")
+                    b.HasOne("LIP.Domain.Entities.Exammatrix", "Matrix")
                         .WithMany("Exams")
-                        .HasForeignKey("SeriesId")
-                        .HasConstraintName("exams_ibfk_2");
+                        .HasForeignKey("MatrixId")
+                        .HasConstraintName("exams_ibfk_3");
 
                     b.Navigation("CreatedByNavigation");
 
@@ -575,7 +706,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.Navigation("GradeLevel");
 
-                    b.Navigation("Series");
+                    b.Navigation("Matrix");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Examanswer", b =>
@@ -612,28 +743,48 @@ namespace LIP.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LIP.Domain.Entities.Exammatrix", b =>
+                {
+                    b.HasOne("LIP.Domain.Entities.User", "CreatedByNavigation")
+                        .WithMany("Exammatrices")
+                        .HasForeignKey("CreatedBy")
+                        .HasConstraintName("exammatrices_ibfk_2");
+
+                    b.HasOne("LIP.Domain.Entities.Gradelevel", "GradeLevel")
+                        .WithMany("Exammatrices")
+                        .HasForeignKey("GradeLevelId")
+                        .HasConstraintName("exammatrices_ibfk_1");
+
+                    b.Navigation("CreatedByNavigation");
+
+                    b.Navigation("GradeLevel");
+                });
+
+            modelBuilder.Entity("LIP.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("LIP.Domain.Entities.User", "User")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("payments_ibfk_1");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LIP.Domain.Entities.Practicequestion", b =>
                 {
                     b.HasOne("LIP.Domain.Entities.User", "CreatedByNavigation")
                         .WithMany("Practicequestions")
                         .HasForeignKey("CreatedBy")
-                        .HasConstraintName("practicequestions_ibfk_3");
+                        .HasConstraintName("practicequestions_ibfk_2");
 
                     b.HasOne("LIP.Domain.Entities.Gradelevel", "GradeLevel")
                         .WithMany("Practicequestions")
                         .HasForeignKey("GradeLevelId")
                         .HasConstraintName("practicequestions_ibfk_1");
 
-                    b.HasOne("LIP.Domain.Entities.Bookseries", "Series")
-                        .WithMany("Practicequestions")
-                        .HasForeignKey("SeriesId")
-                        .HasConstraintName("practicequestions_ibfk_2");
-
                     b.Navigation("CreatedByNavigation");
 
                     b.Navigation("GradeLevel");
-
-                    b.Navigation("Series");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Submission", b =>
@@ -658,23 +809,40 @@ namespace LIP.Infrastructure.Migrations
                     b.HasOne("LIP.Domain.Entities.User", "CreatedByNavigation")
                         .WithMany("Templates")
                         .HasForeignKey("CreatedBy")
-                        .HasConstraintName("templates_ibfk_3");
+                        .HasConstraintName("templates_ibfk_2");
 
                     b.HasOne("LIP.Domain.Entities.Gradelevel", "GradeLevel")
                         .WithMany("Templates")
                         .HasForeignKey("GradeLevelId")
                         .HasConstraintName("templates_ibfk_1");
 
-                    b.HasOne("LIP.Domain.Entities.Bookseries", "Series")
-                        .WithMany("Templates")
-                        .HasForeignKey("SeriesId")
-                        .HasConstraintName("templates_ibfk_2");
-
                     b.Navigation("CreatedByNavigation");
 
                     b.Navigation("GradeLevel");
+                });
 
-                    b.Navigation("Series");
+            modelBuilder.Entity("LIP.Domain.Entities.Templatebooking", b =>
+                {
+                    b.HasOne("LIP.Domain.Entities.Payment", "Payment")
+                        .WithMany("Templatebookings")
+                        .HasForeignKey("PaymentId")
+                        .HasConstraintName("templatebookings_ibfk_3");
+
+                    b.HasOne("LIP.Domain.Entities.Template", "Template")
+                        .WithMany("Templatebookings")
+                        .HasForeignKey("TemplateId")
+                        .HasConstraintName("templatebookings_ibfk_1");
+
+                    b.HasOne("LIP.Domain.Entities.User", "User")
+                        .WithMany("Templatebookings")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("templatebookings_ibfk_2");
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("Template");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.User", b =>
@@ -685,15 +853,6 @@ namespace LIP.Infrastructure.Migrations
                         .HasConstraintName("users_ibfk_1");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("LIP.Domain.Entities.Bookseries", b =>
-                {
-                    b.Navigation("Exams");
-
-                    b.Navigation("Practicequestions");
-
-                    b.Navigation("Templates");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Exam", b =>
@@ -710,6 +869,11 @@ namespace LIP.Infrastructure.Migrations
                     b.Navigation("Examanswers");
                 });
 
+            modelBuilder.Entity("LIP.Domain.Entities.Exammatrix", b =>
+                {
+                    b.Navigation("Exams");
+                });
+
             modelBuilder.Entity("LIP.Domain.Entities.Examtype", b =>
                 {
                     b.Navigation("Exams");
@@ -717,11 +881,18 @@ namespace LIP.Infrastructure.Migrations
 
             modelBuilder.Entity("LIP.Domain.Entities.Gradelevel", b =>
                 {
+                    b.Navigation("Exammatrices");
+
                     b.Navigation("Exams");
 
                     b.Navigation("Practicequestions");
 
                     b.Navigation("Templates");
+                });
+
+            modelBuilder.Entity("LIP.Domain.Entities.Payment", b =>
+                {
+                    b.Navigation("Templatebookings");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Practicequestion", b =>
@@ -734,15 +905,26 @@ namespace LIP.Infrastructure.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("LIP.Domain.Entities.Template", b =>
+                {
+                    b.Navigation("Templatebookings");
+                });
+
             modelBuilder.Entity("LIP.Domain.Entities.User", b =>
                 {
                     b.Navigation("Examattempts");
 
+                    b.Navigation("Exammatrices");
+
                     b.Navigation("Exams");
+
+                    b.Navigation("Payments");
 
                     b.Navigation("Practicequestions");
 
                     b.Navigation("Submissions");
+
+                    b.Navigation("Templatebookings");
 
                     b.Navigation("Templates");
                 });

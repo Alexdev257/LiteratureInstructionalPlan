@@ -27,7 +27,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Id must be greater than zero"
                 });
             }
-            if(string.IsNullOrEmpty(this.Id.ToString()))
+            if (string.IsNullOrEmpty(this.Id.ToString()))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -35,7 +35,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Id is null or empty"
                 });
             }
-            if(Int32.TryParse(this.Id.ToString(), out int _) == false)
+            if (Int32.TryParse(this.Id.ToString(), out int _) == false)
             {
                 response.ListErrors.Add(new Errors
                 {

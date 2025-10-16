@@ -53,7 +53,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Fullname is not allowed special characters and digits!"
                 });
             }
-            if(response.ListErrors.Count > 0) response.IsSuccess = false;
+            if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

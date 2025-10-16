@@ -22,7 +22,7 @@ namespace LIP.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
-                .Include(p => p.Series)
+                //.Include(p => p.Series)
                 .Include(p => p.Examanswers)
                 .Include(p => p.Exams)
                 .Where(p => !p.IsDeleted)
@@ -35,7 +35,7 @@ namespace LIP.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
-                .Include(p => p.Series)
+                //.Include(p => p.Series)
                 .Where(p => !p.IsDeleted)
                 .AsQueryable();
 
@@ -45,8 +45,8 @@ namespace LIP.Infrastructure.Repositories
             if (query.GradeLevelId.HasValue)
                 questions = questions.Where(p => p.GradeLevelId == query.GradeLevelId);
 
-            if (query.SeriesId.HasValue)
-                questions = questions.Where(p => p.SeriesId == query.SeriesId);
+            //if (query.SeriesId.HasValue)
+            //    questions = questions.Where(p => p.SeriesId == query.SeriesId);
 
             if (query.CreatedBy.HasValue)
                 questions = questions.Where(p => p.CreatedBy == query.CreatedBy);
@@ -62,7 +62,7 @@ namespace LIP.Infrastructure.Repositories
                 QuestionType = command.QuestionType,
                 Answer = command.Answer,
                 GradeLevelId = command.GradeLevelId,
-                SeriesId = command.SeriesId,
+                //SeriesId = command.SeriesId,
                 CreatedBy = command.CreatedBy,
                 CreatedAt = command.CreatedAt
             };
@@ -81,7 +81,7 @@ namespace LIP.Infrastructure.Repositories
             question.QuestionType = command.QuestionType;
             question.Answer = command.Answer;
             question.GradeLevelId = command.GradeLevelId;
-            question.SeriesId = command.SeriesId;
+            //question.SeriesId = command.SeriesId;
             question.CreatedBy = command.CreatedBy;
             question.CreatedAt = command.CreatedAt;
 

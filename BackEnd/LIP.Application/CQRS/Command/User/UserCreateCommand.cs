@@ -98,7 +98,7 @@ namespace LIP.Application.CQRS.Command.User
                 });
             }
 
-            if(!Int32.TryParse(this.RoleId.ToString(), out var _))
+            if (!Int32.TryParse(this.RoleId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
