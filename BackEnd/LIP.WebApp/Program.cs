@@ -68,12 +68,24 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var conn = db.Database.GetConnectionString();
+    Console.WriteLine($"🔌 Connection string: {conn}");
 
-    if (db.Database.GetPendingMigrations().Any())
+    var pending = db.Database.GetPendingMigrations().ToList();
+    Console.WriteLine($"📦 Pending migrations: {pending.Count}");
+
+    if (pending.Any())
     {
+        Console.WriteLine("🚀 Running database migrations...");
         db.Database.Migrate();
+        Console.WriteLine("✅ Migration completed.");
+    }
+    else
+    {
+        Console.WriteLine("✅ No pending migrations.");
     }
 }
+
 
 
 // Configure the HTTP request pipeline.

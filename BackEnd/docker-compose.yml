@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # The .NET Web App service
@@ -28,7 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: "12345" # Must match the password in the connection string
       MYSQL_DATABASE: "swd392" # Creates the database on startup
     ports:
-      - "3333:3306" # Expose the database port to the host for direct access if needed
+      - "2301:3306" # Expose the database port to the host for direct access if needed
     volumes:
       - mysql_data:/var/lib/mysql # Persist database data
     healthcheck:
