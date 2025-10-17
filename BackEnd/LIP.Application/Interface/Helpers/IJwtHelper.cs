@@ -13,6 +13,6 @@ namespace LIP.Application.Interface.Helpers
         public string GenerateRefreshToken();
         public bool IsTokenValid(string token);
         public DateTime ConvertUnixTimeToDateTime(long utcExpiredDate);
-        public (bool,string?) ValidateToken(string accessToken);
+        public (bool, string?) ValidateToken(string accessToken);
     }
 }

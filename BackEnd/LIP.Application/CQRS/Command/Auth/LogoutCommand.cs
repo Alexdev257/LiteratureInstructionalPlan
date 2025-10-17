@@ -26,7 +26,7 @@ namespace LIP.Application.CQRS.Command.Auth
                 });
             }
 
-            if(!Int32.TryParse(this.UserId.ToString(), out var _))
+            if (!Int32.TryParse(this.UserId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -43,7 +43,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "User ID must larger than 0!"
                 });
             }
-            if(response.ListErrors.Count > 0) response.IsSuccess = false;
+            if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

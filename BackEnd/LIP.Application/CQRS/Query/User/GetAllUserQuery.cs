@@ -19,7 +19,7 @@ namespace LIP.Application.CQRS.Query.User
         public Task<GetAllUserResponse> ValidateAsync()
         {
             GetAllUserResponse response = new GetAllUserResponse();
-            if(RoleId != null)
+            if (RoleId != null)
             {
                 if (!Int32.TryParse(RoleId.ToString(), out var _))
                 {
@@ -30,7 +30,7 @@ namespace LIP.Application.CQRS.Query.User
                     });
                 }
             }
-            if(Email != null)
+            if (Email != null)
             {
                 if (!Regex.IsMatch(this.Email, @"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"))
                 {
@@ -42,7 +42,7 @@ namespace LIP.Application.CQRS.Query.User
                 }
             }
 
-            if(response.ListErrors.Count > 0) response.IsSuccess = false;
+            if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

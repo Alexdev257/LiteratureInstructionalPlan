@@ -35,7 +35,7 @@ namespace LIP.Application.CQRS.Handler.Auth
         public async Task<LoginGoogleResponse> Handle(LoginGoogleCommand request, CancellationToken cancellationToken)
         {
             var validatedResult = await _googleOAuthHelper.ValidateGoogleTokenAsync(request.GoogleToken);
-            if(!validatedResult.IsValid)
+            if (!validatedResult.IsValid)
             {
                 return new LoginGoogleResponse
                 {
@@ -71,7 +71,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                     Password = user.Password,
                 });
 
-                var userListEmail = await _userRepository.GetAllAsync(new Query.User.UserGetAllQuery { Email= validatedResult.Email });
+                var userListEmail = await _userRepository.GetAllAsync(new Query.User.UserGetAllQuery { Email = validatedResult.Email });
                 var userEmail = userList.ToList().FirstOrDefault();
 
                 var dictionnary = new Dictionary<string, string>

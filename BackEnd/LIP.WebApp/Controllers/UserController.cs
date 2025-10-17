@@ -20,14 +20,14 @@ namespace LIP.WebApp.Controllers
         public async Task<IActionResult> GetAllUserAsync([FromQuery] GetAllUserQuery request)
         {
             var result = await _mediator.Send(request);
-            if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetUserAsync(int id)
         {
-            var result = await _mediator.Send(new GetUserQuery { UserId = id});
+            var result = await _mediator.Send(new GetUserQuery { UserId = id });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
@@ -62,7 +62,7 @@ namespace LIP.WebApp.Controllers
                 IsDeleted = request.IsDeleted,
                 RoleId = request.RoleId,
             });
-            if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
     }

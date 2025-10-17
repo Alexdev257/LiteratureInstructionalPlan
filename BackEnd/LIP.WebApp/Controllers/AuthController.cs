@@ -34,7 +34,7 @@ namespace LIP.WebApp.Controllers
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyRegisterRequest request)
         {
-            var result = await _mediator.Send(new VerifyRegisterCommand 
+            var result = await _mediator.Send(new VerifyRegisterCommand
             {
                 Otp = request.Otp
             });
@@ -72,14 +72,14 @@ namespace LIP.WebApp.Controllers
             {
                 Id = request.Id,
                 AccessToken = request.AccessToken,
-                RefreshToken = request.RefreshToken, 
+                RefreshToken = request.RefreshToken,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody]  ForgotPasswordRequest request)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             var result = await _mediator.Send(new ForgotPasswordCommand
             {
@@ -128,14 +128,14 @@ namespace LIP.WebApp.Controllers
         }
 
         [HttpPost("verify-change-email")]
-        public async Task<IActionResult> VerifyChangeEmail([FromBody]  VerifyChangeEmailRequest request)
+        public async Task<IActionResult> VerifyChangeEmail([FromBody] VerifyChangeEmailRequest request)
         {
             var result = await _mediator.Send(new VerifyChangeEmailCommand
             {
                 NewEmail = request.NewEmail,
                 OTP = request.OTP,
             });
-            if(result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 

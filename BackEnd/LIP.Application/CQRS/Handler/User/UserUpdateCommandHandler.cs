@@ -22,7 +22,7 @@ namespace LIP.Application.CQRS.Handler.User
         public async Task<UserUpdateResponse> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetAsync(new Query.User.UserGetQuery { UserId = request.UserId });
-            if(user == null)
+            if (user == null)
             {
                 return new UserUpdateResponse
                 {
@@ -30,7 +30,7 @@ namespace LIP.Application.CQRS.Handler.User
                     Message = "User is not found!"
                 };
             }
-            var rs =  await _userRepository.UpdateAsync(request);
+            var rs = await _userRepository.UpdateAsync(request);
             if (rs)
             {
                 return new UserUpdateResponse

@@ -21,7 +21,7 @@ namespace LIP.Application.CQRS.Command.User
                 });
             }
 
-            if(!Int32.TryParse(this.UserId.ToString(), out var _))
+            if (!Int32.TryParse(this.UserId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -30,7 +30,7 @@ namespace LIP.Application.CQRS.Command.User
                 });
             }
 
-            if(this.UserId <= 0)
+            if (this.UserId <= 0)
             {
                 response.ListErrors.Add(new Errors
                 {

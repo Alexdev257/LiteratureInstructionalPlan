@@ -9,6 +9,8 @@ public partial class Gradelevel
 
     public string? Name { get; set; }
 
+    public virtual ICollection<Exammatrix> Exammatrices { get; set; } = new List<Exammatrix>();
+
     public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
 
     public virtual ICollection<Practicequestion> Practicequestions { get; set; } = new List<Practicequestion>();

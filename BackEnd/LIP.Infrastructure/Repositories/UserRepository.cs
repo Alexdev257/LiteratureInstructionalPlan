@@ -62,7 +62,7 @@ namespace LIP.Infrastructure.Repositories
 
             _context.Users.Add(user);
             return await _context.SaveChangesAsync() > 0;
-            
+
         }
 
         public async Task<bool> UpdateAsync(UserUpdateCommand command)
@@ -78,7 +78,7 @@ namespace LIP.Infrastructure.Repositories
             user.CreatedAt = command.CreatedAt;
 
             return await _context.SaveChangesAsync() > 0;
-            
+
         }
 
         public async Task<bool> DeleteAsync(UserDeleteCommand command)

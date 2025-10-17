@@ -91,7 +91,7 @@ namespace LIP.Infrastructure.Implements.Helpers
 
             //Check: token valid format
             var tokenInVerification = TokenHandler.ValidateToken(AccessToken, tokenValidateParam, out var validatedToken);
-            if(validatedToken == null)
+            if (validatedToken == null)
             {
                 return (false, "Invalid format token!");
             }
@@ -111,7 +111,7 @@ namespace LIP.Infrastructure.Implements.Helpers
             var utcExpiredToken = long.Parse(tokenInVerification.Claims.FirstOrDefault(t => t.Type == JwtRegisteredClaimNames.Exp).Value);
             var expiredDate = ConvertUnixTimeToDateTime(utcExpiredToken);
 
-            if(expiredDate > DateTime.UtcNow)
+            if (expiredDate > DateTime.UtcNow)
             {
                 return (false, "Access Token has not expired yet!");
             }

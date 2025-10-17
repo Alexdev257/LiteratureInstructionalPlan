@@ -29,7 +29,7 @@ namespace LIP.Application.CQRS.Handler.Auth
         }
         public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var user = _userRepository.GetAllAsync(new Query.User.UserGetAllQuery() { Email = request.Email}).Result.ToList().FirstOrDefault();
+            var user = _userRepository.GetAllAsync(new Query.User.UserGetAllQuery() { Email = request.Email }).Result.ToList().FirstOrDefault();
             if (user == null)
             {
                 return new LoginResponse

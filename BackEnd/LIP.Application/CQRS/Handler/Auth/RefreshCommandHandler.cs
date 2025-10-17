@@ -40,7 +40,7 @@ namespace LIP.Application.CQRS.Handler.Auth
 
             //var RefreshToken = _sessionExtensions.Get<string>($"RT_{request.Id}");
             var RefreshToken = await _redisHelper.GetAsync<string>($"RT_{request.Id}");
-            if(string.IsNullOrEmpty(RefreshToken))
+            if (string.IsNullOrEmpty(RefreshToken))
             {
                 return new RefreshResponse
                 {
@@ -66,7 +66,7 @@ namespace LIP.Application.CQRS.Handler.Auth
                         RefreshToken = newRefreshToken,
                     }
                 };
-                
+
             }
 
         }

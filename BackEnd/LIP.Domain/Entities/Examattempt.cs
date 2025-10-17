@@ -23,13 +23,13 @@ public partial class Examattempt
 
     public DateTime? LastSavedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
+
     public virtual Exam? Exam { get; set; }
 
     public virtual ICollection<Examanswer> Examanswers { get; set; } = new List<Examanswer>();
 
     public virtual User? User { get; set; }
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
 }

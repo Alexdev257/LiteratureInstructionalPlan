@@ -35,7 +35,7 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IPracticequestionRepository, PracticequestionRepository>();
             service.AddScoped<ITemplateRepository, TemplateRepository>();
             service.AddScoped<IGradelevelRepository, GradelevelRepository>();
-            service.AddScoped<IBookseriesRepository, BookseriesRepository>();
+            //service.AddScoped<IBookseriesRepository, BookseriesRepository>();
             service.AddScoped<IExamtypeRepository, ExamtypeRepository>();
             service.AddScoped<IExamattemptRepository, ExamattemptRepository>();
             service.AddScoped<IExamanswerRepository, ExamanswerRepository>();

@@ -41,7 +41,7 @@ namespace LIP.Application.CQRS.Query.User
                     Detail = "UserId must be larger than 0!"
                 });
             }
-            if(response.ListErrors.Count > 0) response.IsSuccess = false;
+            if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

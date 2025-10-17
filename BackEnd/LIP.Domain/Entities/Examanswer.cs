@@ -13,11 +13,11 @@ public partial class Examanswer
 
     public string? AnswerContent { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
+
     public virtual Examattempt? Attempt { get; set; }
 
     public virtual Practicequestion? Question { get; set; }
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
 }

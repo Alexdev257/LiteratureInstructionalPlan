@@ -44,7 +44,7 @@ namespace LIP.Application.CQRS.Command.Auth
                     Detail = "Email is not valid!"
                 });
             }
-            if(response.ListErrors.Count > 0) response.IsSuccess = false;
+            if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

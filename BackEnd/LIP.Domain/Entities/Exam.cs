@@ -15,13 +15,17 @@ public partial class Exam
 
     public int? GradeLevelId { get; set; }
 
-    public int? SeriesId { get; set; }
-
     public int? ExamTypeId { get; set; }
+
+    public int? MatrixId { get; set; }
 
     public int? CreatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
+
+    public DateTime DeletedAt { get; set; }
 
     public virtual ICollection<Answerguide> Answerguides { get; set; } = new List<Answerguide>();
 
@@ -33,13 +37,9 @@ public partial class Exam
 
     public virtual Gradelevel? GradeLevel { get; set; }
 
-    public virtual Bookseries? Series { get; set; }
+    public virtual Exammatrix? Matrix { get; set; }
 
     public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
 
     public virtual ICollection<Practicequestion> Questions { get; set; } = new List<Practicequestion>();
-
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime DeletedAt { get; set; }
 }
