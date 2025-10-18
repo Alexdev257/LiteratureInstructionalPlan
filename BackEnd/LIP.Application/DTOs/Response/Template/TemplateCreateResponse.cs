@@ -15,7 +15,7 @@ public class TemplateCreateResponseDTO
 
     public int? GradeLevelId { get; set; }
 
-    public int? SeriesId { get; set; }
+    public decimal? Price { get; set; }
 
     public int? CreatedBy { get; set; }
 }

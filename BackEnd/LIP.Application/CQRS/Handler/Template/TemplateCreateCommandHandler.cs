@@ -40,7 +40,7 @@ namespace LIP.Application.CQRS.Handler.Template
                     FilePath = result,
                     Title = request.Title,
                     GradeLevelId = request.GradeLevelId,
-                    SeriesId = request.SeriesId
+                    Price = request.Price
                 }
             };
 

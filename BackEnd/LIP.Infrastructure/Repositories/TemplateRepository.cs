@@ -37,15 +37,6 @@ namespace LIP.Infrastructure.Repositories
                 .Where(t => !t.IsDeleted)
                 .AsQueryable();
 
-            if (query.GradeLevelId.HasValue)
-                templates = templates.Where(t => t.GradeLevelId == query.GradeLevelId);
-
-            //if (query.SeriesId.HasValue)
-            //    templates = templates.Where(t => t.SeriesId == query.SeriesId);
-
-            if (query.CreatedBy.HasValue)
-                templates = templates.Where(t => t.CreatedBy == query.CreatedBy);
-
             return await templates.ToListAsync();
         }
 
@@ -56,7 +47,7 @@ namespace LIP.Infrastructure.Repositories
                 Title = command.Title,
                 FilePath = command.FilePath,
                 GradeLevelId = command.GradeLevelId,
-                //SeriesId = command.SeriesId,
+                Price = (float)command.Price!,
                 CreatedBy = command.CreatedBy,
                 CreatedAt = command.CreatedAt
             };
@@ -91,6 +82,15 @@ namespace LIP.Infrastructure.Repositories
             template.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query)
+        {
+            var result = await _context.Templates.AsNoTracking()
+                .Where(t => !t.IsDeleted && t.CreatedBy == query.UserId)
+                .ToListAsync();
+
+            return result;
         }
     }
 }

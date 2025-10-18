@@ -1,11 +1,12 @@
 using LIP.Application.CQRS.Query.Template;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
 using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Template
 {
-    public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, IEnumerable<LIP.Domain.Entities.Template>>
+    public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, TemplateGetResponse>
     {
         private readonly ITemplateRepository _templateRepository;
 
@@ -14,9 +15,19 @@ namespace LIP.Application.CQRS.Handler.Template
             _templateRepository = templateRepository;
         }
 
-        public async Task<IEnumerable<LIP.Domain.Entities.Template>> Handle(TemplateGetAllQuery request, CancellationToken cancellationToken)
+        public async Task<TemplateGetResponse> Handle(TemplateGetAllQuery request, CancellationToken cancellationToken)
         {
-            return await _templateRepository.GetAllAsync(request);
+            var result = await _templateRepository.GetAllAsync(request);
+            return new TemplateGetResponse
+            {
+                IsSuccess = true,
+                Message = "Get all templates success",
+                Data = result.Select(x => new TemplateGetDTO
+                {
+                    FilePath = x.FilePath!,
+                    Title = x.Title!
+                }).ToList()
+            };
         }
     }
 }

@@ -2,7 +2,9 @@ using LIP.Application.CQRS.Command.Templatebooking;
 using LIP.Application.CQRS.Query.Templatebooking;
 using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
+using LIP.Domain.Enum;
 using LIP.Infrastructure.Persistency;
+using Microsoft.EntityFrameworkCore;
 
 namespace LIP.Infrastructure.Repositories;
 
@@ -25,9 +27,14 @@ public class TemplatebookingRepository : ITemplatebookingRepository
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Templatebooking>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query)
+    public async Task<IEnumerable<Templatebooking>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query)
     {
-        throw new NotImplementedException();
+        var result = await _context.Templatebookings.Where(x =>
+            x.UserId == query.UserId &&
+            x.Status == nameof(TemplateBookingEnum.Success) &&
+            x.IsDeleted == false).ToListAsync();
+
+        return result;
     }
 
     public Task<bool> CreateAsync(TemplatebookingCreateCommand command)

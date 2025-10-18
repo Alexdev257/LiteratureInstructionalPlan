@@ -10,7 +10,7 @@ namespace LIP.Application.CQRS.Command.Template
     {
         public string? Title { get; set; }
         public int? GradeLevelId { get; set; }
-        public int? SeriesId { get; set; }
+        public decimal? Price { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
         /// <summary>
@@ -40,7 +40,7 @@ namespace LIP.Application.CQRS.Command.Template
                     Detail = "GradeLevelId is required and must be greater than 0."
                 });
 
-            if (!SeriesId.HasValue || SeriesId <= 0)
+            if (!Price.HasValue || Price <= 0)
                 response.ListErrors.Add(new Errors
                 {
                     Field = "SeriesId",
