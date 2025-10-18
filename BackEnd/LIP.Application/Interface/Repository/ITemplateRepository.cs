@@ -11,5 +11,7 @@ namespace LIP.Application.Interface.Repository
         Task<bool> CreateAsync(TemplateCreateCommand command);
         Task<bool> UpdateAsync(TemplateUpdateCommand command);
         Task<bool> DeleteAsync(TemplateDeleteCommand command);
+        
+        Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query);
     }
 }

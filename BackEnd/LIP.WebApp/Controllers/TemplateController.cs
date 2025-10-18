@@ -1,4 +1,5 @@
 using LIP.Application.CQRS.Command.Template;
+using LIP.Application.CQRS.Query.Template;
 using LIP.Application.DTOs.Request.Template;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace LIP.WebApp.Controllers
         {
             public string Title { get; set; } = string.Empty;
             public int GradeLevelId { get; set; }
-            public int SeriesId { get; set; }
+            public decimal Price { get; set; }
             public int CreatedById { get; set; }
             public IFormFile? File { get; set; }
         }
@@ -35,7 +36,7 @@ namespace LIP.WebApp.Controllers
             {
                 Title = form.Title,
                 GradeLevelId = form.GradeLevelId,
-                SeriesId = form.SeriesId,
+                Price = form.Price,
                 CreatedBy = form.CreatedById,
                 FileName = form.File.FileName,
                 FileStream = stream
@@ -45,13 +46,66 @@ namespace LIP.WebApp.Controllers
             {
                 Title = request.Title,
                 GradeLevelId = request.GradeLevelId,
-                SeriesId = request.SeriesId,
+                Price = request.Price,
                 CreatedBy = request.CreatedBy,
                 FileName = request.FileName,
                 FileStream = request.FileStream
             });
 
             return StatusCode(result.IsSuccess ? StatusCodes.Status201Created : StatusCodes.Status500InternalServerError, result);
+        }
+
+        /// <summary>
+        /// Get all templates
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAllTemplates()
+        {
+            var result = await _mediatoR.Send(new TemplateGetAllQuery());
+            
+            return StatusCode(StatusCodes.Status200OK, result);
+        }
+
+        /// <summary>
+        /// Get template by id
+        /// </summary>
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetTemplateById([FromRoute] TemplateGetByIdRequest request)
+        {
+            var result = await _mediatoR.Send(new TemplateGetQuery
+            {
+                TemplateId = request.Id
+            });
+            
+            return StatusCode(StatusCodes.Status200OK, result);
+        }
+
+        /// <summary>
+        /// Delete template by id
+        /// </summary>
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteTemplateById([FromRoute] TemplateDeleteRequest request)
+        {
+            var result = await _mediatoR.Send(new TemplateDeleteCommand
+            {
+                TemplateId = request.Id
+            });
+            
+            return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError, result);
+        }
+
+        /// <summary>
+        /// Get template by user id
+        /// </summary>
+        [HttpGet("user/{UserId}")]
+        public async Task<IActionResult> GetTemplatesByUserId([FromRoute] TemplateGetByUserIdRequest request)
+        {
+            var result = await _mediatoR.Send(new TemplateGetByUserId
+            {
+                UserId = request.UserId
+            });
+            
+            return StatusCode(StatusCodes.Status200OK, result);
         }
     }
 }

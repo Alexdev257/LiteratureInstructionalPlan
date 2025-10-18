@@ -29,6 +29,26 @@ public class CloudinaryUpload : ICloudinaryUpload
 
         return result.SecureUrl?.ToString() ?? string.Empty;
     }
+
+    public async Task<bool> DeleteFile(string fileName)
+    {
+        var deletionParams = new DeletionParams(fileName)
+        {
+            ResourceType = ResourceType.Raw
+        };
+        
+        var result = await _cloudinary.DestroyAsync(deletionParams);
+        
+        return result.Result == "ok";
+    }
+
+    public Task<string> GetPublicId(string fileUrl)
+    {
+        Uri uri = new Uri(fileUrl);
+        string publicIdWithExtension = Path.GetFileName(uri.LocalPath);
+        string publicId = Path.GetFileNameWithoutExtension(publicIdWithExtension);
+        return Task.FromResult(publicId);
+    }
 }
 
 public class AccountCloundinary

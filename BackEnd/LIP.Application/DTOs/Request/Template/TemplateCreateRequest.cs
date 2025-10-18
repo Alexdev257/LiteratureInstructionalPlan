@@ -6,7 +6,7 @@ public class TemplateCreateRequest
 {
     public string? Title { get; set; }
     public int? GradeLevelId { get; set; }
-    public int? SeriesId { get; set; }
+    public decimal? Price { get; set; }
     public int? CreatedBy { get; set; }
 
     public string FileName { get; set; } = string.Empty;
