@@ -7,16 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80" # Map host port 8080 to container port 80
+      - "8080:80"
     environment:
-      # Override the connection string to connect to the 'db' service
       - ConnectionStrings__DefaultConnection=server=db;port=3306;database=swd392;user=root;password=12345
-      # Configure ASP.NET Core to use HTTP only in development
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
     depends_on:
       db:
-        condition: service_healthy # Wait for database to be healthy
+        condition: service_healthy
     networks:
       - lip-network
 
@@ -25,12 +23,12 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "12345" # Must match the password in the connection string
-      MYSQL_DATABASE: "swd392" # Creates the database on startup
+      MYSQL_ROOT_PASSWORD: "12345"
+      MYSQL_DATABASE: "swd392"
     ports:
-      - "2301:3306" # Expose the database port to the host for direct access if needed
+      - "2301:3306"
     volumes:
-      - mysql_data:/var/lib/mysql # Persist database data
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s

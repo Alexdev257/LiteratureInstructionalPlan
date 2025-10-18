@@ -35,7 +35,6 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IPracticequestionRepository, PracticequestionRepository>();
             service.AddScoped<ITemplateRepository, TemplateRepository>();
             service.AddScoped<IGradelevelRepository, GradelevelRepository>();
-            //service.AddScoped<IBookseriesRepository, BookseriesRepository>();
             service.AddScoped<IExamtypeRepository, ExamtypeRepository>();
             service.AddScoped<IExamattemptRepository, ExamattemptRepository>();
             service.AddScoped<IExamanswerRepository, ExamanswerRepository>();
@@ -47,6 +46,8 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IOtpHelper, OtpHelper>();
             service.AddScoped<IGoogleOAuthHelper, GoogleOAuthHelper>();
             service.AddScoped<IRedisHelper, RedisHelper>();
+            service.AddScoped<IPaymentRepository, PaymentRepository>();
+            service.AddScoped<ITemplatebookingRepository, TemplatebookingRepository>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
