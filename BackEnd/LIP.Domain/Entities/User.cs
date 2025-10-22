@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LIP.Domain.Entities;
+﻿namespace LIP.Domain.Entities;
 
 public partial class User
 {
-    public int UserId { get; set; }
+    public int UserId
+    {
+        get; set;
+    }
 
     public string UserName { get; set; } = null!;
 
@@ -15,13 +15,25 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public int? RoleId { get; set; }
+    public int? RoleId
+    {
+        get; set;
+    }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime? CreatedAt
+    {
+        get; set;
+    }
 
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted
+    {
+        get; set;
+    }
 
-    public DateTime DeletedAt { get; set; }
+    public DateTime DeletedAt
+    {
+        get; set;
+    }
 
     public virtual ICollection<Examattempt> Examattempts { get; set; } = new List<Examattempt>();
 
@@ -33,9 +45,10 @@ public partial class User
 
     public virtual ICollection<Practicequestion> Practicequestions { get; set; } = new List<Practicequestion>();
 
-    public virtual Role? Role { get; set; }
-
-    public virtual ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+    public virtual Role? Role
+    {
+        get; set;
+    }
 
     public virtual ICollection<Templatebooking> Templatebookings { get; set; } = new List<Templatebooking>();
 
