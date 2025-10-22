@@ -1,7 +1,10 @@
-﻿namespace LIP.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LIP.Domain.Entities;
 
 public partial class Template
 {
+    [Key]
     public int TemplateId
     {
         get; set;
@@ -52,10 +55,10 @@ public partial class Template
         get; set;
     }
 
-    public virtual Gradelevel? GradeLevel
+    public virtual GradeLevel? GradeLevel
     {
         get; set;
     }
 
-    public virtual ICollection<Templatebooking> Templatebookings { get; set; } = new List<Templatebooking>();
+    public virtual ICollection<TemplateOrder> Templatebookings { get; set; } = new List<TemplateOrder>();
 }

@@ -4,6 +4,7 @@ using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LIP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251022140755_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("AnswerGuides");
+                    b.ToTable("Answerguides");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Exam", b =>
@@ -150,7 +153,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamAnswers");
+                    b.ToTable("Examanswers");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.ExamAttempt", b =>
@@ -197,7 +200,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ExamAttempts");
+                    b.ToTable("Examattempts");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.ExamMatrix", b =>
@@ -244,7 +247,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("GradeLevelId");
 
-                    b.ToTable("ExamMatrices");
+                    b.ToTable("Exammatrices");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.ExamMatrixDetail", b =>
@@ -296,7 +299,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasKey("ExamTypeId");
 
-                    b.ToTable("ExamTypes");
+                    b.ToTable("Examtypes");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.GradeLevel", b =>
@@ -312,7 +315,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasKey("GradeLevelId");
 
-                    b.ToTable("GradeLevels");
+                    b.ToTable("Gradelevels");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Payment", b =>
@@ -395,7 +398,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("GradeLevelId");
 
-                    b.ToTable("PracticeQuestions");
+                    b.ToTable("Practicequestions");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.Role", b =>
@@ -496,7 +499,7 @@ namespace LIP.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TemplateOrders");
+                    b.ToTable("Templatebookings");
                 });
 
             modelBuilder.Entity("LIP.Domain.Entities.User", b =>

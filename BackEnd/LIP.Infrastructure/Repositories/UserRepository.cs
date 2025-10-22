@@ -25,7 +25,6 @@ namespace LIP.Infrastructure.Repositories
                 .Include(u => u.Examattempts)
                 .Include(u => u.Exams)
                 .Include(u => u.Practicequestions)
-                .Include(u => u.Submissions)
                 .Include(u => u.Templates)
                 .Where(u => !u.IsDeleted)
                 .FirstOrDefaultAsync(u => u.UserId == query.UserId);

@@ -1,7 +1,10 @@
-﻿namespace LIP.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LIP.Domain.Entities;
 
 public partial class Exam
 {
+    [Key]
     public int ExamId
     {
         get; set;
@@ -57,29 +60,29 @@ public partial class Exam
         get; set;
     }
 
-    public virtual ICollection<Answerguide> Answerguides { get; set; } = new List<Answerguide>();
+    public virtual ICollection<AnswerGuide> Answerguides { get; set; } = new List<AnswerGuide>();
 
     public virtual User? CreatedByNavigation
     {
         get; set;
     }
 
-    public virtual Examtype? ExamType
+    public virtual ExamType? ExamType
     {
         get; set;
     }
 
-    public virtual ICollection<Examattempt> Examattempts { get; set; } = new List<Examattempt>();
+    public virtual ICollection<ExamAttempt> Examattempts { get; set; } = new List<ExamAttempt>();
 
-    public virtual Gradelevel? GradeLevel
+    public virtual GradeLevel? GradeLevel
     {
         get; set;
     }
 
-    public virtual Exammatrix? Matrix
+    public virtual ExamMatrix? Matrix
     {
         get; set;
     }
 
-    public virtual ICollection<Practicequestion> Questions { get; set; } = new List<Practicequestion>();
+    public virtual ICollection<PracticeQuestion> Questions { get; set; } = new List<PracticeQuestion>();
 }

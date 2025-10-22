@@ -16,9 +16,9 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Examanswer?> GetAsync(ExamanswerGetQuery query)
+        public async Task<ExamAnswer?> GetAsync(ExamanswerGetQuery query)
         {
-            return await _context.Examanswers
+            return await _context.ExamAnswers
                 .AsNoTracking()
                 .Include(e => e.Attempt)
                 .Include(e => e.Question)
@@ -26,9 +26,9 @@ namespace LIP.Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.AnswerId == query.AnswerId);
         }
 
-        public async Task<IEnumerable<Examanswer>> GetAllAsync(ExamanswerGetAllQuery query)
+        public async Task<IEnumerable<ExamAnswer>> GetAllAsync(ExamanswerGetAllQuery query)
         {
-            var examanswers = _context.Examanswers
+            var ExamAnswers = _context.ExamAnswers
                 .AsNoTracking()
                 .Include(e => e.Attempt)
                 .Include(e => e.Question)
@@ -36,31 +36,31 @@ namespace LIP.Infrastructure.Repositories
                 .AsQueryable();
 
             if (query.AttemptId.HasValue)
-                examanswers = examanswers.Where(e => e.AttemptId == query.AttemptId);
+                ExamAnswers = ExamAnswers.Where(e => e.AttemptId == query.AttemptId);
 
             if (query.QuestionId.HasValue)
-                examanswers = examanswers.Where(e => e.QuestionId == query.QuestionId);
+                ExamAnswers = ExamAnswers.Where(e => e.QuestionId == query.QuestionId);
 
-            return await examanswers.ToListAsync();
+            return await ExamAnswers.ToListAsync();
         }
 
         public async Task<bool> CreateAsync(ExamanswerCreateCommand command)
         {
-            var examanswer = new Examanswer
+            var examanswer = new ExamAnswer
             {
                 AttemptId = command.AttemptId,
                 QuestionId = command.QuestionId,
                 AnswerContent = command.AnswerContent
             };
 
-            _context.Examanswers.Add(examanswer);
+            _context.ExamAnswers.Add(examanswer);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(ExamanswerUpdateCommand command)
         {
-            var examanswer = await _context.Examanswers.FindAsync(command.AnswerId);
+            var examanswer = await _context.ExamAnswers.FindAsync(command.AnswerId);
             if (examanswer == null || examanswer.IsDeleted) return false;
 
             examanswer.AttemptId = command.AttemptId;
@@ -73,7 +73,7 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(ExamanswerDeleteCommand command)
         {
-            var examanswer = await _context.Examanswers.FindAsync(command.AnswerId);
+            var examanswer = await _context.ExamAnswers.FindAsync(command.AnswerId);
             if (examanswer == null) return false;
 
             examanswer.IsDeleted = true;

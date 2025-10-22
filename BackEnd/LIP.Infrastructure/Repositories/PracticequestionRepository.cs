@@ -16,9 +16,9 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Practicequestion?> GetAsync(PracticequestionGetQuery query)
+        public async Task<PracticeQuestion?> GetAsync(PracticequestionGetQuery query)
         {
-            return await _context.Practicequestions
+            return await _context.PracticeQuestions
                 .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
@@ -29,9 +29,9 @@ namespace LIP.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.QuestionId == query.QuestionId);
         }
 
-        public async Task<IEnumerable<Practicequestion>> GetAllAsync(PracticequestionGetAllQuery query)
+        public async Task<IEnumerable<PracticeQuestion>> GetAllAsync(PracticequestionGetAllQuery query)
         {
-            var questions = _context.Practicequestions
+            var questions = _context.PracticeQuestions
                 .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
@@ -56,7 +56,7 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> CreateAsync(PracticequestionCreateCommand command)
         {
-            var question = new Practicequestion
+            var question = new PracticeQuestion
             {
                 Content = command.Content,
                 QuestionType = command.QuestionType,
@@ -67,14 +67,14 @@ namespace LIP.Infrastructure.Repositories
                 CreatedAt = command.CreatedAt
             };
 
-            _context.Practicequestions.Add(question);
+            _context.PracticeQuestions.Add(question);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(PracticequestionUpdateCommand command)
         {
-            var question = await _context.Practicequestions.FindAsync(command.QuestionId);
+            var question = await _context.PracticeQuestions.FindAsync(command.QuestionId);
             if (question == null || question.IsDeleted) return false;
 
             question.Content = command.Content;
@@ -91,7 +91,7 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(PracticequestionDeleteCommand command)
         {
-            var question = await _context.Practicequestions.FindAsync(command.QuestionId);
+            var question = await _context.PracticeQuestions.FindAsync(command.QuestionId);
             if (question == null) return false;
 
             question.IsDeleted = true;

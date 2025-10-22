@@ -17,19 +17,19 @@ public class TemplatebookingRepository : ITemplatebookingRepository
         _context = context;
     }
 
-    public Task<Templatebooking?> GetAsync(TemplatebookingGetQuery query)
+    public Task<TemplateOrder?> GetAsync(TemplatebookingGetQuery query)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Templatebooking>> GetAllAsync(TemplatebookingGetAllQuery query)
+    public Task<IEnumerable<TemplateOrder>> GetAllAsync(TemplatebookingGetAllQuery query)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Templatebooking>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query)
+    public async Task<IEnumerable<TemplateOrder>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query)
     {
-        var result = await _context.Templatebookings.Where(x =>
+        var result = await _context.TemplateOrders.Where(x =>
             x.UserId == query.UserId &&
             x.Status == nameof(TemplateBookingEnum.Success) &&
             x.IsDeleted == false).ToListAsync();

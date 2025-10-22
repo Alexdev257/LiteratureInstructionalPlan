@@ -16,40 +16,40 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Gradelevel?> GetAsync(GradelevelGetQuery query)
+        public async Task<GradeLevel?> GetAsync(GradelevelGetQuery query)
         {
-            return await _context.Gradelevels
+            return await _context.GradeLevels
                 .Include(g => g.Exams)
                 .Include(g => g.Practicequestions)
                 .Include(g => g.Templates)
                 .FirstOrDefaultAsync(g => g.GradeLevelId == query.GradeLevelId);
         }
 
-        public async Task<IEnumerable<Gradelevel>> GetAllAsync(GradelevelGetAllQuery query)
+        public async Task<IEnumerable<GradeLevel>> GetAllAsync(GradelevelGetAllQuery query)
         {
-            var gradelevels = _context.Gradelevels.AsQueryable();
+            var GradeLevels = _context.GradeLevels.AsQueryable();
 
             if (!string.IsNullOrEmpty(query.Name))
-                gradelevels = gradelevels.Where(g => g.Name!.Contains(query.Name));
+                GradeLevels = GradeLevels.Where(g => g.Name!.Contains(query.Name));
 
-            return await gradelevels.ToListAsync();
+            return await GradeLevels.ToListAsync();
         }
 
         public async Task<bool> CreateAsync(GradelevelCreateCommand command)
         {
-            var gradelevel = new Gradelevel
+            var gradelevel = new GradeLevel
             {
                 Name = command.Name
             };
 
-            _context.Gradelevels.Add(gradelevel);
+            _context.GradeLevels.Add(gradelevel);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(GradelevelUpdateCommand command)
         {
-            var gradelevel = await _context.Gradelevels.FindAsync(command.GradeLevelId);
+            var gradelevel = await _context.GradeLevels.FindAsync(command.GradeLevelId);
             if (gradelevel == null) return false;
 
             gradelevel.Name = command.Name;
@@ -60,10 +60,10 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(GradelevelDeleteCommand command)
         {
-            var gradelevel = await _context.Gradelevels.FindAsync(command.GradeLevelId);
+            var gradelevel = await _context.GradeLevels.FindAsync(command.GradeLevelId);
             if (gradelevel == null) return false;
 
-            _context.Gradelevels.Remove(gradelevel);
+            _context.GradeLevels.Remove(gradelevel);
             await _context.SaveChangesAsync();
             return true;
         }

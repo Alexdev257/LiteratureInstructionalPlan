@@ -6,8 +6,8 @@ namespace LIP.Application.Interface.Repository
 {
     public interface IExamanswerRepository
     {
-        Task<Examanswer?> GetAsync(ExamanswerGetQuery query);
-        Task<IEnumerable<Examanswer>> GetAllAsync(ExamanswerGetAllQuery query);
+        Task<ExamAnswer?> GetAsync(ExamanswerGetQuery query);
+        Task<IEnumerable<ExamAnswer>> GetAllAsync(ExamanswerGetAllQuery query);
         Task<bool> CreateAsync(ExamanswerCreateCommand command);
         Task<bool> UpdateAsync(ExamanswerUpdateCommand command);
         Task<bool> DeleteAsync(ExamanswerDeleteCommand command);

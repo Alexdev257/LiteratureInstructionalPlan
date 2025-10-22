@@ -6,8 +6,8 @@ namespace LIP.Application.Interface.Repository
 {
     public interface IGradelevelRepository
     {
-        Task<Gradelevel?> GetAsync(GradelevelGetQuery query);
-        Task<IEnumerable<Gradelevel>> GetAllAsync(GradelevelGetAllQuery query);
+        Task<GradeLevel?> GetAsync(GradelevelGetQuery query);
+        Task<IEnumerable<GradeLevel>> GetAllAsync(GradelevelGetAllQuery query);
         Task<bool> CreateAsync(GradelevelCreateCommand command);
         Task<bool> UpdateAsync(GradelevelUpdateCommand command);
         Task<bool> DeleteAsync(GradelevelDeleteCommand command);

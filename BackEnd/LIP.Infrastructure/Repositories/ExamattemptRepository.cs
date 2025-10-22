@@ -16,9 +16,9 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Examattempt?> GetAsync(ExamattemptGetQuery query)
+        public async Task<ExamAttempt?> GetAsync(ExamattemptGetQuery query)
         {
-            return await _context.Examattempts
+            return await _context.ExamAttempts
                 .AsNoTracking()
                 .Include(e => e.Exam)
                 .Include(e => e.User)
@@ -27,9 +27,9 @@ namespace LIP.Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.AttemptId == query.AttemptId);
         }
 
-        public async Task<IEnumerable<Examattempt>> GetAllAsync(ExamattemptGetAllQuery query)
+        public async Task<IEnumerable<ExamAttempt>> GetAllAsync(ExamattemptGetAllQuery query)
         {
-            var examattempts = _context.Examattempts
+            var ExamAttempts = _context.ExamAttempts
                 .AsNoTracking()
                 .Include(e => e.Exam)
                 .Include(e => e.User)
@@ -37,20 +37,20 @@ namespace LIP.Infrastructure.Repositories
                 .AsQueryable();
 
             if (query.ExamId.HasValue)
-                examattempts = examattempts.Where(e => e.ExamId == query.ExamId);
+                ExamAttempts = ExamAttempts.Where(e => e.ExamId == query.ExamId);
 
             if (query.UserId.HasValue)
-                examattempts = examattempts.Where(e => e.UserId == query.UserId);
+                ExamAttempts = ExamAttempts.Where(e => e.UserId == query.UserId);
 
             if (!string.IsNullOrEmpty(query.Status))
-                examattempts = examattempts.Where(e => e.Status == query.Status);
+                ExamAttempts = ExamAttempts.Where(e => e.Status == query.Status);
 
-            return await examattempts.ToListAsync();
+            return await ExamAttempts.ToListAsync();
         }
 
         public async Task<bool> CreateAsync(ExamattemptCreateCommand command)
         {
-            var examattempt = new Examattempt
+            var examattempt = new ExamAttempt
             {
                 ExamId = command.ExamId,
                 UserId = command.UserId,
@@ -62,14 +62,14 @@ namespace LIP.Infrastructure.Repositories
                 LastSavedAt = command.LastSavedAt
             };
 
-            _context.Examattempts.Add(examattempt);
+            _context.ExamAttempts.Add(examattempt);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(ExamattemptUpdateCommand command)
         {
-            var examattempt = await _context.Examattempts.FindAsync(command.AttemptId);
+            var examattempt = await _context.ExamAttempts.FindAsync(command.AttemptId);
             if (examattempt == null || examattempt.IsDeleted) return false;
 
             examattempt.ExamId = command.ExamId;
@@ -87,7 +87,7 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(ExamattemptDeleteCommand command)
         {
-            var examattempt = await _context.Examattempts.FindAsync(command.AttemptId);
+            var examattempt = await _context.ExamAttempts.FindAsync(command.AttemptId);
             if (examattempt == null) return false;
 
             examattempt.IsDeleted = true;
