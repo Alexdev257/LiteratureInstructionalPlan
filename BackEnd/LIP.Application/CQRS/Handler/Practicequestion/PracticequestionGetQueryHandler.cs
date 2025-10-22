@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion
 {
-    public class PracticequestionGetQueryHandler : IRequestHandler<PracticequestionGetQuery, LIP.Domain.Entities.Practicequestion?>
+    public class PracticequestionGetQueryHandler : IRequestHandler<PracticequestionGetQuery, LIP.Domain.Entities.PracticeQuestion?>
     {
         private readonly IPracticequestionRepository _practicequestionRepository;
 
@@ -14,7 +14,7 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
             _practicequestionRepository = practicequestionRepository;
         }
 
-        public async Task<LIP.Domain.Entities.Practicequestion?> Handle(PracticequestionGetQuery request, CancellationToken cancellationToken)
+        public async Task<LIP.Domain.Entities.PracticeQuestion?> Handle(PracticequestionGetQuery request, CancellationToken cancellationToken)
         {
             return await _practicequestionRepository.GetAsync(request);
         }

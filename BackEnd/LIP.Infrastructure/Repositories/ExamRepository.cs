@@ -23,10 +23,8 @@ namespace LIP.Infrastructure.Repositories
                 .Include(e => e.CreatedByNavigation)
                 .Include(e => e.ExamType)
                 .Include(e => e.GradeLevel)
-                //.Include(e => e.Series)
                 .Include(e => e.Answerguides)
                 .Include(e => e.Examattempts)
-                .Include(e => e.Submissions)
                 .Include(e => e.Questions)
                 .Where(e => !e.IsDeleted)
                 .FirstOrDefaultAsync(e => e.ExamId == query.ExamId);
@@ -39,15 +37,11 @@ namespace LIP.Infrastructure.Repositories
                 .Include(e => e.CreatedByNavigation)
                 .Include(e => e.ExamType)
                 .Include(e => e.GradeLevel)
-                //.Include(e => e.Series)
                 .Where(e => !e.IsDeleted)
                 .AsQueryable();
 
             if (query.GradeLevelId.HasValue)
                 exams = exams.Where(e => e.GradeLevelId == query.GradeLevelId);
-
-            //if (query.SeriesId.HasValue)
-            //    exams = exams.Where(e => e.SeriesId == query.SeriesId);
 
             if (query.ExamTypeId.HasValue)
                 exams = exams.Where(e => e.ExamTypeId == query.ExamTypeId);
@@ -66,7 +60,6 @@ namespace LIP.Infrastructure.Repositories
                 Description = command.Description,
                 DurationMinutes = command.DurationMinutes,
                 GradeLevelId = command.GradeLevelId,
-                //SeriesId = command.SeriesId,
                 ExamTypeId = command.ExamTypeId,
                 CreatedBy = command.CreatedBy,
                 CreatedAt = command.CreatedAt
@@ -86,7 +79,6 @@ namespace LIP.Infrastructure.Repositories
             exam.Description = command.Description;
             exam.DurationMinutes = command.DurationMinutes;
             exam.GradeLevelId = command.GradeLevelId;
-            //exam.SeriesId = command.SeriesId;
             exam.ExamTypeId = command.ExamTypeId;
             exam.CreatedBy = command.CreatedBy;
             exam.CreatedAt = command.CreatedAt;

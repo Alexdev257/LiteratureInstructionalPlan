@@ -30,7 +30,6 @@ namespace LIP.Infrastructure.AddDependencyInjection
         {
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IExamRepository, ExamRepository>();
-            service.AddScoped<ISubmissionRepository, SubmissionRepository>();
             service.AddScoped<IRoleRepository, RoleRepository>();
             service.AddScoped<IPracticequestionRepository, PracticequestionRepository>();
             service.AddScoped<ITemplateRepository, TemplateRepository>();

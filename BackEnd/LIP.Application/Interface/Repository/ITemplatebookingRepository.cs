@@ -6,9 +6,9 @@ namespace LIP.Application.Interface.Repository;
 
 public interface ITemplatebookingRepository
 {
-    Task<Templatebooking?> GetAsync(TemplatebookingGetQuery query);
-    Task<IEnumerable<Templatebooking>> GetAllAsync(TemplatebookingGetAllQuery query);
-    Task<IEnumerable<Templatebooking>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query);
+    Task<TemplateOrder?> GetAsync(TemplatebookingGetQuery query);
+    Task<IEnumerable<TemplateOrder>> GetAllAsync(TemplatebookingGetAllQuery query);
+    Task<IEnumerable<TemplateOrder>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query);
     Task<bool> CreateAsync(TemplatebookingCreateCommand command);
     Task<bool> UpdateAsync(TemplatebookingUpdateCommand command);
     Task<bool> DeleteAsync(TemplatebookingDeleteCommand command);

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Gradelevel
 {
-    public class GradelevelGetQueryHandler : IRequestHandler<GradelevelGetQuery, LIP.Domain.Entities.Gradelevel?>
+    public class GradelevelGetQueryHandler : IRequestHandler<GradelevelGetQuery, LIP.Domain.Entities.GradeLevel?>
     {
         private readonly IGradelevelRepository _gradelevelRepository;
 
@@ -14,7 +14,7 @@ namespace LIP.Application.CQRS.Handler.Gradelevel
             _gradelevelRepository = gradelevelRepository;
         }
 
-        public async Task<LIP.Domain.Entities.Gradelevel?> Handle(GradelevelGetQuery request, CancellationToken cancellationToken)
+        public async Task<LIP.Domain.Entities.GradeLevel?> Handle(GradelevelGetQuery request, CancellationToken cancellationToken)
         {
             return await _gradelevelRepository.GetAsync(request);
         }

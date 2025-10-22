@@ -3,7 +3,7 @@ using LIP.Domain.Entities;
 
 namespace LIP.Application.CQRS.Query.Practicequestion
 {
-    public class PracticequestionGetAllQuery : IRequest<IEnumerable<LIP.Domain.Entities.Practicequestion>>
+    public class PracticequestionGetAllQuery : IRequest<IEnumerable<LIP.Domain.Entities.PracticeQuestion>>
     {
         public string? QuestionType { get; set; }
         public int? GradeLevelId { get; set; }

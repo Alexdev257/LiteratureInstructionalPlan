@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Examattempt
 {
-    public class ExamattemptGetAllQueryHandler : IRequestHandler<ExamattemptGetAllQuery, IEnumerable<LIP.Domain.Entities.Examattempt>>
+    public class ExamattemptGetAllQueryHandler : IRequestHandler<ExamattemptGetAllQuery, IEnumerable<LIP.Domain.Entities.ExamAttempt>>
     {
         private readonly IExamattemptRepository _examattemptRepository;
 
@@ -14,7 +14,7 @@ namespace LIP.Application.CQRS.Handler.Examattempt
             _examattemptRepository = examattemptRepository;
         }
 
-        public async Task<IEnumerable<LIP.Domain.Entities.Examattempt>> Handle(ExamattemptGetAllQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<LIP.Domain.Entities.ExamAttempt>> Handle(ExamattemptGetAllQuery request, CancellationToken cancellationToken)
         {
             return await _examattemptRepository.GetAllAsync(request);
         }

@@ -57,10 +57,10 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
             // 2. Seed dữ liệu cho Gradelevels
             if (!((await _gradelevelRepository.GetAllAsync(new GradelevelGetAllQuery())).Count()! > 0))
             {
-                var gradeLevels = new List<Domain.Entities.Gradelevel>();
-                for (int i = 1; i <= 12; i++)
+                var gradeLevels = new List<Domain.Entities.GradeLevel>();
+                for (int i = 6; i <= 12; i++)
                 {
-                    gradeLevels.Add(new Domain.Entities.Gradelevel { Name = $"Lớp {i}" });
+                    gradeLevels.Add(new Domain.Entities.GradeLevel { Name = $"Lớp {i}" });
                 }
                 gradeLevelsAddedCount = gradeLevels.Count;
                 foreach (var gradeLevel in gradeLevels)
@@ -77,14 +77,14 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
             // 3. Seed dữ liệu cho Examtypes
             if (!((await _examtypeRepository.GetAllAsync(new ExamtypeGetAllQuery())).Count()! >0))
             {
-                var examTypes = new List<Domain.Entities.Examtype>
+                var examTypes = new List<Domain.Entities.ExamType>
                 {
-                    new Domain.Entities.Examtype { Name = "Kiểm tra 15 phút" },
-                    new Domain.Entities.Examtype { Name = "Kiểm tra 45 phút (1 tiết)" },
-                    new Domain.Entities.Examtype { Name = "Kiểm tra giữa kỳ" },
-                    new Domain.Entities.Examtype { Name = "Kiểm tra cuối kỳ" },
-                    new Domain.Entities.Examtype { Name = "Thi thử" },
-                    new Domain.Entities.Examtype { Name = "Thi tốt nghiệp THPT" }
+                    new Domain.Entities.ExamType { Name = "Kiểm tra 15 phút" },
+                    new Domain.Entities.ExamType { Name = "Kiểm tra 45 phút (1 tiết)" },
+                    new Domain.Entities.ExamType { Name = "Kiểm tra giữa kỳ" },
+                    new Domain.Entities.ExamType { Name = "Kiểm tra cuối kỳ" },
+                    new Domain.Entities.ExamType { Name = "Thi thử" },
+                    new Domain.Entities.ExamType { Name = "Thi tốt nghiệp THPT" }
                 };
                 examTypesAddedCount = examTypes.Count;
 

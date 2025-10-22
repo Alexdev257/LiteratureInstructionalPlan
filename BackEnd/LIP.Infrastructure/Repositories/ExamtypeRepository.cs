@@ -16,38 +16,38 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Examtype?> GetAsync(ExamtypeGetQuery query)
+        public async Task<ExamType?> GetAsync(ExamtypeGetQuery query)
         {
-            return await _context.Examtypes
+            return await _context.ExamTypes
                 .Include(e => e.Exams)
                 .FirstOrDefaultAsync(e => e.ExamTypeId == query.ExamTypeId);
         }
 
-        public async Task<IEnumerable<Examtype>> GetAllAsync(ExamtypeGetAllQuery query)
+        public async Task<IEnumerable<ExamType>> GetAllAsync(ExamtypeGetAllQuery query)
         {
-            var examtypes = _context.Examtypes.AsQueryable();
+            var ExamTypes = _context.ExamTypes.AsQueryable();
 
             if (!string.IsNullOrEmpty(query.Name))
-                examtypes = examtypes.Where(e => e.Name!.Contains(query.Name));
+                ExamTypes = ExamTypes.Where(e => e.Name!.Contains(query.Name));
 
-            return await examtypes.ToListAsync();
+            return await ExamTypes.ToListAsync();
         }
 
         public async Task<bool> CreateAsync(ExamtypeCreateCommand command)
         {
-            var examtype = new Examtype
+            var examtype = new ExamType
             {
                 Name = command.Name
             };
 
-            _context.Examtypes.Add(examtype);
+            _context.ExamTypes.Add(examtype);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(ExamtypeUpdateCommand command)
         {
-            var examtype = await _context.Examtypes.FindAsync(command.ExamTypeId);
+            var examtype = await _context.ExamTypes.FindAsync(command.ExamTypeId);
             if (examtype == null) return false;
 
             examtype.Name = command.Name;
@@ -58,10 +58,10 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(ExamtypeDeleteCommand command)
         {
-            var examtype = await _context.Examtypes.FindAsync(command.ExamTypeId);
+            var examtype = await _context.ExamTypes.FindAsync(command.ExamTypeId);
             if (examtype == null) return false;
 
-            _context.Examtypes.Remove(examtype);
+            _context.ExamTypes.Remove(examtype);
             await _context.SaveChangesAsync();
             return true;
         }

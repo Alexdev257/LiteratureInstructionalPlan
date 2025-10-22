@@ -16,49 +16,49 @@ namespace LIP.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Answerguide?> GetAsync(AnswerguideGetQuery query)
+        public async Task<AnswerGuide?> GetAsync(AnswerguideGetQuery query)
         {
-            return await _context.Answerguides
+            return await _context.AnswerGuides
                 .AsNoTracking()
                 .Include(a => a.Exam)
                 .Where(a => !a.IsDeleted)
                 .FirstOrDefaultAsync(a => a.AnswerGuideId == query.AnswerGuideId);
         }
 
-        public async Task<IEnumerable<Answerguide>> GetAllAsync(AnswerguideGetAllQuery query)
+        public async Task<IEnumerable<AnswerGuide>> GetAllAsync(AnswerguideGetAllQuery query)
         {
-            var answerguides = _context.Answerguides
+            var AnswerGuides = _context.AnswerGuides
                 .AsNoTracking()
                 .Include(a => a.Exam)
                 .Where(a => !a.IsDeleted)
                 .AsQueryable();
 
             if (query.ExamId.HasValue)
-                answerguides = answerguides.Where(a => a.ExamId == query.ExamId);
+                AnswerGuides = AnswerGuides.Where(a => a.ExamId == query.ExamId);
 
             if (query.MaxScore.HasValue)
-                answerguides = answerguides.Where(a => a.MaxScore == query.MaxScore);
+                AnswerGuides = AnswerGuides.Where(a => a.MaxScore == query.MaxScore);
 
-            return await answerguides.ToListAsync();
+            return await AnswerGuides.ToListAsync();
         }
 
         public async Task<bool> CreateAsync(AnswerguideCreateCommand command)
         {
-            var answerguide = new Answerguide
+            var answerguide = new AnswerGuide
             {
                 ExamId = command.ExamId,
                 KeyPoints = command.KeyPoints,
                 MaxScore = command.MaxScore
             };
 
-            _context.Answerguides.Add(answerguide);
+            _context.AnswerGuides.Add(answerguide);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UpdateAsync(AnswerguideUpdateCommand command)
         {
-            var answerguide = await _context.Answerguides.FindAsync(command.AnswerGuideId);
+            var answerguide = await _context.AnswerGuides.FindAsync(command.AnswerGuideId);
             if (answerguide == null || answerguide.IsDeleted) return false;
 
             answerguide.ExamId = command.ExamId;
@@ -71,7 +71,7 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(AnswerguideDeleteCommand command)
         {
-            var answerguide = await _context.Answerguides.FindAsync(command.AnswerGuideId);
+            var answerguide = await _context.AnswerGuides.FindAsync(command.AnswerGuideId);
             if (answerguide == null) return false;
 
             answerguide.IsDeleted = true;

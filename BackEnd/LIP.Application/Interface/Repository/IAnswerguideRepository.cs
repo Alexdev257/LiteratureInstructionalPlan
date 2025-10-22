@@ -6,8 +6,8 @@ namespace LIP.Application.Interface.Repository
 {
     public interface IAnswerguideRepository
     {
-        Task<Answerguide?> GetAsync(AnswerguideGetQuery query);
-        Task<IEnumerable<Answerguide>> GetAllAsync(AnswerguideGetAllQuery query);
+        Task<AnswerGuide?> GetAsync(AnswerguideGetQuery query);
+        Task<IEnumerable<AnswerGuide>> GetAllAsync(AnswerguideGetAllQuery query);
         Task<bool> CreateAsync(AnswerguideCreateCommand command);
         Task<bool> UpdateAsync(AnswerguideUpdateCommand command);
         Task<bool> DeleteAsync(AnswerguideDeleteCommand command);

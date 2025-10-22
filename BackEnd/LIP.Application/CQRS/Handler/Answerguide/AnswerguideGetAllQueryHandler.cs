@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Answerguide
 {
-    public class AnswerguideGetAllQueryHandler : IRequestHandler<AnswerguideGetAllQuery, IEnumerable<LIP.Domain.Entities.Answerguide>>
+    public class AnswerguideGetAllQueryHandler : IRequestHandler<AnswerguideGetAllQuery, IEnumerable<LIP.Domain.Entities.AnswerGuide>>
     {
         private readonly IAnswerguideRepository _answerguideRepository;
 
@@ -14,7 +14,7 @@ namespace LIP.Application.CQRS.Handler.Answerguide
             _answerguideRepository = answerguideRepository;
         }
 
-        public async Task<IEnumerable<LIP.Domain.Entities.Answerguide>> Handle(AnswerguideGetAllQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<LIP.Domain.Entities.AnswerGuide>> Handle(AnswerguideGetAllQuery request, CancellationToken cancellationToken)
         {
             return await _answerguideRepository.GetAllAsync(request);
         }
