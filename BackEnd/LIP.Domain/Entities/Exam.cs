@@ -60,8 +60,6 @@ public partial class Exam
         get; set;
     }
 
-    public virtual ICollection<AnswerGuide> Answerguides { get; set; } = new List<AnswerGuide>();
-
     public virtual User? CreatedByNavigation
     {
         get; set;

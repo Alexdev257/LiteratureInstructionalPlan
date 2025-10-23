@@ -23,7 +23,6 @@ namespace LIP.Infrastructure.Repositories
                 .Include(e => e.CreatedByNavigation)
                 .Include(e => e.ExamType)
                 .Include(e => e.GradeLevel)
-                .Include(e => e.Answerguides)
                 .Include(e => e.Examattempts)
                 .Include(e => e.Questions)
                 .Where(e => !e.IsDeleted)

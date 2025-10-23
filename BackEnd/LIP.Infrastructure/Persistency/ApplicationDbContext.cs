@@ -14,11 +14,6 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<AnswerGuide> AnswerGuides
-    {
-        get; set;
-    }
-
     public virtual DbSet<Exam> Exams
     {
         get; set;
