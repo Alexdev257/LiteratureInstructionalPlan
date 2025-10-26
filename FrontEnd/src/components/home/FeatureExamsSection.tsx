@@ -3,11 +3,12 @@ import { ArrowRight, Clock, Star, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import type { Exam } from "@/utils/type";
+
 import { useRouter } from "@tanstack/react-router";
+import type { ExamData } from "@/utils/type";
 
 type FeatureExamsSectionProps = {
-    featuredExams: Exam[];
+    featuredExams: ExamData[];
 };
 
 const FeatureExamsSection = ({ featuredExams }: FeatureExamsSectionProps) => {
@@ -28,11 +29,11 @@ const FeatureExamsSection = ({ featuredExams }: FeatureExamsSectionProps) => {
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {featuredExams.map((exam) => (
-                        <Card key={exam.id} className="group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 overflow-hidden bg-gradient-to-br from-background to-secondary/5">
+                        <Card key={exam.examId} className="group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 overflow-hidden bg-gradient-to-br from-background to-secondary/5">
                             <CardHeader className="pb-4">
                                 <div className="flex items-center justify-between mb-3">
                                     <Badge variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20 border-secondary/20">
-                                        Lớp {exam.grade}
+                                        Lớp {exam.matrix.grade.name}
                                     </Badge>
                                     <div className="flex items-center text-sm text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
                                         <Users className="h-4 w-4 mr-1" />
@@ -57,7 +58,7 @@ const FeatureExamsSection = ({ featuredExams }: FeatureExamsSectionProps) => {
                                         <span className="font-medium">{exam.averageScore}/10</span>
                                     </div>
                                 </div>
-                                <Button className="w-full group-hover:shadow-lg transition-all duration-300 bg-primary hover:bg-primary/90">
+                                <Button onClick={() => router.navigate({ to: `/exam/${exam.examId}` })} className=" cursor-pointer w-full group-hover:shadow-lg transition-all duration-300 bg-primary hover:bg-primary/90">
                                     Làm bài thi
                                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Button>

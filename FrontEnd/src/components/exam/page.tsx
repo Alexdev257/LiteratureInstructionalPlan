@@ -2,13 +2,12 @@
 "use client";
 import HeroSection from "./HeroSection";
 import FilterSection from "./FilterSection";
-import { mockeBookSeries, mockExamData, mockExamTypes, mockGradeLevels } from "@/utils/mockAPi";
+import {  mockExamData, mockExamTypes, mockGradeLevels } from "@/utils/mockAPi";
 
 const ExamPage = () => {
     const fetchExamData = mockExamData;
     const fetchGradeLevels = mockGradeLevels;
     const fetchExamTypes = mockExamTypes;
-    const fetcheBookSeries = mockeBookSeries;
     return (
 
         <>
@@ -21,7 +20,6 @@ const ExamPage = () => {
                 examData={fetchExamData}
                 mockExamTypes={fetchExamTypes}
                 mockGradeLevels={fetchGradeLevels}
-                mockeBookSeries={fetcheBookSeries}
             />
 
         </>

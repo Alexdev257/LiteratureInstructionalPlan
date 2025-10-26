@@ -31,7 +31,7 @@ export const ExamHeader = () => {
                 {exam?.title || `Đề thi số ${examId}`}
               </h1>
               <Badge variant="secondary" className="w-fit">
-                {exam?.examTypeId === 1 ? "Trắc nghiệm" : "Tự luận"}
+                {exam?.examType.examTypeId === 1 ? "Trắc nghiệm" : "Tự luận"}
               </Badge>
             </div>
           </div>
@@ -67,7 +67,7 @@ export const ExamHeader = () => {
         <div className="mt-3 md:hidden">
           <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
             <span>Tiến độ: {currentProgress}%</span>
-            <span>{exam?.examTypeId === 1 ? "Câu 15/50" : "Câu 2/3"}</span>
+            <span>{exam?.examType.examTypeId === 1 ? "Câu 15/50" : "Câu 2/3"}</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
             <div 

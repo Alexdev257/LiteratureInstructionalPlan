@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Filter, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import type {  BookSeries, ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
+import type {   ExamData, ExamFilters, ExamType, GradeLevel } from "@/utils/type";
 import { useMemo, useState } from "react";
 
 import RenderResults from "./RenderResults";
@@ -14,27 +14,25 @@ type Props ={
     examData: ExamData[];
     mockGradeLevels: GradeLevel[];
     mockExamTypes: ExamType[];
-    mockeBookSeries: BookSeries[];
 }
-const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeries }: Props) => {
+const FilterSection = ({ examData, mockGradeLevels, mockExamTypes}: Props) => {
     const [filters, setFilters] = useState<ExamFilters>({});
     const [searchTerm, setSearchTerm] = useState("");
 
     // Filtered exams based on current filters
     const filteredExams = useMemo(() => {
-        // Start with all exams, then apply filters
         let result = examData;
         
         if (filters.gradeLevel) {
-            result = result.filter(exam => exam.gradeLevelId === filters.gradeLevel);
+            result = result.filter(exam => exam.matrix.grade.gradeLevelId === filters.gradeLevel);
         }
         
         if (filters.difficulty) {
-            result = result.filter(exam => exam.difficulty === filters.difficulty);
+            result = result.filter(exam => exam.matrix.difficulty === filters.difficulty);
         }
         
         if (filters.examType) {
-            result = result.filter(exam => exam.examTypeId === filters.examType);
+            result = result.filter(exam => exam.examType.examTypeId === filters.examType);
         }
         
         if (searchTerm) {
@@ -44,10 +42,6 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeri
                 exam.description.toLowerCase().includes(searchLower)
             );
         }
-        if(filters.bookSeries){
-            result = result.filter(exam => exam.seriesId === filters.bookSeries);
-        }
-        
         return result;
     }, [examData, filters, searchTerm]);
 
@@ -98,7 +92,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeri
                                 />
                             </div>
                             {/* Type book */}
-                          <Select
+                          {/* <Select
                                 value={filters.gradeLevel?.toString() || "all"}
                                 onValueChange={(value: string) =>
                                     handleFilterChange("gradeLevel", value === "all" ? undefined : parseInt(value))
@@ -115,7 +109,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeri
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
-                            </Select>
+                            </Select> */}
                             {/* Grade */}
                             <Select
                                 value={filters.gradeLevel?.toString() || "all"}
@@ -130,7 +124,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeri
                                     <SelectItem value="all">Tất cả lớp</SelectItem>
                                     {mockGradeLevels.map((grade) => (
                                         <SelectItem key={grade.gradeLevelId} value={grade.gradeLevelId.toString()}>
-                                            {grade.gradeName}
+                                            {grade.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -166,7 +160,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes, mockeBookSeri
                                     <SelectItem value="all">Tất cả loại</SelectItem>
                                     {mockExamTypes.map((type) => (
                                         <SelectItem key={type.examTypeId} value={type.examTypeId.toString()}>
-                                            {type.typeName}
+                                            {type.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

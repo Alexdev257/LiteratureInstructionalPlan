@@ -3,7 +3,7 @@ import type { ExamData } from "@/utils/type";
 import { ArrowRight, BookOpen, Clock, FileText, GraduationCap, Star, Target, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { mockGradeLevels, mockExamTypes, mockBookSeries } from "@/utils/mockAPi";
+import { mockGradeLevels, mockExamTypes } from "@/utils/mockAPi";
 import { Button } from "../ui/button";
 import { useRouter } from "@tanstack/react-router"
 
@@ -12,11 +12,10 @@ type Props = {
     clearFilters: () => void;
 }
 const RenderResults = ({ filteredExams, clearFilters }: Props) => {
-    const seriBook = mockBookSeries;
     const router = useRouter();
     const handleTakeExam = (examId: number) => {
         router.navigate({
-            to: "/exam/$id", 
+            to: "/exam/$id",
             params: { id: examId.toString() },
         })
     }
@@ -37,7 +36,15 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
             default: return 'Chưa xác định';
         }
     };
-
+    const getQuestionType = (questionType: string) => {
+        switch (questionType) {
+            case 'multiple-choice': return 'Trắc nghiệm';
+            case 'essay': return 'Tự luận';
+            case 'reading-comprehension': return 'Đọc hiểu';
+            case 'mixed': return 'Tự luận & Trắc nghiệm';
+            default: return 'Chưa xác định';
+        }
+    }
     return (
         <section className="py-8 px-4">
             <div className="container mx-auto max-w-7xl">
@@ -53,50 +60,42 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
                 {/* Exam Cards Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredExams.map((exam) => {
-                        const gradeLevel = mockGradeLevels.find(g => g.gradeLevelId === exam.gradeLevelId);
-                        const examType = mockExamTypes.find(t => t.examTypeId === exam.examTypeId);
+                        const gradeLevel = mockGradeLevels.find(g => g.gradeLevelId === exam.matrix.grade.gradeLevelId);
+                        const examType = mockExamTypes.find(t => t.examTypeId === exam.examType.examTypeId);
 
                         return (
                             <Card key={exam.examId} className="group hover:shadow-xl transition-all duration-300 border border-primary/10 hover:border-secondary/30 overflow-hidden bg-gradient-to-br from-background to-secondary/5">
                                 <CardHeader className="pb-4">
                                     <div className="flex items-center justify-between mb-3">
-                                      <div className="flex items-center gap-2">
-                                          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
+                                        <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
                                             <GraduationCap className="w-3 h-3 mr-1" />
-                                            {gradeLevel?.gradeName}
+                                            {gradeLevel?.name}
                                         </Badge>
-                                          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
-                                            <GraduationCap className="w-3 h-3 mr-1" />
-                                            {seriBook.find(ser => ser.seriesId === exam.seriesId)?.seriesName}
-                                        </Badge>
-                                      </div>
-                                        <Badge className={`${getDifficultyColor(exam.difficulty)} border`}>
+                                        <Badge className={`${getDifficultyColor(exam.matrix.difficulty)} border`}>
                                             <Target className="w-3 h-3 mr-1" />
-                                            {getDifficultyText(exam.difficulty)}
+                                            {getDifficultyText(exam.matrix.difficulty)}
                                         </Badge>
-                                    </div>
 
+                                    </div>
+                                    <Badge variant="secondary" className="bg-secondary/10 text-secondary hover:bg-secondary/20 border-secondary/20 mr-2">
+                                        <BookOpen className="w-3 h-3 mr-1" />
+                                        {examType?.name} - {getQuestionType(exam.matrix.questionType)}
+                                    </Badge>
                                     <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors line-clamp-1">
                                         {exam.title}
                                     </CardTitle>
-
                                     <CardDescription className="text-sm leading-relaxed line-clamp-3">
                                         {exam.description}
                                     </CardDescription>
 
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <Badge variant="outline" className="text-xs border-secondary/30 text-secondary">
-                                            <FileText className="w-3 h-3 mr-1" />
-                                            {examType?.typeName}
-                                        </Badge>
-                                    </div>
+
                                 </CardHeader>
 
                                 <CardContent className="pt-0">
                                     <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-6 p-3 bg-muted/30 rounded-lg">
                                         <div className="flex items-center">
                                             <Clock className="h-4 w-4 mr-2 text-primary" />
-                                            <span className="font-medium">{exam.durationMinutes} phút</span>
+                                            <span className="font-medium">{exam.duration} phút</span>
                                         </div>
                                         <div className="flex items-center">
                                             <Users className="h-4 w-4 mr-2 text-secondary" />
@@ -104,7 +103,7 @@ const RenderResults = ({ filteredExams, clearFilters }: Props) => {
                                         </div>
                                         <div className="flex items-center">
                                             <FileText className="h-4 w-4 mr-2 text-accent" />
-                                            <span className="font-medium">{exam.totalQuestions} câu hỏi</span>
+                                            <span className="font-medium">{exam.matrix.quantity} câu hỏi</span>
                                         </div>
                                         <div className="flex items-center">
                                             <Star className="h-4 w-4 mr-2 text-yellow-500 fill-current" />

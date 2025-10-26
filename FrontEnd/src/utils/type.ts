@@ -30,17 +30,17 @@ export type ErrorEntity = {
 }
 
 export type User = {
-    jti: string;
+    Email: string;
+    FullName: string;
+    RoleId: number;
     UserId: string;
     Username: string;
-    RoleId: string;
-    Role: string;
-    nbf: number;
+    aud: string;
     exp: number;
     iat: number;
     iss: string;
-    aud: string;
-
+    jti: string;
+    nbf: number;
 }
 
 export type BodyRefreshToken = {
@@ -49,95 +49,97 @@ export type BodyRefreshToken = {
     refreshToken: string;
 }
 
-
-// Database Types
-export interface GradeLevel {
+export type GradeLevel = {
     gradeLevelId: number;
-    gradeName: string;
-    description: string;
+    name: string;
 }
 
-export interface BookSeries {
-    seriesId: number;
-    seriesName: string;
-    description: string;
-}
-
-export interface ExamType {
+export type ExamType = {
     examTypeId: number;
-    typeName: string;
-    description: string;
+    name: string;
 }
 
-export interface ExamData {
+export type ExamData = {
     examId: number;
     title: string;
     description: string;
-    durationMinutes: number;
-    gradeLevelId: number;
-    gradeLevel?: GradeLevel;
-    seriesId: number;
-    bookSeries?: BookSeries;
-    examTypeId: number;
-    examType?: ExamType;
-    createdBy: number;
-    createdAt: string;
-    // Additional computed fields
-    attempts?: number;
-    averageScore?: number;
-    difficulty?: 'easy' | 'medium' | 'hard';
-    totalQuestions?: number;
-}
-
-// Legacy Exam interface for backward compatibility
-export interface Exam {
-    id: string;
-    title: string;
-    description: string;
-    subject: 'van' | 'toan' | 'anh' | 'ly' | 'hoa' | 'sinh';
-    grade: 10 | 11 | 12;
-    category: 'nghi-luan-xa-hoi' | 'nghi-luan-van-hoc' | 'doc-hieu' | 'trac-nghiem' | 'tu-luan';
-    duration: number; // minutes
-    totalQuestions: number;
-    difficulty: 'easy' | 'medium' | 'hard';
-    createdAt: string;
+    duration: number;
+    examType: ExamType;
+    matrix: Matrix;
+    questions: Question[];
     attempts: number;
     averageScore: number;
+
 }
 
-// Filter types
-export interface ExamFilters {
+
+export type Matrix = {
+    matrixId: number;
+    title: string;
+    description: string;
+    grade: GradeLevel;
+    createdBy: {
+        userId: string;
+        username: string;
+    };
+    status: 'active' | 'inactive';
+    lessonName: string;
+    questionType: 'multiple-choice' | 'essay' | 'reading-comprehension' | 'mixed';
+    difficulty: 'easy' | 'medium' | 'hard';
+    quantity: number;
+    scorePerQuestion: number;
+    notes: string;
+
+}
+
+export type Question = {
+    questionId: number;
+    content: string;
+    questionType: 'multiple-choice' | 'essay';
+    difficulty: 'easy' | 'medium' | 'hard';
+    answer: string;
+    grade: GradeLevel;
+    createdBy: {
+        userId: string;
+        username: string;
+    };
+
+}
+
+export type Template = {
+    id: string,
+    title: string,
+    price: number,
+    description: string,
+    urlView: string,
+    urlEdit: string,
+    urlDownload: string,
+    createdBy: {
+        userId: string;
+        username: string;
+    },
+    grade: GradeLevel
+}
+
+
+
+
+
+
+export type ExamFilters = {
     gradeLevel?: number;
     difficulty?: 'easy' | 'medium' | 'hard';
     examType?: number;
-    bookSeries?: number;
     search?: string;
 }
 
-export interface Question {
-    id: string;
-    examId: string;
-    type: 'essay' | 'multiple-choice' | 'reading-comprehension';
-    question: string;
-    options?: string[];
-    correctAnswer?: string;
-    explanation?: string;
-    points: number;
+export type TemplateFilters = {
+  gradeLevel?: number;
+  priceRange?: string;
 }
 
-export interface ExamResult {
-    id: string;
-    examId: string;
-    userId: string;
-    answers: { [questionId: string]: string };
-    score: number;
-    totalScore: number;
-    timeSpent: number;
-    completedAt: string;
-    feedback?: string;
-}
 
-export interface LeaderboardEntry {
+export type LeaderboardEntry = {
     userId: string;
     userName: string;
     totalScore: number;
@@ -146,8 +148,9 @@ export interface LeaderboardEntry {
     rank: number;
 }
 
-export interface Features {
+export type Features = {
     title: string;
     description: string;
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
+

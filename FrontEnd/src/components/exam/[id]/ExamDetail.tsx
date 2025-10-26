@@ -15,12 +15,14 @@ import {
 import { mockExamData } from "@/utils/mockAPi";
 import { Link } from "@tanstack/react-router";
 
+
 type Props = {
-  examId: string;
+  examId: number
 };
 export const ExamDetail = ({ examId }: Props) => {
+  // Mock attempt ID để demo
+  const attemptId = Math.random().toString(36).substr(2, 9);
   const exam = mockExamData.find(e => e.examId === Number(examId));
-
   if (!exam) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -37,9 +39,6 @@ export const ExamDetail = ({ examId }: Props) => {
     );
   }
 
-  // Mock attempt ID để demo
-  const attemptId = Math.random().toString(36).substr(2, 9);
-
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Exam Header */}
@@ -54,10 +53,10 @@ export const ExamDetail = ({ examId }: Props) => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Badge variant="secondary">
-                Lớp {exam.gradeLevel?.gradeName || exam.gradeLevelId}
+                Lớp {exam.matrix?.grade.name}
               </Badge>
-              <Badge variant={exam.examTypeId === 1 ? "default" : "secondary"}>
-                {exam.examTypeId === 1 ? "Trắc nghiệm" : "Tự luận"}
+              <Badge variant={exam.examType.examTypeId === 1 ? "default" : "secondary"}>
+                {exam.examType.examTypeId === 1 ? "Trắc nghiệm" : "Tự luận"}
               </Badge>
             </div>
             <h1 className="text-3xl font-bold mb-2">{exam.title}</h1>
@@ -95,7 +94,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Clock className="w-5 h-5 text-primary" />
                   <div>
-                    <div className="font-semibold">{exam.durationMinutes} phút</div>
+                    <div className="font-semibold">{exam.duration} phút</div>
                     <div className="text-sm text-muted-foreground">Thời gian làm bài</div>
                   </div>
                 </div>
@@ -103,7 +102,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Target className="w-5 h-5 text-green-500" />
                   <div>
-                    <div className="font-semibold">{exam.totalQuestions || 50} câu</div>
+                    <div className="font-semibold">{exam.matrix.quantity || 50} câu</div>
                     <div className="text-sm text-muted-foreground">Số lượng câu hỏi</div>
                   </div>
                 </div>
@@ -128,7 +127,7 @@ export const ExamDetail = ({ examId }: Props) => {
               <div className="border-t pt-6">
                 <h4 className="font-semibold mb-3">Mô tả chi tiết</h4>
                 <p className="text-muted-foreground leading-relaxed">
-                  {exam.description} Đề thi này được thiết kế để kiểm tra kiến thức toàn diện của học sinh về {exam.examType?.typeName || 'Văn học'},
+                  {exam.description} Đề thi này được thiết kế để kiểm tra kiến thức toàn diện của học sinh về {exam.examType?.name || 'Văn học'},
                   bao gồm các kỹ năng đọc hiểu, phân tích và vận dụng kiến thức vào thực tế.
                 </p>
               </div>
@@ -154,7 +153,7 @@ export const ExamDetail = ({ examId }: Props) => {
                   <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">2</div>
                   <div>
                     <h4 className="font-semibold">Thời gian</h4>
-                    <p className="text-muted-foreground">Bạn có {exam.durationMinutes} phút để hoàn thành {exam.totalQuestions || 50} câu hỏi. Hệ thống sẽ tự động nộp bài khi hết thời gian.</p>
+                    <p className="text-muted-foreground">Bạn có {exam.duration} phút để hoàn thành {exam.matrix.quantity || 50} câu hỏi. Hệ thống sẽ tự động nộp bài khi hết thời gian.</p>
                   </div>
                 </div>
 
@@ -189,8 +188,8 @@ export const ExamDetail = ({ examId }: Props) => {
                   <Badge variant="secondary">Trung bình</Badge>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Chủ đề:</span>
-                  <span className="font-medium">{exam.examType?.typeName || 'Văn học'}</span>
+                  <span className="text-muted-foreground">Kì thi:</span>
+                  <span className="font-medium">{exam.examType?.name || 'Văn học'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Cập nhật:</span>
@@ -209,7 +208,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <p className="text-sm text-muted-foreground">
                   Hãy chuẩn bị tinh thần và bắt đầu thử thách kiến thức của bạn!
                 </p>
-                <Link to="/exam/$examId/$attemptId/" params={{ examId, attemptId }}>
+                <Link to="/exam/$examId/$attemptId/" params={{ exam, attemptId }}>
                   <Button className="w-full cursor-pointer">
                     Bắt đầu ngay
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -234,7 +233,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 >
                   <div className="font-medium text-sm mb-1">{relatedExam.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    Lớp {relatedExam.gradeLevel?.gradeName || relatedExam.gradeLevelId} • {relatedExam.durationMinutes} phút
+                    Lớp {relatedExam.matrix.grade?.name } • {relatedExam.duration} phút
                   </div>
                 </Link>
               ))}

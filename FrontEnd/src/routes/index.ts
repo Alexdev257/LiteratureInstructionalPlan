@@ -11,10 +11,11 @@ import { Route as examDetailRoute } from "./exam/[id]/index";
 import { Route as takeExamLayoutRoute } from "./exam/[id]/[attemptId]/_layout";
 import { Route as takeExamRoute } from "./exam/[id]/[attemptId]/index";
 import { Route as authLayoutRoute } from "./auth/_layout";
-
+import { Route as TemplatePage } from "./template";
 const routeTree = rootRoute.addChildren([
     // Routes sử dụng root layout (Header + Footer)
     homeRoute,
+    TemplatePage,
     examLayoutRoute.addChildren([
         examIndexRoute,
         examDetailRoute.addChildren([

@@ -1,11 +1,6 @@
 
 import ClientLayoutWrapper from './components/layout/ClientLayoutWrapper'
-
 function App() {
-
-  return (
-    <ClientLayoutWrapper/>
-  )
+  return (<ClientLayoutWrapper/>)
 }
-
 export default App

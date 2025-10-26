@@ -1,4 +1,4 @@
-import { mockExams, mockfeatures, mockLeaderboard } from "@/utils/mockAPi";
+import {  mockExamData, mockfeatures, mockLeaderboard } from "@/utils/mockAPi";
 import HeroSection from "./HeroSection";
 import StatsSection from "./StatsSection";
 import FeaturesSection from "./FeaturesSection";
@@ -8,7 +8,7 @@ import TopPerformersSection from "./TopPerformersSection";
 
 
 const HomePage = () => {
-    const featuredExams = mockExams.slice(0, 3);
+    const featuredExams = mockExamData.slice(0, 3);
     const topPerformers = mockLeaderboard.slice(0, 5);
     const features = mockfeatures
     return (

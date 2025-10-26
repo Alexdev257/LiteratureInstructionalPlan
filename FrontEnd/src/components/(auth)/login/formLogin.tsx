@@ -26,8 +26,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { useAuth } from "@/hooks/useAuth"
-import { setCookies } from "@/utils/setCookies"
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"
+import { useSessionStore } from "@/stores/sessionStore"
+
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -42,14 +43,15 @@ export function LoginForm() {
   })
 
   const { login, loginGoogle } = useAuth()
-
+  const { setToken } = useSessionStore()
   const handleSubmit = (data: LoginInput) => {
     login.mutate(data, {
       onSuccess: (res) => {
         if (res.isSuccess) {
+          setToken(res.data);
           toast.success(res.message || "Đăng nhập thành công!");
           router.navigate({ to: "/" });
-          setCookies(res);
+
         } else {
           toast.error(res.message || "Đăng nhập thất bại. Vui lòng thử lại!");
         }
@@ -63,9 +65,10 @@ export function LoginForm() {
     loginGoogle.mutate(credentialResponse, {
       onSuccess: (res) => {
         if (res.isSuccess) {
+          setToken(res.data);
           toast.success(res.message || "Đăng nhập thành công!");
           router.navigate({ to: "/" });
-          setCookies(res);
+
         } else {
           toast.error(res.message || "Đăng nhập thất bại. Vui lòng thử lại!");
         }

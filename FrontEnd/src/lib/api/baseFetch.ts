@@ -1,14 +1,12 @@
-
 import type { BodyRefreshToken, ResponseData, ResponseLogin } from "@/utils/type";
-import { tokenSession, userSession } from "../session";
 import { normalizePath } from "../utils";
-import envconfig from "../config";
-import { AUTH_ENDPOINT} from "./endpoint";
+import envconfig from "../../config/envConfig";
+import { AUTH_ENDPOINT } from "./endpoint";
 import Cookies from "js-cookie";
-import { setCookies } from "@/utils/setCookies";
 import { toast } from "sonner";
 import { router } from "@/routes";
 import { isPublicEndpoint } from "@/utils/helper";
+import { useSessionStore } from "@/stores/sessionStore";
 
 
 export class BaseApi {
@@ -27,37 +25,31 @@ export class BaseApi {
     }
     return url.toString();
   }
+
   private getHeaders(): Record<string, string> {
+    const { token } = useSessionStore.getState(); 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    const token = tokenSession.value;
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
+    if (token?.accessToken) {
+      headers["Authorization"] = `Bearer ${token.accessToken}`;
     }
 
     return headers;
   }
 
-  /**
-   * requestData: Hàm tổng quát cho mọi HTTP method
-   * @param url URL endpoint
-   * @param method GET | POST | PUT | PATCH | DELETE
-   * @param body Optional body cho POST, PUT, PATCH
-   */
+
   protected async requestData<T>(
     url: string,
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
     body?: Record<string, any>
   ): Promise<ResponseData<T>> {
-    // check refresh token
-    // await this.refreshToken(url);
+    // await this.refreshToken(url); 
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(),
       body: body ? JSON.stringify(body) : undefined,
-      // credentials: "include", // gửi cookie HttpOnly nếu có
     });
 
     if (!res.ok) {
@@ -68,37 +60,46 @@ export class BaseApi {
     return res.json() as Promise<ResponseData<T>>;
   }
 
-  // refresh Token 
-  protected async refreshToken(endpoint:string): Promise<void> {
-    const token: string | null = tokenSession.value;
-    if(isPublicEndpoint(endpoint))  return
-    if (!token) {
-      router.navigate({ to: '/auth/login' });
+
+  protected async refreshToken(endpoint: string): Promise<void> {
+    const { token, user, setToken, logout } = useSessionStore.getState();
+
+    if (isPublicEndpoint(endpoint)) return;
+
+    if (!token?.accessToken) {
+      router.navigate({ to: "/auth/login" });
       return;
     }
 
-    const exp = userSession.value?.exp;
+   
+    const exp = user?.exp;
     const currentTime = Math.floor(Date.now() / 1000);
 
-    // Nếu token còn hạn → không refresh
-    if (exp && exp > currentTime) return;
+    if (exp && exp > currentTime) return; // Token còn hạn
 
     const url = this.createUrl(AUTH_ENDPOINT.REFRESH_TOKEN);
-    const refreshToken = Cookies.get('refreshToken');
+    const refreshToken = Cookies.get("refreshtoken");
+
     if (!refreshToken) {
-      router.navigate({ to: '/auth/login' });
+      logout();
+      router.navigate({ to: "/auth/login" });
       return;
     }
-    
+
     try {
-      const data:BodyRefreshToken={
-        id: Number(userSession.value?.UserId) || 0,
-        accessToken: token,
-        refreshToken: refreshToken
-      }
+      const data: BodyRefreshToken = {
+        id: Number(user?.UserId) || 0,
+        accessToken: token.accessToken,
+        refreshToken: refreshToken,
+      };
+
       const res = await this.postData<ResponseLogin>(url, data);
-      if (res.isSuccess) {
-        setCookies(res);
+      if (res.isSuccess && res.data) {
+        const newTokens = {
+          accessToken: res.data.accessToken,
+          refreshToken: res.data.refreshToken,
+        };
+        setToken(newTokens);
       }
     } catch (error) {
       const errorMessage =
@@ -106,26 +107,33 @@ export class BaseApi {
           ? (error as { message?: string }).message
           : undefined;
       toast.error(errorMessage);
-      router.navigate({ to: '/auth/login' });
+      logout();
+      router.navigate({ to: "/auth/login" });
     }
   }
-
-
-
 
   protected getData<T>(url: string): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "GET");
   }
 
-  protected postData<T>(url: string, body: Record<string, any>): Promise<ResponseData<T>> {
+  protected postData<T>(
+    url: string,
+    body: Record<string, any>
+  ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "POST", body);
   }
 
-  protected putData<T>(url: string, body: Record<string, any>): Promise<ResponseData<T>> {
+  protected putData<T>(
+    url: string,
+    body: Record<string, any>
+  ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "PUT", body);
   }
 
-  protected patchData<T>(url: string, body: Record<string, any>): Promise<ResponseData<T>> {
+  protected patchData<T>(
+    url: string,
+    body: Record<string, any>
+  ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "PATCH", body);
   }
 
