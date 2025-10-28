@@ -154,3 +154,27 @@ export type Features = {
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
+export type AdminUser = {
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl?: string;
+  status: "Active" | "Suspended" | "Banned";
+  // Các thông tin bạn muốn hiển thị (từ hình ảnh)
+  postCount: number;       // "Bài Báo HC" (Có thể là "Bài Học")
+  averageScore: number;    // "Điểm TB"
+  lastActivity: string; // "Hoạt Động Cuối" (nên là kiểu Date/ISO string)
+};
+
+export type UserFilters = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: "Active" | "Suspended" | "Banned" | "All";
+};
+
+// Dùng cho modal "Thêm Admin" sau này
+export type CreateAdminInput = {
+  fullName: string;
+  email: string;
+};
