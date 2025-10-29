@@ -16,3 +16,10 @@ export const PUBLIC_ENDPOINT = {
     LOGIN: "Auth/login",
     LOGIN_GOOGLE: "Auth/login-google"
 }
+
+export const ADMIN_ENDPOINT = {
+  GET_USERS: "admin/users",
+  CREATE_ADMIN: "admin/create-teacher",
+  GET_QUESTIONS: "admin/questions",
+  CREATE_QUESTION: "admin/questions"
+};

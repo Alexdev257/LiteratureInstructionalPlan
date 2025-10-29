@@ -121,11 +121,6 @@ export type Template = {
     grade: GradeLevel
 }
 
-
-
-
-
-
 export type ExamFilters = {
     gradeLevel?: number;
     difficulty?: 'easy' | 'medium' | 'hard';
@@ -154,3 +149,59 @@ export type Features = {
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
+export type AdminUser = {
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl?: string;
+  status: "Active" | "Suspended" | "Banned";
+  postCount: number;      
+  averageScore: number;    
+  lastActivity: string; 
+};
+
+export type UserFilters = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: "Active" | "Suspended" | "Banned" | "All";
+};
+
+// Dùng cho modal "Thêm Admin" sau này
+export type CreateAdminInput = {
+  fullName: string;
+  email: string;
+};
+
+export type QuestionStatus = "Pending" | "Active" | "Rejected";
+
+export type AdminQuestion = {
+  id: string;
+  questionText: string; 
+  grade: string;        
+  lesson: string;        
+  difficulty: "Easy" | "Medium" | "Hard"; 
+  status: QuestionStatus;
+  creatorName: string;   
+  createdAt: string;     
+  updatedAt: string;     
+};
+
+export type QuestionFilters = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  grade?: string;
+  lesson?: string;
+  difficulty?: "Easy" | "Medium" | "Hard" | "All";
+  status?: QuestionStatus | "All";
+  creator?: string;
+};
+
+// Dùng cho modal "Tạo câu hỏi" sau này
+export type CreateQuestionInput = {
+  questionText: string;
+  grade: string;
+  lesson: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+};

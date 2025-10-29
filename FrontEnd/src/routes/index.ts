@@ -1,3 +1,4 @@
+// --- File: src/routes/index.tsx ---
 
 import { createRouter } from "@tanstack/react-router";
 import { Route as rootRoute } from "./_root";
@@ -11,11 +12,13 @@ import { Route as examDetailRoute } from "./exam/[id]/index";
 import { Route as takeExamLayoutRoute } from "./exam/[id]/[attemptId]/_layout";
 import { Route as takeExamRoute } from "./exam/[id]/[attemptId]/index";
 import { Route as authLayoutRoute } from "./auth/_layout";
-import { Route as TemplatePage } from "./template";
+import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
+import { Route as dashboardUsersRoute } from "./dashboard/users";
+import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
+
 const routeTree = rootRoute.addChildren([
     // Routes sử dụng root layout (Header + Footer)
     homeRoute,
-    TemplatePage,
     examLayoutRoute.addChildren([
         examIndexRoute,
         examDetailRoute.addChildren([
@@ -24,14 +27,19 @@ const routeTree = rootRoute.addChildren([
             ]),
         ]),
     ]),
-    
+
     // Routes có layout riêng (không có Header + Footer của root)
     authLayoutRoute.addChildren([
         loginRoute,
         registerRoute,
         forgotPasswordRoute,
     ]),
-]);
 
+    // Thêm các route của dashboard vào layout tương ứng
+    dashboardLayoutRoute.addChildren([
+        dashboardUsersRoute, // Route hiển thị trang /dashboard/users
+        dashboardQuestionsRoute,
+    ]),
+]);
 
 export const router = createRouter({ routeTree });
