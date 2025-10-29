@@ -9,7 +9,7 @@ type UserToolbarProps = {
   setFilters: Dispatch<SetStateAction<UserFilters>>;
 };
 
-type StatusTab = "All" | "Active" | "Suspended" | "Banned";
+type StatusTab = "All" | "Active" |  "Banned";
 
 export function UserToolbar({ filters, setFilters }: UserToolbarProps) {
   
@@ -24,7 +24,6 @@ export function UserToolbar({ filters, setFilters }: UserToolbarProps) {
   const tabs: { label: string; value: StatusTab }[] = [
     { label: "All", value: "All" },
     { label: "Active", value: "Active" },
-    { label: "Suspended", value: "Suspended" },
     { label: "Banned", value: "Banned" },
   ];
 

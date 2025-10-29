@@ -41,10 +41,10 @@ function AdminLayout() {
             <Link to="/dashboard" className="flex items-center gap-2 font-semibold">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  LH
+                  HN
                 </AvatarFallback>
               </Avatar>
-              <span>L.H Hoàng Hải</span>
+              <span>Hong Nga</span>
               <span className="ml-auto text-xs text-muted-foreground">
                 Quản trị viên
               </span>

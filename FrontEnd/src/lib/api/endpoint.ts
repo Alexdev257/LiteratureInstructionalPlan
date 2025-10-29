@@ -20,4 +20,6 @@ export const PUBLIC_ENDPOINT = {
 export const ADMIN_ENDPOINT = {
   GET_USERS: "admin/users",
   CREATE_ADMIN: "admin/create-teacher",
+  GET_QUESTIONS: "admin/questions",
+  CREATE_QUESTION: "admin/questions"
 };

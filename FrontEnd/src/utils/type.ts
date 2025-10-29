@@ -121,11 +121,6 @@ export type Template = {
     grade: GradeLevel
 }
 
-
-
-
-
-
 export type ExamFilters = {
     gradeLevel?: number;
     difficulty?: 'easy' | 'medium' | 'hard';
@@ -160,10 +155,9 @@ export type AdminUser = {
   email: string;
   avatarUrl?: string;
   status: "Active" | "Suspended" | "Banned";
-  // Các thông tin bạn muốn hiển thị (từ hình ảnh)
-  postCount: number;       // "Bài Báo HC" (Có thể là "Bài Học")
-  averageScore: number;    // "Điểm TB"
-  lastActivity: string; // "Hoạt Động Cuối" (nên là kiểu Date/ISO string)
+  postCount: number;      
+  averageScore: number;    
+  lastActivity: string; 
 };
 
 export type UserFilters = {
@@ -177,4 +171,37 @@ export type UserFilters = {
 export type CreateAdminInput = {
   fullName: string;
   email: string;
+};
+
+export type QuestionStatus = "Pending" | "Active" | "Rejected";
+
+export type AdminQuestion = {
+  id: string;
+  questionText: string; 
+  grade: string;        
+  lesson: string;        
+  difficulty: "Easy" | "Medium" | "Hard"; 
+  status: QuestionStatus;
+  creatorName: string;   
+  createdAt: string;     
+  updatedAt: string;     
+};
+
+export type QuestionFilters = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  grade?: string;
+  lesson?: string;
+  difficulty?: "Easy" | "Medium" | "Hard" | "All";
+  status?: QuestionStatus | "All";
+  creator?: string;
+};
+
+// Dùng cho modal "Tạo câu hỏi" sau này
+export type CreateQuestionInput = {
+  questionText: string;
+  grade: string;
+  lesson: string;
+  difficulty: "Easy" | "Medium" | "Hard";
 };

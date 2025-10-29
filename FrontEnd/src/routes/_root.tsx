@@ -8,9 +8,9 @@ function RootComponent() {
   // Các routes có layout riêng, không cần Header/Footer của root
   const isAuthRoute = location.pathname.startsWith('/auth');
   const isExamAttemptRoute = /^\/exam\/[^\/]+\/[^\/]+/.test(location.pathname); // Matching /exam/[id]/[attemptId]
-  
+  const isAdminRoute = location.pathname.startsWith('/dashboard');
   // Nếu là route có layout riêng, chỉ render Outlet
-  if (isAuthRoute || isExamAttemptRoute) {
+  if (isAuthRoute || isExamAttemptRoute || isAdminRoute) {
     return <Outlet />;
   }
   
