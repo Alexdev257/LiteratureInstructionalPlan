@@ -3,13 +3,15 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using LIP.Application.Interface.Helpers;
 using Microsoft.Extensions.Options;
+using UploadResult = CloudinaryDotNet.Actions.UploadResult;
 
 namespace LIP.Infrastructure.Implements.Helpers;
 
 public class CloudinaryUpload : ICloudinaryUpload
 {
     private readonly Cloudinary _cloudinary;
-
+    private const string WatermarkText = "LIP Academy";
+    
     public CloudinaryUpload(IOptions<AccountCloundinary> options)
     {
         var account = options.Value;
@@ -17,17 +19,36 @@ public class CloudinaryUpload : ICloudinaryUpload
         _cloudinary = new Cloudinary(acc);
     }
 
-    public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
+
+    public async Task<Application.Interface.Helpers.UploadResult> UploadFileAsync(Stream fileStream, string fileName)
     {
-        var uploadParams = new RawUploadParams()
+        // --- SANITIZE THE FILENAME TO CREATE A SAFE PUBLIC ID ---
+        string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+        string fileExt = Path.GetExtension(fileName);
+
+        // Replace spaces with underscores and make it lowercase for consistency
+        string sanitizedBaseName = fileNameWithoutExt.Replace(" ", "_").ToLower();
+    
+        // The new, safe Public ID. e.g., "exercise_17_react_form.docx"
+        string safePublicId = sanitizedBaseName + fileExt;
+
+        // --- UPLOAD WITH THE SAFE PUBLIC ID ---
+        var originalUploadParams = new RawUploadParams
         {
             File = new FileDescription(fileName, fileStream),
-            PublicId = Path.GetFileNameWithoutExtension(fileName)
+            PublicId = safePublicId, // Use the sanitized ID
+            Overwrite = true,
+            RawConvert = "aspose"
         };
+        var originalResult = await _cloudinary.UploadAsync(originalUploadParams);
+    
+        var originalUrl = originalResult.SecureUrl?.ToString() ?? string.Empty;
+        var fileVersion = originalResult.Version;
 
-        var result = await _cloudinary.UploadAsync(uploadParams);
+        // --- CREATE PREVIEW URL WITH THE SAME SAFE PUBLIC ID ---
+        var previewUrl = GetWatermarkedPdfPreviewUrl(safePublicId, fileVersion, WatermarkText);
 
-        return result.SecureUrl?.ToString() ?? string.Empty;
+        return new Application.Interface.Helpers.UploadResult(originalUrl, previewUrl);
     }
 
     public async Task<bool> DeleteFile(string fileName)
@@ -48,6 +69,28 @@ public class CloudinaryUpload : ICloudinaryUpload
         string publicIdWithExtension = Path.GetFileName(uri.LocalPath);
         string publicId = Path.GetFileNameWithoutExtension(publicIdWithExtension);
         return Task.FromResult(publicId);
+    }
+    
+    private string GetWatermarkedPdfPreviewUrl(string publicId,string fileVersion, string watermarkText)
+    {
+
+        // This code is now correct because the publicId it receives is clean
+        var previewUrl = _cloudinary.Api.Url
+            .ResourceType("image")
+            .Action("upload")
+            .Version(fileVersion) // Version first
+            .Transform(new Transformation()
+                .Flags("rasterize")
+                .FetchFormat("pdf")
+                .Overlay(new TextLayer()
+                    .Text(watermarkText)
+                    .FontFamily("Arial")
+                    .FontSize(48))
+                .Opacity(30)
+                .Gravity("center"))
+            .BuildUrl(publicId);
+
+        return previewUrl;
     }
 }
 

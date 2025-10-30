@@ -46,6 +46,7 @@ namespace LIP.Infrastructure.Repositories
             {
                 Title = command.Title,
                 FilePath = command.FilePath,
+                ViewPath = command.ViewPath,
                 GradeLevelId = command.GradeLevelId,
                 Price = (float)command.Price!,
                 CreatedBy = command.CreatedBy,

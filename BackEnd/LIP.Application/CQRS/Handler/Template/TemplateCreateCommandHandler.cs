@@ -22,9 +22,10 @@ namespace LIP.Application.CQRS.Handler.Template
         {
             var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
             bool isSuccess = false;
-            if (!string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
             {
-                request.FilePath = result;
+                request.FilePath = result.Url;
+                request.ViewPath = result.ViewUrl;
                 request.CreatedAt = DateTime.Now;
 
                 isSuccess = await _templateRepository.CreateAsync(request);
@@ -37,7 +38,8 @@ namespace LIP.Application.CQRS.Handler.Template
                 Data = new TemplateCreateResponseDTO
                 {
                     CreatedBy = request.CreatedBy,
-                    FilePath = result,
+                    FilePath = result.Url,
+                    ViewPath = result.ViewUrl,
                     Title = request.Title,
                     GradeLevelId = request.GradeLevelId,
                     Price = request.Price

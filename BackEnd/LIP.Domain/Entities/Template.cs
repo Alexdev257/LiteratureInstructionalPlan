@@ -20,6 +20,12 @@ public partial class Template
         get; set;
     } // template1-userid
 
+    public string? ViewPath
+    {
+        get;
+        set;
+    }
+
     public int? GradeLevelId
     {
         get; set;
