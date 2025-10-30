@@ -18,7 +18,7 @@ namespace LIP.Application.CQRS.Command.Template
         /// </summary>
         public string FilePath { get; set; } = string.Empty;
 
-
+        public string ViewPath { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
         public Stream? FileStream { get; set; }
 

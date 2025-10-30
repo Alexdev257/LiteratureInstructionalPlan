@@ -30,7 +30,7 @@ namespace LIP.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadTemplate([FromForm] FormData form)
         {
-            using var stream = form.File!.OpenReadStream();
+            await using var stream = form.File!.OpenReadStream();
 
             var request = new TemplateCreateRequest
             {
@@ -38,8 +38,9 @@ namespace LIP.WebApp.Controllers
                 GradeLevelId = form.GradeLevelId,
                 Price = form.Price,
                 CreatedBy = form.CreatedById,
+                
                 FileName = form.File.FileName,
-                FileStream = stream
+                FileStream = stream,
             };
 
             var result = await _mediatoR.Send(new TemplateCreateCommand
@@ -48,6 +49,7 @@ namespace LIP.WebApp.Controllers
                 GradeLevelId = request.GradeLevelId,
                 Price = request.Price,
                 CreatedBy = request.CreatedBy,
+                
                 FileName = request.FileName,
                 FileStream = request.FileStream
             });
