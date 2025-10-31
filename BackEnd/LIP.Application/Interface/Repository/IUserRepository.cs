@@ -12,6 +12,7 @@ namespace LIP.Application.Interface.Repository
 
         Task<bool> UpdateAsync(UserUpdateCommand command);
         Task<bool> DeleteAsync(UserDeleteCommand command);
+        Task<bool> RestoreAsync(UserRestoreCommand command);
         Task<bool> RegisterAsync(User user);
 
         //public Task<User?> GetAsync(int id);

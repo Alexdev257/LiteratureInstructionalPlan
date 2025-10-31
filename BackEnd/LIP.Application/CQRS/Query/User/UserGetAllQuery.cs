@@ -7,5 +7,6 @@ namespace LIP.Application.CQRS.Query.User
     {
         public int? RoleId { get; set; } = null!;
         public string? Email { get; set; } = null!;
+        public bool? IsAdmin { get; set; } = false!;
     }
 }

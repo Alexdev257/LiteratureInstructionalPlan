@@ -19,15 +19,19 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<User?> GetAsync(UserGetQuery query)
         {
-            return await _context.Users
+            var users = _context.Users
                 .AsNoTracking()
                 .Include(u => u.Role)
                 .Include(u => u.Examattempts)
                 .Include(u => u.Exams)
                 .Include(u => u.Practicequestions)
-                .Include(u => u.Templates)
-                .Where(u => !u.IsDeleted)
-                .FirstOrDefaultAsync(u => u.UserId == query.UserId);
+                .Include(u => u.Templates).AsQueryable();
+            //.Where(u => !u.IsDeleted);
+
+            if (query.IsAdmin != true)
+                users = users.Where(u => !u.IsDeleted);
+
+            return await users.FirstOrDefaultAsync(u => u.UserId == query.UserId);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(UserGetAllQuery query)
@@ -35,7 +39,7 @@ namespace LIP.Infrastructure.Repositories
             var users = _context.Users
                 .AsNoTracking()
                 .Include(u => u.Role)
-                .Where(u => !u.IsDeleted)
+                //.Where(u => !u.IsDeleted)
                 .AsQueryable();
 
             if (query.RoleId.HasValue)
@@ -43,6 +47,9 @@ namespace LIP.Infrastructure.Repositories
 
             if (!string.IsNullOrEmpty(query.Email))
                 users = users.Where(u => u.Email == query.Email);
+
+            if(query.IsAdmin != true)
+                users = users.Where(u => !u.IsDeleted);
 
             return await users.ToListAsync();
         }
@@ -87,6 +94,17 @@ namespace LIP.Infrastructure.Repositories
 
             user.IsDeleted = true;
             user.DeletedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RestoreAsync(UserRestoreCommand command)
+        {
+            var user = await _context.Users.FindAsync(command.UserId);
+            if (user == null) return false;
+
+            user.IsDeleted = false;
+            user.DeletedAt = DateTime.MinValue;
             await _context.SaveChangesAsync();
             return true;
         }

@@ -21,7 +21,7 @@ namespace LIP.Application.CQRS.Handler.User
         {
             var responseDTO = new GetAllUserResponseDTO();
             var dataList = new List<GetAllUserResponseDTO>();
-            var rs = await _userRepository.GetAllAsync(new UserGetAllQuery { RoleId = request.RoleId, Email = request.Email });
+            var rs = await _userRepository.GetAllAsync(new UserGetAllQuery { RoleId = request.RoleId, Email = request.Email, IsAdmin = request.IsAdmin});
             foreach (var r in rs)
             {
                 responseDTO.UserId = r.UserId;

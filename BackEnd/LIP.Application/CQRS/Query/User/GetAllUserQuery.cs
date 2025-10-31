@@ -15,6 +15,7 @@ namespace LIP.Application.CQRS.Query.User
     {
         public int? RoleId { get; set; } = null!;
         public string? Email { get; set; } = null!;
+        public bool? IsAdmin { get; set; } = false!;
 
         public Task<GetAllUserResponse> ValidateAsync()
         {
@@ -38,6 +39,17 @@ namespace LIP.Application.CQRS.Query.User
                     {
                         Field = "Email",
                         Detail = "Email is not valid!"
+                    });
+                }
+            }
+            if(IsAdmin != null)
+            {
+                if (!Boolean.TryParse(IsAdmin.ToString(), out var _))
+                {
+                    response.ListErrors.Add(new Errors
+                    {
+                        Field = "IsAdmin",
+                        Detail = "IsAdmin must be a boolean value!"
                     });
                 }
             }
