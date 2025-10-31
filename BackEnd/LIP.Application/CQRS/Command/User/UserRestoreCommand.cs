@@ -1,5 +1,5 @@
-﻿using LIP.Application.DTOs.Response.User;
-using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.User;
 using LIP.Application.Interface.Validation;
 using MediatR;
 using System;
@@ -8,17 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Query.User
+namespace LIP.Application.CQRS.Command.User
 {
-    public class GetUserQuery : IRequest<GetUserReponse>, IValidatable<GetUserReponse>
+    public class UserRestoreCommand : IRequest<UserRestoreResponse>, IValidatable<UserRestoreResponse>
     {
         public int UserId { get; set; }
-        public bool? IsAdmin { get; set; } = false!;
-
-        public Task<GetUserReponse> ValidateAsync()
+        public Task<UserRestoreResponse> ValidateAsync()
         {
-            var response = new GetUserReponse();
-            if (string.IsNullOrEmpty(UserId.ToString()))
+            UserRestoreResponse response = new UserRestoreResponse();
+            if (string.IsNullOrEmpty(this.UserId.ToString()))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -26,32 +24,23 @@ namespace LIP.Application.CQRS.Query.User
                     Detail = "UserId is not null or empty!"
                 });
             }
-            if (!Int32.TryParse(UserId.ToString(), out var _))
+
+            if (!Int32.TryParse(this.UserId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
                     Field = "UserId",
-                    Detail = "UserId must be an Integer!"
+                    Detail = "UserId must be an integer!"
                 });
             }
-            if (UserId <= 0)
+
+            if (this.UserId <= 0)
             {
                 response.ListErrors.Add(new Errors
                 {
                     Field = "UserId",
                     Detail = "UserId must be larger than 0!"
                 });
-            }
-            if(IsAdmin != null)
-            {
-                if(!Boolean.TryParse(IsAdmin.ToString(), out var _))
-                {
-                    response.ListErrors.Add(new Errors
-                    {
-                        Field = "IsAdmin",
-                        Detail = "IsAdmin must be a boolean value!"
-                    });
-                }
             }
             if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);

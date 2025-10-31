@@ -53,38 +53,38 @@ namespace LIP.Application.CQRS.Command.User
                     Detail = "RoleId is not null or empty!"
                 });
             }
-            if (string.IsNullOrEmpty(this.CreatedAt.ToString()))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "CreatedAt",
-                    Detail = "CreatedAt is not null or empty!"
-                });
-            }
-            if (string.IsNullOrEmpty(this.DeletedAt.ToString()))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "DeletedAt",
-                    Detail = "DeletedAt is not null or empty!"
-                });
-            }
-            if (string.IsNullOrEmpty(this.IsDeleted.ToString()))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "IsDeleted",
-                    Detail = "IsDeleted is not null or empty!"
-                });
-            }
-            if (Boolean.TryParse(this.IsDeleted.ToString(), out var _))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "IsDeleted",
-                    Detail = "IsDeleted must be boolean value!"
-                });
-            }
+            //if (string.IsNullOrEmpty(this.CreatedAt.ToString()))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "CreatedAt",
+            //        Detail = "CreatedAt is not null or empty!"
+            //    });
+            //}
+            //if (string.IsNullOrEmpty(this.DeletedAt.ToString()))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "DeletedAt",
+            //        Detail = "DeletedAt is not null or empty!"
+            //    });
+            //}
+            //if (string.IsNullOrEmpty(this.IsDeleted.ToString()))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "IsDeleted",
+            //        Detail = "IsDeleted is not null or empty!"
+            //    });
+            //}
+            //if (!Boolean.TryParse(this.IsDeleted.ToString(), out var _))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "IsDeleted",
+            //        Detail = "IsDeleted must be boolean value!"
+            //    });
+            //}
 
             if (!Regex.IsMatch(this.UserName, @"([a-zA-Z\d]+)"))
             {

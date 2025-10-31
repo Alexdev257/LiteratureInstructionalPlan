@@ -19,7 +19,7 @@ namespace LIP.Application.CQRS.Handler.User
         }
         public async Task<GetUserReponse> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            var rs = await _userRepository.GetAsync(new UserGetQuery { UserId = request.UserId });
+            var rs = await _userRepository.GetAsync(new UserGetQuery { UserId = request.UserId, IsAdmin = request.IsAdmin });
             if (rs == null)
             {
                 return new GetUserReponse

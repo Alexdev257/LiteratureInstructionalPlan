@@ -17,17 +17,25 @@ namespace LIP.WebApp.Controllers
         }
 
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllUserAsync([FromQuery] GetAllUserQuery request)
+        public async Task<IActionResult> GetAllUserAsync([FromQuery] GetAllUserRequest request)
         {
-            var result = await _mediator.Send(request);
+            var result = await _mediator.Send(new GetAllUserQuery
+            {
+                RoleId = request.RoleId,
+                Email = request.Email,
+                IsAdmin = request.IsAdmin
+            });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetUserAsync(int id)
+        public async Task<IActionResult> GetUserAsync(int id, [FromQuery] GetUserRequest request)
         {
-            var result = await _mediator.Send(new GetUserQuery { UserId = id });
+            var result = await _mediator.Send(new GetUserQuery { 
+                UserId = id, 
+                IsAdmin = request.IsAdmin 
+            });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
@@ -55,12 +63,34 @@ namespace LIP.WebApp.Controllers
             {
                 UserId = id,
                 UserName = request.UserName,
-                Email = request.Email,
                 FullName = request.FullName,
-                CreatedAt = request.CreatedAt,
-                DeletedAt = request.DeletedAt,
-                IsDeleted = request.IsDeleted,
+                Email = request.Email,
+                //CreatedAt = request.CreatedAt,
+                //DeletedAt = request.DeletedAt,
+                //IsDeleted = request.IsDeleted,
                 RoleId = request.RoleId,
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPatch("delete-user/{id}")]
+        public async Task<IActionResult> DeleteUserAsync(int id)
+        {
+            var result = await _mediator.Send(new UserDeleteCommand
+            {
+                UserId = id
+            });
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPatch("restore-user/{id}")]
+        public async Task<IActionResult> RestoreUserAsync(int id)
+        {
+            var result = await _mediator.Send(new UserRestoreCommand
+            {
+                UserId = id
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

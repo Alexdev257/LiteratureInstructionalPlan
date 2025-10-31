@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Request.User
 {
-    public class GetUserRequest
+    public class UserRestoreRequest
     {
-        //public int UserId { get; set; }
-        public bool? IsAdmin { get; set; } = false!;
+        public int UserId { get; set; }
     }
 }

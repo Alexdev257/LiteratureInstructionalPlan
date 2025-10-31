@@ -8,10 +8,12 @@ namespace LIP.Application.CQRS.Handler.User
     public class UserUpdateCommandHandler : IRequestHandler<UserUpdateCommand, UserUpdateResponse>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public UserUpdateCommandHandler(IUserRepository userRepository)
+        public UserUpdateCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         //public async Task<bool> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
@@ -28,6 +30,19 @@ namespace LIP.Application.CQRS.Handler.User
                 {
                     IsSuccess = false,
                     Message = "User is not found!"
+                };
+            }
+            request.Password = user.Password; // keep the old password if not changed
+            request.CreatedAt = user.CreatedAt; // keep the old created at
+            request.IsDeleted = user.IsDeleted; // keep the old is deleted status
+            request.DeletedAt = user.DeletedAt; // keep the old deleted at
+            var role = await _roleRepository.GetAsync(new Query.Role.RoleGetQuery { RoleId = request.RoleId.Value });
+            if (role == null)
+            {
+                return new UserUpdateResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role is not found!"
                 };
             }
             var rs = await _userRepository.UpdateAsync(request);
