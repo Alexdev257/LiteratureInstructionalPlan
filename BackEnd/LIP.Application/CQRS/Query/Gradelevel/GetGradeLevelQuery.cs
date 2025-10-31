@@ -1,17 +1,22 @@
-using LIP.Application.DTOs.Response.GradeLevel;
+﻿using LIP.Application.DTOs.Response.GradeLevel;
 using LIP.Application.DTOs.Response;
 using LIP.Application.Interface.Validation;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Command.Gradelevel
+namespace LIP.Application.CQRS.Query.Gradelevel
 {
-    public class GradelevelDeleteCommand : IRequest<GradeLevelDeleteResponse>, IValidatable<GradeLevelDeleteResponse>
+    public class GetGradeLevelQuery : IRequest<GetGradeLevelResponse>, IValidatable<GetGradeLevelResponse>
     {
         public int GradeLevelId { get; set; }
 
-        public Task<GradeLevelDeleteResponse> ValidateAsync()
+        public Task<GetGradeLevelResponse> ValidateAsync()
         {
-            GradeLevelDeleteResponse response = new GradeLevelDeleteResponse();
+            GetGradeLevelResponse response = new GetGradeLevelResponse();
             if (string.IsNullOrEmpty(this.GradeLevelId.ToString()))
             {
                 response.ListErrors.Add(new Errors

@@ -107,14 +107,14 @@ namespace LIP.Application.CQRS.Command.User
                 });
             }
 
-            if (string.IsNullOrEmpty(CreatedAt.ToString()))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "CreatedAt",
-                    Detail = "CreatedAt is not null or empty!"
-                });
-            }
+            //if (string.IsNullOrEmpty(CreatedAt.ToString()))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "CreatedAt",
+            //        Detail = "CreatedAt is not null or empty!"
+            //    });
+            //}
             if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }

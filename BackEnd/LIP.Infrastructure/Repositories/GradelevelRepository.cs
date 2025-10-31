@@ -43,8 +43,8 @@ namespace LIP.Infrastructure.Repositories
             };
 
             _context.GradeLevels.Add(gradelevel);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(GradelevelUpdateCommand command)
@@ -54,8 +54,8 @@ namespace LIP.Infrastructure.Repositories
 
             gradelevel.Name = command.Name;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> DeleteAsync(GradelevelDeleteCommand command)
@@ -64,8 +64,8 @@ namespace LIP.Infrastructure.Repositories
             if (gradelevel == null) return false;
 
             _context.GradeLevels.Remove(gradelevel);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
     }
 }

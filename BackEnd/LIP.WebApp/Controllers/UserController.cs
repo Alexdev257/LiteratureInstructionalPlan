@@ -49,7 +49,7 @@ namespace LIP.WebApp.Controllers
                 UserName = request.UserName,
                 Email = request.Email,
                 FullName = request.FullName,
-                CreatedAt = request.CreatedAt,
+                //CreatedAt = request.CreatedAt,
                 Password = request.Password,
                 RoleId = request.RoleId,
             });
