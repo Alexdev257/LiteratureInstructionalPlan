@@ -19,7 +19,7 @@ public partial class PracticeQuestion
 
     public int? GradeLevelId { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public int? CreatedByNavigationUserId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

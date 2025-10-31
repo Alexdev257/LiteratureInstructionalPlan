@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LIP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251023080826_DeleteExamGuide")]
-    partial class DeleteExamGuide
+    [Migration("20251031165610_UpdateDBSoftDelete")]
+    partial class UpdateDBSoftDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -341,9 +341,6 @@ namespace LIP.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CreatedByNavigationUserId")
                         .HasColumnType("int");
 
@@ -421,6 +418,9 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ViewPath")
                         .HasColumnType("longtext");
 
                     b.HasKey("TemplateId");

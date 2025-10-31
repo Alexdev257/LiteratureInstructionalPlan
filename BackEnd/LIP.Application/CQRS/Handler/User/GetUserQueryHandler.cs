@@ -25,7 +25,7 @@ namespace LIP.Application.CQRS.Handler.User
                 return new GetUserReponse
                 {
                     IsSuccess = false,
-                    Message = "User is not exist"
+                    Message = "User is not exist!"
                 };
             }
             else

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LIP.Application.DTOs.Request.PracticeQuestion
+namespace LIP.Application.DTOs.Response.PracticeQuestion
 {
-    public class PracticeQuestionCreateRequest
+    public class GetPracticequestionResponse : CommonReponse<GetPracticequestionResponseDTO> { }
+
+    public class GetPracticequestionResponseDTO
     {
-        //public int QuestionId { get; set; }
+        public int QuestionId { get; set; }
 
         public string? Content { get; set; }
 
@@ -20,12 +22,8 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
 
         public int? GradeLevelId { get; set; }
 
-        public int? CreatedByUserId { get; set; }
+        public int? CreatedByNavigationUserId { get; set; }
 
-        //public DateTime? CreatedAt { get; set; }
-
-        //public bool IsDeleted { get; set; }
-
-        //public DateTime DeletedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }

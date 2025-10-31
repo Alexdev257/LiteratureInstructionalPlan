@@ -1,6 +1,7 @@
-﻿using LIP.Application.DTOs.Response.User;
-using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Validation;
+using LIP.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,33 +9,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Query.User
+namespace LIP.Application.CQRS.Query.Practicequestion
 {
-    public class GetUserQuery : IRequest<GetUserReponse>, IValidatable<GetUserReponse>
+    public class GetPracticequestionQuery : IRequest<GetPracticequestionResponse>, IValidatable<GetPracticequestionResponse>
     {
-        public int UserId { get; set; }
+        public int QuestionId { get; set; }
         public bool? IsAdmin { get; set; } = false!;
 
-        public Task<GetUserReponse> ValidateAsync()
+        public Task<GetPracticequestionResponse> ValidateAsync()
         {
-            var response = new GetUserReponse();
-            if (string.IsNullOrEmpty(UserId.ToString()))
+            GetPracticequestionResponse response = new GetPracticequestionResponse();
+            if (string.IsNullOrEmpty(QuestionId.ToString()))
             {
                 response.ListErrors.Add(new Errors
                 {
-                    Field = "UserId",
-                    Detail = "UserId is not null or empty!"
+                    Field = "QuestionId",
+                    Detail = "QuestionId is not null or empty!"
                 });
             }
-            if (!Int32.TryParse(UserId.ToString(), out var _))
+            if (!Int32.TryParse(QuestionId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
-                    Field = "UserId",
-                    Detail = "UserId must be an Integer!"
+                    Field = "QuestionId",
+                    Detail = "QuestionId must be an Integer!"
                 });
             }
-            if (this.UserId <= 0)
+            if (this.QuestionId <= 0)
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -42,9 +43,9 @@ namespace LIP.Application.CQRS.Query.User
                     Detail = "UserId must be larger than 0!"
                 });
             }
-            if(IsAdmin != null)
+            if (IsAdmin != null)
             {
-                if(!Boolean.TryParse(IsAdmin.ToString(), out var _))
+                if (!Boolean.TryParse(IsAdmin.ToString(), out var _))
                 {
                     response.ListErrors.Add(new Errors
                     {
