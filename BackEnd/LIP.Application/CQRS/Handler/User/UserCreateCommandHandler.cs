@@ -27,7 +27,8 @@ namespace LIP.Application.CQRS.Handler.User
                     Message = "Email has existed in the system already!"
                 };
             }
-
+            
+            request.CreatedAt = DateTime.UtcNow;
             var rs = await _userRepository.CreateAsync(request);
             if (rs)
             {

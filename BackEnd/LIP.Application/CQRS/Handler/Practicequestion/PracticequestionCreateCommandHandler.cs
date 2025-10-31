@@ -1,10 +1,11 @@
 using LIP.Application.CQRS.Command.Practicequestion;
+using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion
 {
-    public class PracticequestionCreateCommandHandler : IRequestHandler<PracticequestionCreateCommand, bool>
+    public class PracticequestionCreateCommandHandler : IRequestHandler<PracticequestionCreateCommand, PracticeQuestionCreateResponse>
     {
         private readonly IPracticequestionRepository _practicequestionRepository;
 
@@ -13,9 +14,26 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
             _practicequestionRepository = practicequestionRepository;
         }
 
-        public async Task<bool> Handle(PracticequestionCreateCommand request, CancellationToken cancellationToken)
+        public async Task<PracticeQuestionCreateResponse> Handle(PracticequestionCreateCommand request, CancellationToken cancellationToken)
         {
-            return await _practicequestionRepository.CreateAsync(request);
+            request.CreatedAt = DateTime.UtcNow;
+            var rs = await _practicequestionRepository.CreateAsync(request);
+            if (rs)
+            {
+                return new PracticeQuestionCreateResponse
+                {
+                    IsSuccess = true,
+                    Message = "Create Practice Question successfully!"
+                };
+            }
+            else
+            {
+                return new PracticeQuestionCreateResponse
+                {
+                    IsSuccess = false,
+                    Message = "Create Practice Question failed"
+                };
+            }
         }
     }
 }
