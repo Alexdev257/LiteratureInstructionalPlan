@@ -28,7 +28,7 @@ namespace LIP.Application.CQRS.Command.Practicequestion
 
         public int? GradeLevelId { get; set; }
 
-        public int? CreatedBy { get; set; }
+        public int? CreatedByUserId { get; set; }
 
         public DateTime? CreatedAt { get; set; }
 
@@ -79,7 +79,7 @@ namespace LIP.Application.CQRS.Command.Practicequestion
                     Detail = "GradeLevelId is null or empty"
                 });
             }
-            if (string.IsNullOrEmpty(this.CreatedBy.ToString()))
+            if (string.IsNullOrEmpty(this.CreatedByUserId.ToString()))
             {
                 response.ListErrors.Add(new Errors
                 {
@@ -103,7 +103,7 @@ namespace LIP.Application.CQRS.Command.Practicequestion
                     Detail = "GradeLevelId must be an integer!"
                 });
             }
-            if (!Int32.TryParse(this.CreatedBy.ToString(), out var _))
+            if (!Int32.TryParse(this.CreatedByUserId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {

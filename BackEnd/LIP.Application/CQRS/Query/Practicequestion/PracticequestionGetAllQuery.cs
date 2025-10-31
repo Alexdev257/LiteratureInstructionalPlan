@@ -7,7 +7,8 @@ namespace LIP.Application.CQRS.Query.Practicequestion
     {
         public string? QuestionType { get; set; }
         public int? GradeLevelId { get; set; }
-        public int? SeriesId { get; set; }
+        //public int? SeriesId { get; set; }
         public int? CreatedBy { get; set; }
+        public bool? IsAdmin { get; set; } = false!;
     }
 }

@@ -1,17 +1,22 @@
-using LIP.Application.DTOs.Response.PracticeQuestion;
+﻿using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.DTOs.Response;
 using LIP.Application.Interface.Validation;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LIP.Application.CQRS.Command.Practicequestion
 {
-    public class PracticequestionDeleteCommand : IRequest<PracticeQuestionDeleteResponse>, IValidatable<PracticeQuestionDeleteResponse>
+    public class PracticequestionRestoreCommand : IRequest<PracticeQuestionRestoreResponse>, IValidatable<PracticeQuestionRestoreResponse>
     {
         public int QuestionId { get; set; }
 
-        public Task<PracticeQuestionDeleteResponse> ValidateAsync()
+        public Task<PracticeQuestionRestoreResponse> ValidateAsync()
         {
-            PracticeQuestionDeleteResponse response = new PracticeQuestionDeleteResponse();
+            PracticeQuestionRestoreResponse response = new PracticeQuestionRestoreResponse();
             if (string.IsNullOrEmpty(this.QuestionId.ToString()))
             {
                 response.ListErrors.Add(new Errors

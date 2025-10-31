@@ -30,6 +30,14 @@ namespace LIP.Application.CQRS.Query.User
                         Detail = "RoleId must be an Integer!"
                     });
                 }
+                if(this.RoleId <= 0)
+                {
+                    response.ListErrors.Add(new Errors
+                    {
+                        Field = "RoleId",
+                        Detail = "RoleId must be larger than 0!"
+                    });
+                }
             }
             if (Email != null)
             {

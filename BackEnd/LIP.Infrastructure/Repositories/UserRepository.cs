@@ -42,14 +42,16 @@ namespace LIP.Infrastructure.Repositories
                 //.Where(u => !u.IsDeleted)
                 .AsQueryable();
 
+            if (query.IsAdmin != true)
+                users = users.Where(u => !u.IsDeleted);
+
             if (query.RoleId.HasValue)
                 users = users.Where(u => u.RoleId == query.RoleId);
 
             if (!string.IsNullOrEmpty(query.Email))
                 users = users.Where(u => u.Email == query.Email);
 
-            if(query.IsAdmin != true)
-                users = users.Where(u => !u.IsDeleted);
+            
 
             return await users.ToListAsync();
         }

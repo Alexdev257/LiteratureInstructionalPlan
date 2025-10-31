@@ -18,15 +18,20 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<PracticeQuestion?> GetAsync(PracticequestionGetQuery query)
         {
-            return await _context.PracticeQuestions
+            var questions = _context.PracticeQuestions
                 .AsNoTracking()
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
                 //.Include(p => p.Series)
                 .Include(p => p.Examanswers)
                 .Include(p => p.Exams)
-                .Where(p => !p.IsDeleted)
-                .FirstOrDefaultAsync(p => p.QuestionId == query.QuestionId);
+                //.Where(p => !p.IsDeleted)
+                .AsQueryable();
+
+            if (query.IsAdmin != true)
+                questions = questions.Where(u => !u.IsDeleted);
+
+                return await questions.FirstOrDefaultAsync(p => p.QuestionId == query.QuestionId);
         }
 
         public async Task<IEnumerable<PracticeQuestion>> GetAllAsync(PracticequestionGetAllQuery query)
@@ -36,8 +41,11 @@ namespace LIP.Infrastructure.Repositories
                 .Include(p => p.CreatedByNavigation)
                 .Include(p => p.GradeLevel)
                 //.Include(p => p.Series)
-                .Where(p => !p.IsDeleted)
+                //.Where(p => !p.IsDeleted)
                 .AsQueryable();
+
+            if (query.IsAdmin != true)
+                questions = questions.Where(u => !u.IsDeleted);
 
             if (!string.IsNullOrEmpty(query.QuestionType))
                 questions = questions.Where(p => p.QuestionType == query.QuestionType);
@@ -45,11 +53,8 @@ namespace LIP.Infrastructure.Repositories
             if (query.GradeLevelId.HasValue)
                 questions = questions.Where(p => p.GradeLevelId == query.GradeLevelId);
 
-            //if (query.SeriesId.HasValue)
-            //    questions = questions.Where(p => p.SeriesId == query.SeriesId);
-
             if (query.CreatedBy.HasValue)
-                questions = questions.Where(p => p.CreatedBy == query.CreatedBy);
+                questions = questions.Where(p => p.CreatedByNavigationUserId == query.CreatedBy);
 
             return await questions.ToListAsync();
         }
@@ -60,16 +65,17 @@ namespace LIP.Infrastructure.Repositories
             {
                 Content = command.Content,
                 QuestionType = command.QuestionType,
+                Difficulty = command.Difficulty,
                 Answer = command.Answer,
                 GradeLevelId = command.GradeLevelId,
                 //SeriesId = command.SeriesId,
-                CreatedBy = command.CreatedBy,
+                CreatedByNavigationUserId = command.CreatedByUserId,
                 CreatedAt = command.CreatedAt
             };
 
             _context.PracticeQuestions.Add(question);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(PracticequestionUpdateCommand command)
@@ -79,14 +85,14 @@ namespace LIP.Infrastructure.Repositories
 
             question.Content = command.Content;
             question.QuestionType = command.QuestionType;
+            question.Difficulty = command.Difficulty;
             question.Answer = command.Answer;
             question.GradeLevelId = command.GradeLevelId;
             //question.SeriesId = command.SeriesId;
-            question.CreatedBy = command.CreatedBy;
+            question.CreatedByNavigationUserId = command.CreatedByUserId;
             question.CreatedAt = command.CreatedAt;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(PracticequestionDeleteCommand command)
@@ -96,8 +102,17 @@ namespace LIP.Infrastructure.Repositories
 
             question.IsDeleted = true;
             question.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RestoreAsync(PracticequestionRestoreCommand command)
+        {
+            var question = await _context.PracticeQuestions.FindAsync(command.QuestionId);
+            if (question == null) return false;
+
+            question.IsDeleted = false;
+            question.DeletedAt = DateTime.MinValue;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

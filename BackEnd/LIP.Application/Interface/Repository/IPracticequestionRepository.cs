@@ -11,5 +11,6 @@ namespace LIP.Application.Interface.Repository
         Task<bool> CreateAsync(PracticequestionCreateCommand command);
         Task<bool> UpdateAsync(PracticequestionUpdateCommand command);
         Task<bool> DeleteAsync(PracticequestionDeleteCommand command);
+        Task<bool> RestoreAsync(PracticequestionRestoreCommand command);
     }
 }

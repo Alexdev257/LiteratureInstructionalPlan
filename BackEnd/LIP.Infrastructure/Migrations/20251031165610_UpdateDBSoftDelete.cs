@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LIP.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class UpdateDBSoftDelete : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Examtypes",
+                name: "ExamTypes",
                 columns: table => new
                 {
                     ExamTypeId = table.Column<int>(type: "int", nullable: false)
@@ -26,12 +26,12 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Examtypes", x => x.ExamTypeId);
+                    table.PrimaryKey("PK_ExamTypes", x => x.ExamTypeId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Gradelevels",
+                name: "GradeLevels",
                 columns: table => new
                 {
                     GradeLevelId = table.Column<int>(type: "int", nullable: false)
@@ -41,7 +41,7 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Gradelevels", x => x.GradeLevelId);
+                    table.PrimaryKey("PK_GradeLevels", x => x.GradeLevelId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -91,7 +91,7 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Exammatrices",
+                name: "ExamMatrices",
                 columns: table => new
                 {
                     MatrixId = table.Column<int>(type: "int", nullable: false)
@@ -113,14 +113,14 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exammatrices", x => x.MatrixId);
+                    table.PrimaryKey("PK_ExamMatrices", x => x.MatrixId);
                     table.ForeignKey(
-                        name: "FK_Exammatrices_Gradelevels_GradeLevelId",
+                        name: "FK_ExamMatrices_GradeLevels_GradeLevelId",
                         column: x => x.GradeLevelId,
-                        principalTable: "Gradelevels",
+                        principalTable: "GradeLevels",
                         principalColumn: "GradeLevelId");
                     table.ForeignKey(
-                        name: "FK_Exammatrices_Users_CreatedByNavigationUserId",
+                        name: "FK_ExamMatrices_Users_CreatedByNavigationUserId",
                         column: x => x.CreatedByNavigationUserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -155,7 +155,7 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Practicequestions",
+                name: "PracticeQuestions",
                 columns: table => new
                 {
                     QuestionId = table.Column<int>(type: "int", nullable: false)
@@ -169,22 +169,21 @@ namespace LIP.Infrastructure.Migrations
                     Answer = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GradeLevelId = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Practicequestions", x => x.QuestionId);
+                    table.PrimaryKey("PK_PracticeQuestions", x => x.QuestionId);
                     table.ForeignKey(
-                        name: "FK_Practicequestions_Gradelevels_GradeLevelId",
+                        name: "FK_PracticeQuestions_GradeLevels_GradeLevelId",
                         column: x => x.GradeLevelId,
-                        principalTable: "Gradelevels",
+                        principalTable: "GradeLevels",
                         principalColumn: "GradeLevelId");
                     table.ForeignKey(
-                        name: "FK_Practicequestions_Users_CreatedByNavigationUserId",
+                        name: "FK_PracticeQuestions_Users_CreatedByNavigationUserId",
                         column: x => x.CreatedByNavigationUserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -201,6 +200,8 @@ namespace LIP.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FilePath = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    ViewPath = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     GradeLevelId = table.Column<int>(type: "int", nullable: true),
                     Price = table.Column<float>(type: "float", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
@@ -213,9 +214,9 @@ namespace LIP.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Templates", x => x.TemplateId);
                     table.ForeignKey(
-                        name: "FK_Templates_Gradelevels_GradeLevelId",
+                        name: "FK_Templates_GradeLevels_GradeLevelId",
                         column: x => x.GradeLevelId,
-                        principalTable: "Gradelevels",
+                        principalTable: "GradeLevels",
                         principalColumn: "GradeLevelId");
                     table.ForeignKey(
                         name: "FK_Templates_Users_CreatedByNavigationUserId",
@@ -246,9 +247,9 @@ namespace LIP.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ExamMatrixDetails", x => x.ExamMatrixDetailId);
                     table.ForeignKey(
-                        name: "FK_ExamMatrixDetails_Exammatrices_ExamMatrixMatrixId",
+                        name: "FK_ExamMatrixDetails_ExamMatrices_ExamMatrixMatrixId",
                         column: x => x.ExamMatrixMatrixId,
-                        principalTable: "Exammatrices",
+                        principalTable: "ExamMatrices",
                         principalColumn: "MatrixId");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -277,19 +278,19 @@ namespace LIP.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Exams", x => x.ExamId);
                     table.ForeignKey(
-                        name: "FK_Exams_Exammatrices_MatrixId",
+                        name: "FK_Exams_ExamMatrices_MatrixId",
                         column: x => x.MatrixId,
-                        principalTable: "Exammatrices",
+                        principalTable: "ExamMatrices",
                         principalColumn: "MatrixId");
                     table.ForeignKey(
-                        name: "FK_Exams_Examtypes_ExamTypeId",
+                        name: "FK_Exams_ExamTypes_ExamTypeId",
                         column: x => x.ExamTypeId,
-                        principalTable: "Examtypes",
+                        principalTable: "ExamTypes",
                         principalColumn: "ExamTypeId");
                     table.ForeignKey(
-                        name: "FK_Exams_Gradelevels_GradeLevelId",
+                        name: "FK_Exams_GradeLevels_GradeLevelId",
                         column: x => x.GradeLevelId,
-                        principalTable: "Gradelevels",
+                        principalTable: "GradeLevels",
                         principalColumn: "GradeLevelId");
                     table.ForeignKey(
                         name: "FK_Exams_Users_CreatedByNavigationUserId",
@@ -300,7 +301,7 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Templatebookings",
+                name: "TemplateOrders",
                 columns: table => new
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false)
@@ -316,19 +317,19 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Templatebookings", x => x.BookingId);
+                    table.PrimaryKey("PK_TemplateOrders", x => x.BookingId);
                     table.ForeignKey(
-                        name: "FK_Templatebookings_Payments_PaymentId",
+                        name: "FK_TemplateOrders_Payments_PaymentId",
                         column: x => x.PaymentId,
                         principalTable: "Payments",
                         principalColumn: "PaymentId");
                     table.ForeignKey(
-                        name: "FK_Templatebookings_Templates_TemplateId",
+                        name: "FK_TemplateOrders_Templates_TemplateId",
                         column: x => x.TemplateId,
                         principalTable: "Templates",
                         principalColumn: "TemplateId");
                     table.ForeignKey(
-                        name: "FK_Templatebookings_Users_UserId",
+                        name: "FK_TemplateOrders_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -336,31 +337,7 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Answerguides",
-                columns: table => new
-                {
-                    AnswerGuideId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ExamId = table.Column<int>(type: "int", nullable: true),
-                    KeyPoints = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MaxScore = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Answerguides", x => x.AnswerGuideId);
-                    table.ForeignKey(
-                        name: "FK_Answerguides_Exams_ExamId",
-                        column: x => x.ExamId,
-                        principalTable: "Exams",
-                        principalColumn: "ExamId");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Examattempts",
+                name: "ExamAttempts",
                 columns: table => new
                 {
                     AttemptId = table.Column<int>(type: "int", nullable: false)
@@ -380,14 +357,14 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Examattempts", x => x.AttemptId);
+                    table.PrimaryKey("PK_ExamAttempts", x => x.AttemptId);
                     table.ForeignKey(
-                        name: "FK_Examattempts_Exams_ExamId",
+                        name: "FK_ExamAttempts_Exams_ExamId",
                         column: x => x.ExamId,
                         principalTable: "Exams",
                         principalColumn: "ExamId");
                     table.ForeignKey(
-                        name: "FK_Examattempts_Users_UserId",
+                        name: "FK_ExamAttempts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -411,16 +388,16 @@ namespace LIP.Infrastructure.Migrations
                         principalColumn: "ExamId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExamPracticeQuestion_Practicequestions_QuestionsQuestionId",
+                        name: "FK_ExamPracticeQuestion_PracticeQuestions_QuestionsQuestionId",
                         column: x => x.QuestionsQuestionId,
-                        principalTable: "Practicequestions",
+                        principalTable: "PracticeQuestions",
                         principalColumn: "QuestionId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Examanswers",
+                name: "ExamAnswers",
                 columns: table => new
                 {
                     AnswerId = table.Column<int>(type: "int", nullable: false)
@@ -434,53 +411,48 @@ namespace LIP.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Examanswers", x => x.AnswerId);
+                    table.PrimaryKey("PK_ExamAnswers", x => x.AnswerId);
                     table.ForeignKey(
-                        name: "FK_Examanswers_Examattempts_AttemptId",
+                        name: "FK_ExamAnswers_ExamAttempts_AttemptId",
                         column: x => x.AttemptId,
-                        principalTable: "Examattempts",
+                        principalTable: "ExamAttempts",
                         principalColumn: "AttemptId");
                     table.ForeignKey(
-                        name: "FK_Examanswers_Practicequestions_QuestionId",
+                        name: "FK_ExamAnswers_PracticeQuestions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Practicequestions",
+                        principalTable: "PracticeQuestions",
                         principalColumn: "QuestionId");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answerguides_ExamId",
-                table: "Answerguides",
-                column: "ExamId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Examanswers_AttemptId",
-                table: "Examanswers",
+                name: "IX_ExamAnswers_AttemptId",
+                table: "ExamAnswers",
                 column: "AttemptId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examanswers_QuestionId",
-                table: "Examanswers",
+                name: "IX_ExamAnswers_QuestionId",
+                table: "ExamAnswers",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examattempts_ExamId",
-                table: "Examattempts",
+                name: "IX_ExamAttempts_ExamId",
+                table: "ExamAttempts",
                 column: "ExamId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examattempts_UserId",
-                table: "Examattempts",
+                name: "IX_ExamAttempts_UserId",
+                table: "ExamAttempts",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exammatrices_CreatedByNavigationUserId",
-                table: "Exammatrices",
+                name: "IX_ExamMatrices_CreatedByNavigationUserId",
+                table: "ExamMatrices",
                 column: "CreatedByNavigationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exammatrices_GradeLevelId",
-                table: "Exammatrices",
+                name: "IX_ExamMatrices_GradeLevelId",
+                table: "ExamMatrices",
                 column: "GradeLevelId");
 
             migrationBuilder.CreateIndex(
@@ -519,28 +491,28 @@ namespace LIP.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Practicequestions_CreatedByNavigationUserId",
-                table: "Practicequestions",
+                name: "IX_PracticeQuestions_CreatedByNavigationUserId",
+                table: "PracticeQuestions",
                 column: "CreatedByNavigationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Practicequestions_GradeLevelId",
-                table: "Practicequestions",
+                name: "IX_PracticeQuestions_GradeLevelId",
+                table: "PracticeQuestions",
                 column: "GradeLevelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Templatebookings_PaymentId",
-                table: "Templatebookings",
+                name: "IX_TemplateOrders_PaymentId",
+                table: "TemplateOrders",
                 column: "PaymentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Templatebookings_TemplateId",
-                table: "Templatebookings",
+                name: "IX_TemplateOrders_TemplateId",
+                table: "TemplateOrders",
                 column: "TemplateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Templatebookings_UserId",
-                table: "Templatebookings",
+                name: "IX_TemplateOrders_UserId",
+                table: "TemplateOrders",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -563,10 +535,7 @@ namespace LIP.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Answerguides");
-
-            migrationBuilder.DropTable(
-                name: "Examanswers");
+                name: "ExamAnswers");
 
             migrationBuilder.DropTable(
                 name: "ExamMatrixDetails");
@@ -575,13 +544,13 @@ namespace LIP.Infrastructure.Migrations
                 name: "ExamPracticeQuestion");
 
             migrationBuilder.DropTable(
-                name: "Templatebookings");
+                name: "TemplateOrders");
 
             migrationBuilder.DropTable(
-                name: "Examattempts");
+                name: "ExamAttempts");
 
             migrationBuilder.DropTable(
-                name: "Practicequestions");
+                name: "PracticeQuestions");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -593,13 +562,13 @@ namespace LIP.Infrastructure.Migrations
                 name: "Exams");
 
             migrationBuilder.DropTable(
-                name: "Exammatrices");
+                name: "ExamMatrices");
 
             migrationBuilder.DropTable(
-                name: "Examtypes");
+                name: "ExamTypes");
 
             migrationBuilder.DropTable(
-                name: "Gradelevels");
+                name: "GradeLevels");
 
             migrationBuilder.DropTable(
                 name: "Users");
