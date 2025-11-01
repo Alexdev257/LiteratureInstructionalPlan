@@ -75,7 +75,6 @@ namespace LIP.Infrastructure.Repositories
 
             _context.PracticeQuestions.Add(question);
             return await _context.SaveChangesAsync() > 0;
-            
         }
 
         public async Task<bool> UpdateAsync(PracticequestionUpdateCommand command)

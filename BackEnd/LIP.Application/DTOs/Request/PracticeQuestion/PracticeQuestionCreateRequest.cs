@@ -16,7 +16,8 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
 
         public string? Difficulty { get; set; }
 
-        public string? Answer { get; set; }
+        //public string? Answer { get; set; }
+        public List<AnswerOption>? Answer { get; set; }
 
         public int? GradeLevelId { get; set; }
 
@@ -27,5 +28,11 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
         //public bool IsDeleted { get; set; }
 
         //public DateTime DeletedAt { get; set; }
+    }
+
+    public class AnswerOption
+    {
+        public string Label { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
     }
 }

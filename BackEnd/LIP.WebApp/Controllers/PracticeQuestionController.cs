@@ -3,6 +3,7 @@ using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace LIP.WebApp.Controllers
 {
@@ -24,6 +25,7 @@ namespace LIP.WebApp.Controllers
                 GradeLevelId = request.GradeLevelId,
                 CreatedByUserId = request.CreatedByUserId,
                 IsAdmin = request.IsAdmin,
+                IsShowAnswer = request.IsShowAnswer,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
@@ -35,7 +37,9 @@ namespace LIP.WebApp.Controllers
             var result = await _mediator.Send(new GetPracticequestionQuery
             {
                 QuestionId = id,
-                IsAdmin = request.IsAdmin
+                IsAdmin = request.IsAdmin,
+                IsShowAnswer = request.IsShowAnswer,
+                
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
@@ -49,7 +53,8 @@ namespace LIP.WebApp.Controllers
                 Content = request.Content,
                 QuestionType = request.QuestionType,
                 Difficulty = request.Difficulty,
-                Answer = request.Answer,
+                //Answer = request.Answer,
+                Answer = JsonSerializer.Serialize(request.Answer),
                 GradeLevelId = request.GradeLevelId,
                 CreatedByUserId = request.CreatedByUserId,
             });
@@ -66,7 +71,8 @@ namespace LIP.WebApp.Controllers
                 Content = request.Content,
                 QuestionType = request.QuestionType,
                 Difficulty = request.Difficulty,
-                Answer = request.Answer,
+                //Answer = request.Answer,
+                Answer = JsonSerializer.Serialize(request.Answer),
                 GradeLevelId = request.GradeLevelId,
                 CreatedByUserId = request.CreatedByUserId,
             });
