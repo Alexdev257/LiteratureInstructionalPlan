@@ -2,6 +2,7 @@ using LIP.Application.CQRS.Command.Practicequestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
+using System.Text.Json;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion
 {
@@ -17,6 +18,12 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
         public async Task<PracticeQuestionCreateResponse> Handle(PracticequestionCreateCommand request, CancellationToken cancellationToken)
         {
             request.CreatedAt = DateTime.UtcNow;
+            //string? answerJson = null;
+            //if(request.Answer != null && request.Answer.Any())
+            //{
+            //    answerJson = JsonSerializer.Serialize(request.Answer);
+            //}
+            //request.Answer = answerJson;
             var rs = await _practicequestionRepository.CreateAsync(request);
             if (rs)
             {

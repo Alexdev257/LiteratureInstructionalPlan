@@ -2,6 +2,7 @@ using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.DTOs.Response;
 using LIP.Application.Interface.Validation;
 using MediatR;
+using LIP.Application.DTOs.Request.PracticeQuestion;
 
 namespace LIP.Application.CQRS.Command.Practicequestion
 {
@@ -25,6 +26,7 @@ namespace LIP.Application.CQRS.Command.Practicequestion
         public string? Difficulty { get; set; }
 
         public string? Answer { get; set; }
+        //public List<AnswerOption>? Answer { get; set; }
 
         public int? GradeLevelId { get; set; }
 
@@ -63,14 +65,14 @@ namespace LIP.Application.CQRS.Command.Practicequestion
                     Detail = "Difficulty is null or empty"
                 });
             }
-            if (string.IsNullOrEmpty(this.Answer))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Answer",
-                    Detail = "Answer is null or empty"
-                });
-            }
+            //if (string.IsNullOrEmpty(this.Answer))
+            //{
+            //    response.ListErrors.Add(new Errors
+            //    {
+            //        Field = "Answer",
+            //        Detail = "Answer is null or empty"
+            //    });
+            //}
             if (string.IsNullOrEmpty(this.GradeLevelId.ToString()))
             {
                 response.ListErrors.Add(new Errors

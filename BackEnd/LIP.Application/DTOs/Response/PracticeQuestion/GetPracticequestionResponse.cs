@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LIP.Application.DTOs.Request.PracticeQuestion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,8 @@ namespace LIP.Application.DTOs.Response.PracticeQuestion
 
         public string? Difficulty { get; set; }
 
-        public string? Answer { get; set; }
+        //public string? Answer { get; set; }
+        public List<AnswerOption>? Answer { get; set; }
 
         public int? GradeLevelId { get; set; }
 

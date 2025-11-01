@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Query.Practicequestion;
+using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion
@@ -36,7 +38,10 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
                     Content = rs.Content,
                     QuestionType = rs.QuestionType,
                     Difficulty = rs.Difficulty,
-                    Answer = rs.Answer,
+                    //Answer = rs.Answer,
+                    Answer = !request.IsShowAnswer.Value ? new List<AnswerOption>() : string.IsNullOrEmpty(rs.Answer)
+                                ? new List<AnswerOption>()
+                                : JsonSerializer.Deserialize<List<AnswerOption>>(rs.Answer),
                     GradeLevelId = rs.GradeLevelId,
                     CreatedByNavigationUserId = rs.CreatedByNavigationUserId,
                     CreatedAt = rs.CreatedAt
