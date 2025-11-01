@@ -67,6 +67,7 @@ namespace LIP.Infrastructure.Repositories
                 QuestionType = command.QuestionType,
                 Difficulty = command.Difficulty,
                 Answer = command.Answer,
+                CorrectAnswer = command.CorrectAnswer,
                 GradeLevelId = command.GradeLevelId,
                 //SeriesId = command.SeriesId,
                 CreatedByNavigationUserId = command.CreatedByUserId,
@@ -86,6 +87,7 @@ namespace LIP.Infrastructure.Repositories
             question.QuestionType = command.QuestionType;
             question.Difficulty = command.Difficulty;
             question.Answer = command.Answer;
+            question.CorrectAnswer = command.CorrectAnswer;
             question.GradeLevelId = command.GradeLevelId;
             //question.SeriesId = command.SeriesId;
             question.CreatedByNavigationUserId = command.CreatedByUserId;

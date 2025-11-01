@@ -26,6 +26,7 @@ namespace LIP.WebApp.Controllers
                 CreatedByUserId = request.CreatedByUserId,
                 IsAdmin = request.IsAdmin,
                 IsShowAnswer = request.IsShowAnswer,
+                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
                 PageSize = request.PageSize,
                 PageNumber = request.PageNumber,
             });
@@ -41,6 +42,7 @@ namespace LIP.WebApp.Controllers
                 QuestionId = id,
                 IsAdmin = request.IsAdmin,
                 IsShowAnswer = request.IsShowAnswer,
+                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
                 
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
@@ -57,6 +59,7 @@ namespace LIP.WebApp.Controllers
                 Difficulty = request.Difficulty,
                 //Answer = request.Answer,
                 Answer = JsonSerializer.Serialize(request.Answer),
+                CorrectAnswer = JsonSerializer.Serialize(request.CorrectAnswer),
                 GradeLevelId = request.GradeLevelId,
                 CreatedByUserId = request.CreatedByUserId,
             });
@@ -75,6 +78,7 @@ namespace LIP.WebApp.Controllers
                 Difficulty = request.Difficulty,
                 //Answer = request.Answer,
                 Answer = JsonSerializer.Serialize(request.Answer),
+                CorrectAnswer = JsonSerializer.Serialize(request.CorrectAnswer),
                 GradeLevelId = request.GradeLevelId,
                 CreatedByUserId = request.CreatedByUserId,
             });

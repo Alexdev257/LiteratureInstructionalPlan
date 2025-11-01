@@ -16,6 +16,7 @@ namespace LIP.Application.CQRS.Command.Practicequestion
         public string? Difficulty { get; set; }
 
         public string? Answer { get; set; }
+        public string? CorrectAnswer { get; set; }
 
         public int? GradeLevelId { get; set; }
 
