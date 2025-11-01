@@ -13,6 +13,7 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
         public string? Difficulty { get; set; }
         //public string? Answer { get; set; }
         public List<AnswerOption>? Answer { get; set; }
+        public List<AnswerOption>? CorrectAnswer { get; set; }
         public int? GradeLevelId { get; set; }
         public int? CreatedByUserId { get; set; }
     }

@@ -16,6 +16,7 @@ namespace LIP.Application.CQRS.Query.Practicequestion
         public int QuestionId { get; set; }
         public bool? IsAdmin { get; set; } = false!;
         public bool? IsShowAnswer { get; set; } = false!;
+        public bool? IsShowCorrectAnswer { get; set; } = false!;
 
         public Task<GetPracticequestionResponse> ValidateAsync()
         {

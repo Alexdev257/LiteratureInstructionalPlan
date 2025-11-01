@@ -18,7 +18,7 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
 
         //public string? Answer { get; set; }
         public List<AnswerOption>? Answer { get; set; }
-
+        public List<AnswerOption>? CorrectAnswer { get; set; }
         public int? GradeLevelId { get; set; }
 
         public int? CreatedByUserId { get; set; }
@@ -32,7 +32,7 @@ namespace LIP.Application.DTOs.Request.PracticeQuestion
 
     public class AnswerOption
     {
-        public string Label { get; set; } = string.Empty;
-        public string Text { get; set; } = string.Empty;
+        public string? Label { get; set; } = string.Empty;
+        public string? Text { get; set; } = string.Empty;
     }
 }

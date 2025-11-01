@@ -21,6 +21,7 @@ namespace LIP.Application.DTOs.Response.PracticeQuestion
 
         //public string? Answer { get; set; }
         public List<AnswerOption>? Answer { get; set; }
+        public List<AnswerOption>? CorrectAnswer { get; set; }
 
         public int? GradeLevelId { get; set; }
 

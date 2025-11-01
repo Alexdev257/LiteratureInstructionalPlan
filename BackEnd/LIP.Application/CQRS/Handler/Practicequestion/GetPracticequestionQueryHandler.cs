@@ -39,9 +39,16 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
                     QuestionType = rs.QuestionType,
                     Difficulty = rs.Difficulty,
                     //Answer = rs.Answer,
-                    Answer = !request.IsShowAnswer.Value ? new List<AnswerOption>() : string.IsNullOrEmpty(rs.Answer)
-                                ? new List<AnswerOption>()
-                                : JsonSerializer.Deserialize<List<AnswerOption>>(rs.Answer),
+                    Answer = !request.IsShowAnswer.Value 
+                                ? new List<AnswerOption>() 
+                                : string.IsNullOrEmpty(rs.Answer)
+                                    ? new List<AnswerOption>()
+                                    : JsonSerializer.Deserialize<List<AnswerOption>>(rs.Answer),
+                    CorrectAnswer = !request.IsShowCorrectAnswer.Value 
+                                ? new List<AnswerOption>() 
+                                : string.IsNullOrEmpty(rs.CorrectAnswer)
+                                    ? new List<AnswerOption>()
+                                    : JsonSerializer.Deserialize<List<AnswerOption>>(rs.CorrectAnswer),
                     GradeLevelId = rs.GradeLevelId,
                     CreatedByNavigationUserId = rs.CreatedByNavigationUserId,
                     CreatedAt = rs.CreatedAt

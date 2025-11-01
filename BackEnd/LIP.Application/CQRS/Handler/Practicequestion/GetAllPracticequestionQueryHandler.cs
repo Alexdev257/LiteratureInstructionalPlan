@@ -24,6 +24,14 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
         public async Task<GetAllPracticeQuestionResponse> Handle(GetAllPracticequestionQuery request, CancellationToken cancellationToken)
         {
             var rs = await _practicequestionRepository.GetAllAsync(new PracticequestionGetAllQuery { QuestionType = request.QuestionType, GradeLevelId = request.GradeLevelId, CreatedBy = request.CreatedByUserId, IsAdmin = request.IsAdmin });
+            if (rs == null)
+            {
+                return new GetAllPracticeQuestionResponse
+                {
+                    IsSuccess = false,
+                    Message = "No Questions in system!"
+                };
+            }
             var dataList = rs.Select(r => new GetAllPracticeQuestionResponseDTO
             {
                 QuestionId = r.QuestionId,
@@ -31,9 +39,16 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
                 QuestionType = r.QuestionType,
                 Difficulty = r.Difficulty,
                 //Answer = r.Answer,
-                Answer = !request.IsShowAnswer.Value ? new List<AnswerOption>() : string.IsNullOrWhiteSpace(r.Answer)
-                                ? new List<AnswerOption>()
-                                : JsonSerializer.Deserialize<List<AnswerOption>>(r.Answer!),
+                Answer = !request.IsShowAnswer.Value 
+                                ? new List<AnswerOption>() 
+                                : string.IsNullOrWhiteSpace(r.Answer)
+                                    ? new List<AnswerOption>()
+                                    : JsonSerializer.Deserialize<List<AnswerOption>>(r.Answer!),
+                CorrectAnswer = !request.IsShowCorrectAnswer.Value 
+                                ? new List<AnswerOption>() 
+                                : string.IsNullOrWhiteSpace(r.CorrectAnswer)
+                                    ? new List<AnswerOption>()
+                                    : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer!),
                 GradeLevelId = r.GradeLevelId,
                 CreatedByNavigationUserId = r.CreatedByNavigationUserId,
                 CreatedAt = r.CreatedAt
