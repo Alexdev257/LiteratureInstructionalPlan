@@ -1,18 +1,22 @@
-using LIP.Application.DTOs.Response.ExamType;
+﻿using LIP.Application.DTOs.Response.ExamType;
 using LIP.Application.DTOs.Response;
 using LIP.Application.Interface.Validation;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Command.Examtype
+namespace LIP.Application.CQRS.Query.Examtype
 {
-    public class ExamtypeUpdateCommand : IRequest<ExamTypeUpdateResponse>, IValidatable<ExamTypeUpdateResponse>
+    public class GetExamTypeQuery : IRequest<GetExamTypeResponse>, IValidatable<GetExamTypeResponse>
     {
         public int ExamTypeId { get; set; }
-        public string? Name { get; set; }
 
-        public Task<ExamTypeUpdateResponse> ValidateAsync()
+        public Task<GetExamTypeResponse> ValidateAsync()
         {
-            ExamTypeUpdateResponse response = new ExamTypeUpdateResponse();
+            GetExamTypeResponse response = new GetExamTypeResponse();
             if (string.IsNullOrEmpty(this.ExamTypeId.ToString()))
             {
                 response.ListErrors.Add(new Errors
@@ -35,14 +39,6 @@ namespace LIP.Application.CQRS.Command.Examtype
                 {
                     Field = "ExamTypeId",
                     Detail = "ExamTypeId must be larger than 0!"
-                });
-            }
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Name",
-                    Detail = "Name is null or empty"
                 });
             }
             if (response.ListErrors.Count > 0) response.IsSuccess = false;

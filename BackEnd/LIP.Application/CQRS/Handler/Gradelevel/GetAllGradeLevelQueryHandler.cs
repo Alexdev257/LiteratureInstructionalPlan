@@ -40,7 +40,7 @@ namespace LIP.Application.CQRS.Handler.Gradelevel
             {
                 return new GetAllGradeLevelResponse
                 {
-                    IsSuccess = true,
+                    IsSuccess = false,
                     Message = "No Grade Level in system!"
                 };
             }

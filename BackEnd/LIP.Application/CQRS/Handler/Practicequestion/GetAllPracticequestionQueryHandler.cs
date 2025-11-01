@@ -44,7 +44,7 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
             {
                 return new GetAllPracticeQuestionResponse
                 {
-                    IsSuccess = true,
+                    IsSuccess = false,
                     Message = "No Questions in system!"
                 };
             }
