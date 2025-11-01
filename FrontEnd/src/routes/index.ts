@@ -15,10 +15,12 @@ import { Route as authLayoutRoute } from "./auth/_layout";
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
 import { Route as dashboardUsersRoute } from "./dashboard/users";
 import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
+import { Route as userProfileRoute } from "./auth/userprofile"; // <-- thêm import
 
 const routeTree = rootRoute.addChildren([
     // Routes sử dụng root layout (Header + Footer)
     homeRoute,
+    userProfileRoute, // <-- thêm ở đây để /userprofile được đăng ký
     examLayoutRoute.addChildren([
         examIndexRoute,
         examDetailRoute.addChildren([
