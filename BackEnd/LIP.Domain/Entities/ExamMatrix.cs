@@ -50,7 +50,7 @@ public partial class ExamMatrix
         get; set;
     }
 
-    public int? CreatedBy
+    public int? CreatedByNavigationUserId
     {
         get; set;
     }
