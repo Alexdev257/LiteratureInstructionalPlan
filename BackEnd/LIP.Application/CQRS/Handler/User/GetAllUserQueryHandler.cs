@@ -61,7 +61,7 @@ namespace LIP.Application.CQRS.Handler.User
             {
                 return new GetAllUserResponse
                 {
-                    IsSuccess = true,
+                    IsSuccess = false,
                     Message = "No User in system!"
                 };
             }

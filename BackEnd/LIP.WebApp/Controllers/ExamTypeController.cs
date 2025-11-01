@@ -1,6 +1,6 @@
-﻿using LIP.Application.CQRS.Command.Gradelevel;
-using LIP.Application.CQRS.Query.Gradelevel;
-using LIP.Application.DTOs.Request.GradeLevel;
+﻿using LIP.Application.CQRS.Command.Examtype;
+using LIP.Application.CQRS.Query.Examtype;
+using LIP.Application.DTOs.Request.ExamType;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,40 +8,40 @@ namespace LIP.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GradeLevelController : ControllerBase
+    public class ExamTypeController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public GradeLevelController(IMediator mediator)
+        public ExamTypeController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllGradeLevels([FromQuery] GetAllGradeLevelRequest request)
+        public async Task<IActionResult> GetAllExamTypes([FromQuery] GetAllExamTypeRequest request)
         {
-            var result = await _mediator.Send(new GetAllGradeLevelQuery
+            var result = await _mediator.Send(new GetAllExamTypeQuery
             {
-                Name = request.Name
+                Name = request.Name,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetGradeLevelById(int id)
+        public async Task<IActionResult> GetExamTypeById(int id)
         {
-            var result = await _mediator.Send(new GetGradeLevelQuery
+            var result = await _mediator.Send(new GetExamTypeQuery
             {
-                GradeLevelId = id
+                ExamTypeId = id
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
-        [HttpPost("create-gradelevel")]
-        public async Task<IActionResult> CreateGradeLevel([FromBody] GradeLevelCreateRequest request)
+        [HttpPost("create-examtype")]
+        public async Task<IActionResult> CreateExamType([FromBody] ExamTypeCreateRequest request)
         {
-            var result = await _mediator.Send(new GradelevelCreateCommand
+            var result = await _mediator.Send(new ExamtypeCreateCommand
             {
                 Name = request.Name,
             });
@@ -49,24 +49,24 @@ namespace LIP.WebApp.Controllers
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
-        [HttpPut("update-gradelevel/{id}")]
-        public async Task<IActionResult> UpdateGradeLevel(int id, [FromBody] GradeLevelUpdateRequest request)
+        [HttpPut("update-examtype/{id}")]
+        public async Task<IActionResult> UpdateExamType(int id, [FromBody] ExamTypeUpdateRequest request)
         {
-            var result = await _mediator.Send(new GradelevelUpdateCommand
+            var result = await _mediator.Send(new ExamtypeUpdateCommand
             {
-                GradeLevelId = id,
+                ExamTypeId = id,
                 Name = request.Name,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
-        [HttpDelete("delete-gradelevel/{id}")]
-        public async Task<IActionResult> DeleteGradeLevel(int id)
+        [HttpDelete("delete-examtype/{id}")]
+        public async Task<IActionResult> DeleteExamType(int id)
         {
-            var result = await _mediator.Send(new GradelevelDeleteCommand
+            var result = await _mediator.Send(new ExamtypeDeleteCommand
             {
-                GradeLevelId = id
+                ExamTypeId = id,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

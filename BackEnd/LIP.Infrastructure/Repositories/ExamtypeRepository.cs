@@ -41,8 +41,8 @@ namespace LIP.Infrastructure.Repositories
             };
 
             _context.ExamTypes.Add(examtype);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(ExamtypeUpdateCommand command)
@@ -52,8 +52,7 @@ namespace LIP.Infrastructure.Repositories
 
             examtype.Name = command.Name;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(ExamtypeDeleteCommand command)
@@ -62,8 +61,7 @@ namespace LIP.Infrastructure.Repositories
             if (examtype == null) return false;
 
             _context.ExamTypes.Remove(examtype);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
