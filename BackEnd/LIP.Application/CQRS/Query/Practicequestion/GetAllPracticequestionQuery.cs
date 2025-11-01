@@ -1,4 +1,5 @@
-﻿using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Request;
+using LIP.Application.DTOs.Response;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Validation;
 using MediatR;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.CQRS.Query.Practicequestion
 {
-    public class GetAllPracticequestionQuery : IRequest<GetAllPracticeQuestionResponse>, IValidatable<GetAllPracticeQuestionResponse>
+    public class GetAllPracticequestionQuery : PaginationRequest, IRequest<GetAllPracticeQuestionResponse>, IValidatable<GetAllPracticeQuestionResponse>
     {
         public string? QuestionType { get; set; }
         public int? GradeLevelId { get; set; }
@@ -69,6 +70,20 @@ namespace LIP.Application.CQRS.Query.Practicequestion
                         Detail = "IsAdmin must be a boolean value!"
                     });
                 }
+            }
+            if (PageNumber <= 0)
+            {
+                response.ListErrors.Add(new Errors { 
+                    Field = "PageNumber", 
+                    Detail = "PageNumber must be larger or equal 1"
+                });
+            }
+            if (PageSize <= 0)
+            {
+                response.ListErrors.Add(new Errors { 
+                    Field = "PageSize", 
+                    Detail = "PageSize must be larger or equal 1"
+                });
             }
             if (response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
