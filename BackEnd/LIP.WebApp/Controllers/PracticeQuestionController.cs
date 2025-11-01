@@ -26,6 +26,8 @@ namespace LIP.WebApp.Controllers
                 CreatedByUserId = request.CreatedByUserId,
                 IsAdmin = request.IsAdmin,
                 IsShowAnswer = request.IsShowAnswer,
+                PageSize = request.PageSize,
+                PageNumber = request.PageNumber,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

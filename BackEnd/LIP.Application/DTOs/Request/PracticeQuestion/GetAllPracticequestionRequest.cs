@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Request.PracticeQuestion
 {
-    public class GetAllPracticequestionRequest
+    public class GetAllPracticequestionRequest : PaginationRequest
     {
         public string? QuestionType { get; set; }
         public int? GradeLevelId { get; set; }

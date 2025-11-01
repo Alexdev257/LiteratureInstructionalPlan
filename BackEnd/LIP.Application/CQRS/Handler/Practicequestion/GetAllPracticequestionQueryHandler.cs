@@ -1,8 +1,10 @@
 ﻿using LIP.Application.CQRS.Query.Practicequestion;
+using LIP.Application.DTOs;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,23 +38,34 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
                 CreatedByNavigationUserId = r.CreatedByNavigationUserId,
                 CreatedAt = r.CreatedAt
             }).ToList();
-            if(dataList.Count > 0)
+            //if (dataList.Count > 0)
+            //{
+            //    return new GetAllPracticeQuestionResponse
+            //    {
+            //        IsSuccess = true,
+            //        Data = dataList,
+            //        Message = "Get All Question successfully!"
+            //    };
+            //}
+            //else
+            //{
+            //    return new GetAllPracticeQuestionResponse
+            //    {
+            //        IsSuccess = false,
+            //        Message = "No Questions in system!"
+            //    };
+            //}
+
+            var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
+            return new GetAllPracticeQuestionResponse
             {
-                return new GetAllPracticeQuestionResponse
-                {
-                    IsSuccess = true,
-                    Data = dataList,
-                    Message = "Get All Question successfully!"
-                };
-            }
-            else
-            {
-                return new GetAllPracticeQuestionResponse
-                {
-                    IsSuccess = false,
-                    Message = "No Questions in system!"
-                };
-            }
+                IsSuccess = paged.Items.Any(),
+                Data = paged,
+                Message = paged.Items.Any()
+                ? "Get All Question successfully!"
+                : "No Questions in system!"
+            };
+
         }
     }
 }

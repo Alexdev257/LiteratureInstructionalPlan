@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.PracticeQuestion
 {
-    public class GetAllPracticeQuestionResponse : CommonReponse<List<GetAllPracticeQuestionResponseDTO>> { }
+    public class GetAllPracticeQuestionResponse : CommonReponse<PaginationResponse<GetAllPracticeQuestionResponseDTO>> { }
 
     public class GetAllPracticeQuestionResponseDTO
     {
