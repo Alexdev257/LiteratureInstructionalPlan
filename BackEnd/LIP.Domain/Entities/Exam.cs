@@ -40,7 +40,7 @@ public partial class Exam
         get; set;
     }
 
-    public int? CreatedBy
+    public int? CreatedByNavigationUserId
     {
         get; set;
     }

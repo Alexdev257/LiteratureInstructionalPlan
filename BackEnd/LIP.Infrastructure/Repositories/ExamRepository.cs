@@ -46,7 +46,7 @@ namespace LIP.Infrastructure.Repositories
                 exams = exams.Where(e => e.ExamTypeId == query.ExamTypeId);
 
             if (query.CreatedBy.HasValue)
-                exams = exams.Where(e => e.CreatedBy == query.CreatedBy);
+                exams = exams.Where(e => e.CreatedByNavigationUserId == query.CreatedBy);
 
             return await exams.ToListAsync();
         }
@@ -60,13 +60,13 @@ namespace LIP.Infrastructure.Repositories
                 DurationMinutes = command.DurationMinutes,
                 GradeLevelId = command.GradeLevelId,
                 ExamTypeId = command.ExamTypeId,
-                CreatedBy = command.CreatedBy,
+                CreatedByNavigationUserId = command.CreatedBy,
                 CreatedAt = command.CreatedAt
             };
 
             _context.Exams.Add(exam);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(ExamUpdateCommand command)
@@ -79,11 +79,10 @@ namespace LIP.Infrastructure.Repositories
             exam.DurationMinutes = command.DurationMinutes;
             exam.GradeLevelId = command.GradeLevelId;
             exam.ExamTypeId = command.ExamTypeId;
-            exam.CreatedBy = command.CreatedBy;
+            exam.CreatedByNavigationUserId = command.CreatedBy;
             exam.CreatedAt = command.CreatedAt;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(ExamDeleteCommand command)
@@ -93,8 +92,7 @@ namespace LIP.Infrastructure.Repositories
 
             exam.IsDeleted = true;
             exam.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
