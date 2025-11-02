@@ -35,7 +35,7 @@ namespace LIP.Infrastructure.Repositories
 
             if(query.ExamMatricId.HasValue)
             {
-                matrixDetail = matrixDetail.Where(ed => ed.ExamMatricId == query.ExamMatricId);
+                matrixDetail = matrixDetail.Where(ed => ed.ExamMatrixMatrixId == query.ExamMatricId);
             }
             return await matrixDetail.ToListAsync();
         }
@@ -48,7 +48,7 @@ namespace LIP.Infrastructure.Repositories
                 Difficulty = command.Difficulty,
                 Quantity = command.Quantity,
                 ScorePerQuestion = command.ScorePerQuestion,
-                ExamMatricId = command.ExamMatricId,
+                ExamMatrixMatrixId = command.ExamMatricId,
             };
 
             _dbContext.ExamMatrixDetails.Add(matrixDetail);
@@ -56,18 +56,18 @@ namespace LIP.Infrastructure.Repositories
         }
         public async Task<bool> UpdateAsync(ExamMatrixDetailUpdateCommand command)
         {
-            var matrixDetail = await _dbContext.ExamMatrixDetails.FindAsync(command.ExamMatrixDetailId);
-            if(matrixDetail == null)
-            {
-                return false;
-            }
+            //var matrixDetail = await _dbContext.ExamMatrixDetails.FindAsync(command.ExamMatrixDetailId);
+            //if(matrixDetail == null)
+            //{
+            //    return false;
+            //}
 
-            matrixDetail.LessonName = command.LessonName;
-            matrixDetail.QuestionType = command.QuestionType;
-            matrixDetail.Difficulty = command.Difficulty;
-            matrixDetail.Quantity = command.Quantity;
-            matrixDetail.ScorePerQuestion = command.ScorePerQuestion;
-            matrixDetail.ExamMatricId = command.ExamMatricId;
+            //matrixDetail.LessonName = command.LessonName;
+            //matrixDetail.QuestionType = command.QuestionType;
+            //matrixDetail.Difficulty = command.Difficulty;
+            //matrixDetail.Quantity = command.Quantity;
+            //matrixDetail.ScorePerQuestion = command.ScorePerQuestion;
+            //matrixDetail.ExamMatrixMatrixId = command.ExamMatricId;
 
             return await _dbContext.SaveChangesAsync() > 0;
         }

@@ -18,5 +18,6 @@ namespace LIP.Application.Interface.Repository
         Task<bool> CreateAsync(ExamMatrixCreateCommand command);
         Task<bool> UpdateAsync(ExamMatrixUpdateCommand command);
         Task<bool> DeleteAsync(ExamMatrixDeleteCommand command);
+        Task<bool> RestoreAsync(ExamMatrixRestoreCommand command);
     }
 }

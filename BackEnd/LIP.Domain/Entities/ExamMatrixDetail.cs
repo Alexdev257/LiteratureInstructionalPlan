@@ -17,7 +17,7 @@ public partial class ExamMatrixDetail
 
     public decimal? ScorePerQuestion { get; set; }
     
-    public int? ExamMatricId { get; set; }
+    public int? ExamMatrixMatrixId { get; set; }
     
     public virtual ExamMatrix? ExamMatrix { get; set; }
 }

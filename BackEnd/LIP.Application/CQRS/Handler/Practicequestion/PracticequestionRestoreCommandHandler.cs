@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Command.Practicequestion;
+using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -19,7 +20,7 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
         }
         public async Task<PracticeQuestionRestoreResponse> Handle(PracticequestionRestoreCommand request, CancellationToken cancellationToken)
         {
-            var question = await _practicequestionRepository.GetAsync(new Query.Practicequestion.PracticequestionGetQuery { QuestionId = request.QuestionId, IsAdmin = true });
+            var question = await _practicequestionRepository.GetAsync(new PracticequestionGetQuery { QuestionId = request.QuestionId, IsAdmin = true });
             if (question == null)
             {
                 return new PracticeQuestionRestoreResponse
