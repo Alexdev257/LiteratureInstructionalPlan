@@ -1,5 +1,5 @@
-﻿using LIP.Application.DTOs.Response.ExamMatrix;
-    using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Validation;
 using MediatR;
 using System;
@@ -8,30 +8,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Query.ExamMatrix
+namespace LIP.Application.CQRS.Command.ExamMatrix
 {
-    public class ExamMatrixGetQuery : IRequest<ExamMatrixGetResponse>, IValidatable<ExamMatrixGetResponse>
+    public class ExamMatrixRestoreCommand : IRequest<ExamMatrixRestoreResponse>, IValidatable<ExamMatrixRestoreResponse>
     {
         public int MatrixId { get; set; }
-        public bool? IsAdmin { get; set; } = false;
 
-        public Task<ExamMatrixGetResponse> ValidateAsync()
+        public Task<ExamMatrixRestoreResponse> ValidateAsync()
         {
-            ExamMatrixGetResponse response = new ExamMatrixGetResponse();
+            ExamMatrixRestoreResponse response = new ExamMatrixRestoreResponse();
             if (string.IsNullOrEmpty(this.MatrixId.ToString()))
             {
                 response.ListErrors.Add(new Errors
                 {
                     Field = "MatrixId",
-                    Detail = "MatrixId is not null or empty!"
+                    Detail = "MatrixId is not null or empty!",
                 });
             }
-            if (!Int32.TryParse(this.MatrixId.ToString(),out var _))
+            if (!Int32.TryParse(this.MatrixId.ToString(), out var _))
             {
                 response.ListErrors.Add(new Errors
                 {
                     Field = "MatrixId",
-                    Detail = "MatrixId must be an Integer!"
+                    Detail = "MatrixId must be an Integer!",
                 });
             }
             if (this.MatrixId <= 0)
@@ -39,7 +38,7 @@ namespace LIP.Application.CQRS.Query.ExamMatrix
                 response.ListErrors.Add(new Errors
                 {
                     Field = "MatrixId",
-                    Detail = "MatrixId must larger than 0!"
+                    Detail = "MatrixId must be larger than 0!",
                 });
             }
             if (response.ListErrors.Count > 0) response.IsSuccess = false;

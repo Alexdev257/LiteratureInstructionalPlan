@@ -46,6 +46,8 @@ namespace LIP.Infrastructure.AddDependencyInjection
             service.AddScoped<IRedisHelper, RedisHelper>();
             service.AddScoped<IPaymentRepository, PaymentRepository>();
             service.AddScoped<ITemplatebookingRepository, TemplatebookingRepository>();
+            service.AddScoped<IExamMatrixRepository, ExamMatrixRepository>();
+            service.AddScoped<IExamMatrixDetailRepository, ExamMatrixDetailRepository>();
         }
 
         public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
