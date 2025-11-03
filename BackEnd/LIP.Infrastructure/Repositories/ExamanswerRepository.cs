@@ -54,8 +54,8 @@ namespace LIP.Infrastructure.Repositories
             };
 
             _context.ExamAnswers.Add(examanswer);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(ExamanswerUpdateCommand command)
@@ -67,8 +67,7 @@ namespace LIP.Infrastructure.Repositories
             examanswer.QuestionId = command.QuestionId;
             examanswer.AnswerContent = command.AnswerContent;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(ExamanswerDeleteCommand command)
@@ -78,8 +77,17 @@ namespace LIP.Infrastructure.Repositories
 
             examanswer.IsDeleted = true;
             examanswer.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RestoreAsync(ExamanswerRestoreCommand command)
+        {
+            var examanswer = await _context.ExamAnswers.FindAsync(command.AnswerId);
+            if (examanswer == null) return false;
+
+            examanswer.IsDeleted = false;
+            examanswer.DeletedAt = DateTime.MinValue;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

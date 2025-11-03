@@ -63,8 +63,8 @@ namespace LIP.Infrastructure.Repositories
             };
 
             _context.ExamAttempts.Add(examattempt);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+            
         }
 
         public async Task<bool> UpdateAsync(ExamattemptUpdateCommand command)
@@ -81,8 +81,7 @@ namespace LIP.Infrastructure.Repositories
             examattempt.Feedback = command.Feedback;
             examattempt.LastSavedAt = command.LastSavedAt;
 
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(ExamattemptDeleteCommand command)
@@ -92,8 +91,17 @@ namespace LIP.Infrastructure.Repositories
 
             examattempt.IsDeleted = true;
             examattempt.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RestoreAsync(ExamattemptRestoreCommand command)
+        {
+            var examattempt = await _context.ExamAttempts.FindAsync(command.AttemptId);
+            if (examattempt == null) return false;
+
+            examattempt.IsDeleted = false;
+            examattempt.DeletedAt = DateTime.MinValue;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

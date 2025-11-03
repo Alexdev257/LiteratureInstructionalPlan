@@ -11,5 +11,6 @@ namespace LIP.Application.Interface.Repository
         Task<bool> CreateAsync(ExamanswerCreateCommand command);
         Task<bool> UpdateAsync(ExamanswerUpdateCommand command);
         Task<bool> DeleteAsync(ExamanswerDeleteCommand command);
+        Task<bool> RestoreAsync(ExamanswerRestoreCommand command);
     }
 }
