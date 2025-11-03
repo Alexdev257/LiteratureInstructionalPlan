@@ -11,5 +11,8 @@ namespace LIP.Application.Interface.Repository
         Task<bool> CreateAsync(ExamCreateCommand command);
         Task<bool> UpdateAsync(ExamUpdateCommand command);
         Task<bool> DeleteAsync(ExamDeleteCommand command);
+        Task<bool> RestoreAsync(ExamRestoreCommand command);
+        Task<bool> CreateWithQuestionsAsync(Exam exam, IEnumerable<PracticeQuestion> questions);
+        Task<bool> UpdateWithQuestionsAsync(Exam exam, IEnumerable<int> questionIds);
     }
 }
