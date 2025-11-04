@@ -23,7 +23,9 @@ namespace LIP.WebApp.Controllers
             {
                 RoleId = request.RoleId,
                 Email = request.Email,
-                IsAdmin = request.IsAdmin
+                IsAdmin = request.IsAdmin,
+                PageSize = request.PageSize,
+                PageNumber = request.PageNumber,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

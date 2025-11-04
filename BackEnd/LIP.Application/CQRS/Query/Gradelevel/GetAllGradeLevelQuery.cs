@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LIP.Application.DTOs.Request;
 
 namespace LIP.Application.CQRS.Query.Gradelevel
 {
-    public class GetAllGradeLevelQuery : IRequest<GetAllGradeLevelResponse>
+    public class GetAllGradeLevelQuery : PaginationRequest, IRequest<GetAllGradeLevelResponse>
     {
         public string? Name { get; set; }
 

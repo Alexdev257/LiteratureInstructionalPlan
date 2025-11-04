@@ -1,4 +1,5 @@
-﻿using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Request;
+using LIP.Application.DTOs.Response;
 using LIP.Application.DTOs.Response.User;
 using LIP.Application.Interface.Validation;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.CQRS.Query.User
 {
-    public class GetAllUserQuery : IRequest<GetAllUserResponse>, IValidatable<GetAllUserResponse>
+    public class GetAllUserQuery : PaginationRequest, IRequest<GetAllUserResponse>, IValidatable<GetAllUserResponse>
     {
         public int? RoleId { get; set; } = null!;
         public string? Email { get; set; } = null!;

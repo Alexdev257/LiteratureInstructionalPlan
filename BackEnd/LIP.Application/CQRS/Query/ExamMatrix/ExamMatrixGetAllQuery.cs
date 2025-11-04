@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LIP.Application.DTOs.Request;
 
 namespace LIP.Application.CQRS.Query.ExamMatrix
 {
-    public class ExamMatrixGetAllQuery : IRequest<ExamMatrixGetAllResponse>, IValidatable<ExamMatrixGetAllResponse>
+    public class ExamMatrixGetAllQuery : PaginationRequest, IRequest<ExamMatrixGetAllResponse>, IValidatable<ExamMatrixGetAllResponse>
     {
         public int? GradeLevelId { get; set; }
         public int? CreatedByUserId { get; set; }

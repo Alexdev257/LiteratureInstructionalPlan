@@ -53,23 +53,6 @@ namespace LIP.Application.CQRS.Handler.Practicequestion
                 CreatedByNavigationUserId = r.CreatedByNavigationUserId,
                 CreatedAt = r.CreatedAt
             }).ToList();
-            //if (dataList.Count > 0)
-            //{
-            //    return new GetAllPracticeQuestionResponse
-            //    {
-            //        IsSuccess = true,
-            //        Data = dataList,
-            //        Message = "Get All Question successfully!"
-            //    };
-            //}
-            //else
-            //{
-            //    return new GetAllPracticeQuestionResponse
-            //    {
-            //        IsSuccess = false,
-            //        Message = "No Questions in system!"
-            //    };
-            //}
 
             var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
             return new GetAllPracticeQuestionResponse

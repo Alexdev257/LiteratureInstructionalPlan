@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Request.GradeLevel
 {
-    public class GetAllGradeLevelRequest
+    public class GetAllGradeLevelRequest : PaginationRequest
     {
         public string? Name { get; set; } = null!;
     }

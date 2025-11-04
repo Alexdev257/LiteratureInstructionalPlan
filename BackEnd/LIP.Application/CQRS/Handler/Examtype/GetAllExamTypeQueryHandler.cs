@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Query.Examtype;
+using LIP.Application.DTOs;
 using LIP.Application.DTOs.Response.ExamType;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -25,23 +26,33 @@ namespace LIP.Application.CQRS.Handler.Examtype
                 ExamTypeId = r.ExamTypeId,
                 Name = r.Name,
             }).ToList();
-            if(dataList.Count > 0)
+            //if(dataList.Count > 0)
+            //{
+            //    return new GetAllExamTypeResponse
+            //    {
+            //        IsSuccess = true,
+            //        Data = dataList,
+            //        Message = "Get All ExamType successfully!"
+            //    };
+            //}
+            //else
+            //{
+            //    return new GetAllExamTypeResponse
+            //    {
+            //        IsSuccess = false,
+            //        Message = "No ExamType in system!!"
+            //    };
+            //}
+
+            var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
+            return new GetAllExamTypeResponse
             {
-                return new GetAllExamTypeResponse
-                {
-                    IsSuccess = true,
-                    Data = dataList,
-                    Message = "Get All ExamType successfully!"
-                };
-            }
-            else
-            {
-                return new GetAllExamTypeResponse
-                {
-                    IsSuccess = false,
-                    Message = "No ExamType in system!!"
-                };
-            }
+                IsSuccess = paged.Items.Any(),
+                Data = paged,
+                Message = paged.Items.Any()
+                ? "Get All ExamTypes successfully!"
+                : "No ExamTypes in system!"
+            };
         }
     }
 }

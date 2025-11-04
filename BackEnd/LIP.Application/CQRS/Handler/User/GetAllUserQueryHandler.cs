@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Query.User;
+using LIP.Application.DTOs;
 using LIP.Application.DTOs.Response.GradeLevel;
 using LIP.Application.DTOs.Response.User;
 using LIP.Application.Interface.Repository;
@@ -47,24 +48,16 @@ namespace LIP.Application.CQRS.Handler.User
                 RoleId = r.RoleId
 
             }).ToList();
-            if (dataList.Count > 0)
-            {
 
-                return new GetAllUserResponse
-                {
-                    IsSuccess = true,
-                    Data = dataList,
-                    Message = "Get All User Successfully!"
-                };
-            }
-            else
+            var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
+            return new GetAllUserResponse
             {
-                return new GetAllUserResponse
-                {
-                    IsSuccess = false,
-                    Message = "No User in system!"
-                };
-            }
+                IsSuccess = paged.Items.Any(),
+                Data = paged,
+                Message = paged.Items.Any()
+                ? "Get All Users successfully!"
+                : "No Users in system!"
+            };
         }
     }
 }
