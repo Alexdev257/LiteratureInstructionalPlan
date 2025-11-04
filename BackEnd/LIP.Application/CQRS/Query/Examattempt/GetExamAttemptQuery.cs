@@ -1,17 +1,23 @@
-using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Response;
 using LIP.Application.DTOs.Response.ExamAttempt;
 using LIP.Application.Interface.Validation;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Command.Examattempt
+namespace LIP.Application.CQRS.Query.Examattempt
 {
-    public class ExamattemptDeleteCommand : IRequest<ExamAttemptDeleteResponse>, IValidatable<ExamAttemptDeleteResponse>
+    public class GetExamAttemptQuery : IRequest<GetExamAttemptResponse>, IValidatable<GetExamAttemptResponse>
     {
         public int AttemptId { get; set; }
+        public bool? IsAdmin { get; set; } = false!;
 
-        public Task<ExamAttemptDeleteResponse> ValidateAsync()
+        public Task<GetExamAttemptResponse> ValidateAsync()
         {
-            ExamAttemptDeleteResponse response = new ExamAttemptDeleteResponse();
+            GetExamAttemptResponse response = new GetExamAttemptResponse();
             if (this.AttemptId.ToString() != null)
             {
                 if (this.AttemptId <= 0)
@@ -23,7 +29,7 @@ namespace LIP.Application.CQRS.Command.Examattempt
                     });
                 }
             }
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
+            if(response.ListErrors.Count > 0) response.IsSuccess = false;
             return Task.FromResult(response);
         }
     }

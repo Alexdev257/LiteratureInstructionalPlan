@@ -18,13 +18,16 @@ namespace LIP.Infrastructure.Repositories
 
         public async Task<ExamAttempt?> GetAsync(ExamattemptGetQuery query)
         {
-            return await _context.ExamAttempts
+            var attempt = _context.ExamAttempts
                 .AsNoTracking()
                 .Include(e => e.Exam)
                 .Include(e => e.User)
                 .Include(e => e.Examanswers)
-                .Where(e => !e.IsDeleted)
-                .FirstOrDefaultAsync(e => e.AttemptId == query.AttemptId);
+                .AsQueryable();
+            if (query.IsAdmin != true)
+                attempt = attempt.Where(u => !u.IsDeleted);
+
+                return await attempt.FirstOrDefaultAsync(e => e.AttemptId == query.AttemptId);
         }
 
         public async Task<IEnumerable<ExamAttempt>> GetAllAsync(ExamattemptGetAllQuery query)
@@ -33,8 +36,11 @@ namespace LIP.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(e => e.Exam)
                 .Include(e => e.User)
-                .Where(e => !e.IsDeleted)
+                //.Where(e => !e.IsDeleted)
                 .AsQueryable();
+
+            if (query.IsAdmin != true)
+                ExamAttempts = ExamAttempts.Where(u => !u.IsDeleted);
 
             if (query.ExamId.HasValue)
                 ExamAttempts = ExamAttempts.Where(e => e.ExamId == query.ExamId);

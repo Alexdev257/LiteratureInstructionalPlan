@@ -4,6 +4,7 @@ using LIP.Application.DTOs.Request.Exam;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace LIP.WebApp.Controllers
 {
@@ -104,6 +105,38 @@ namespace LIP.WebApp.Controllers
             var result = await _mediator.Send(new ExamRestoreCommand
             {
                 ExamId = id
+            });
+
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPost("start-exam")]
+        public async Task<IActionResult> StartExamAsync([FromQuery] ExamStartRequest request)
+        {
+            var result = await _mediator.Send(new ExamStartCommand
+            {
+                ExamId = request.ExamId,
+                UserId = request.UserId,
+            });
+
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpPost("submit-exam")]
+        public async Task<IActionResult> SubmitExamAsync([FromBody] ExamSubmitRequest request)
+        {
+            var answerList = request.Answers.Select(a => new SubmitAnswerCommandDTO
+            {
+                QuestionId = a.QuestionId,
+                AnswerContent = JsonSerializer.Serialize(a.AnswerContent)
+            }).ToList();
+
+            var result = await _mediator.Send(new ExamSubmitCommand
+            {
+                AttemptId = request.AttemptId,
+                Answers = answerList
             });
 
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
