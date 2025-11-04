@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Query.ExamMatrix;
+using LIP.Application.DTOs;
 using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LIP.Application.CQRS.Handler.ExamMatrix
 {
@@ -25,7 +27,7 @@ namespace LIP.Application.CQRS.Handler.ExamMatrix
                 return new ExamMatrixGetAllResponse
                 {
                     IsSuccess = false,
-                    Message = "No Matrix in the system!"
+                    Message = "No Matrixes in the system!"
                 };
             }
 
@@ -50,12 +52,15 @@ namespace LIP.Application.CQRS.Handler.ExamMatrix
                 }).ToList() ?? new List<ExamMatrixDetailResponseDTO>()
             }).ToList();
 
+            var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
             return new ExamMatrixGetAllResponse
             {
-                IsSuccess = true,
-                Data = dataList,
-                Message = "Get All Matrix successfully!"
+                IsSuccess = paged.Items.Any(),
+                Data = paged,
+                Message = paged.Items.Any()
+                ? "Get All Matrixes successfully!"
+                : "No Matrixes in system!"
             };
-        }
+    }
     }
 }

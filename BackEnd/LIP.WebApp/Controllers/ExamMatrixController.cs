@@ -26,6 +26,8 @@ namespace LIP.WebApp.Controllers
                 CreatedByUserId = request.CreatedByUserId,
                 GradeLevelId = request.GradeLevelId,
                 IsAdmin = request.IsAdmin,
+                PageSize = request.PageSize,
+                PageNumber = request.PageNumber,
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

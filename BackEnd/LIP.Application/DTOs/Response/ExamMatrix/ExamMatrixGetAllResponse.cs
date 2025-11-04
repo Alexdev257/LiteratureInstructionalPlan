@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.ExamMatrix
 {
-    public class ExamMatrixGetAllResponse : CommonReponse<List<ExamMatrixGetAllResponseDTO>> { }
+    public class ExamMatrixGetAllResponse : CommonReponse<PaginationResponse<ExamMatrixGetAllResponseDTO>> { }
 
     public class ExamMatrixGetAllResponseDTO
     {

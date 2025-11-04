@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Command.Exam;
+using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs.Request.Exam;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,38 @@ namespace LIP.WebApp.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllExamAsync([FromQuery] GetAllExamRequest request)
+        {
+            var result = await _mediator.Send(new GetAllExamQuery
+            {
+                GradeLevelId = request.GradeLevelId,
+                ExamTypeId = request.ExamTypeId,
+                CreatedBy = request.CreatedBy,
+                IsAdmin = request.IsAdmin,
+                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
+                PageSize = request.PageSize,
+                PageNumber = request.PageNumber,
+            });
+
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetExamAsync(int id, [FromQuery] GetExamRequest request)
+        {
+            var result = await _mediator.Send(new GetExamQuery
+            {
+                ExamId = id,
+                IsAdmin = request.IsAdmin,
+                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
+            });
+
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            else return StatusCode(StatusCodes.Status400BadRequest, result);
+        }
+
         [HttpPost("create-exam-manual")]
         public async Task<IActionResult> CreateManualAsync([FromBody] ExamCreateManualFromMatrixRequest request)
         {
@@ -31,7 +64,7 @@ namespace LIP.WebApp.Controllers
                 QuestionIds = request.QuestionIds,
             });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+            if (result.IsSuccess) return StatusCode(StatusCodes.Status201Created, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
 
@@ -48,6 +81,7 @@ namespace LIP.WebApp.Controllers
                 GradeLevelId = request.GradeLevelId,
                 QuestionIds = request.QuestionIds
             });
+
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
@@ -59,6 +93,7 @@ namespace LIP.WebApp.Controllers
             {
                 ExamId = id
             });
+
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
@@ -70,6 +105,7 @@ namespace LIP.WebApp.Controllers
             {
                 ExamId = id
             });
+
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }

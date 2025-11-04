@@ -21,7 +21,9 @@ namespace LIP.WebApp.Controllers
         {
             var result = await _mediator.Send(new GetAllGradeLevelQuery
             {
-                Name = request.Name
+                Name = request.Name,
+                PageSize = request.PageSize,
+                PageNumber = request.PageNumber
             });
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Request.ExamMatrix
 {
-    public class ExamMatrixGetAllRequest
+    public class ExamMatrixGetAllRequest : PaginationRequest
     {
         public int? GradeLevelId { get; set; }
         public int? CreatedByUserId { get; set; }
