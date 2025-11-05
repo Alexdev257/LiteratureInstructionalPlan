@@ -199,8 +199,10 @@ namespace LIP.Infrastructure.AddDependencyInjection
         {
             service.Configure<AccountCloundinary>(
                 configuration.GetSection("Cloudinary"));
-
+            service.Configure<MomoService.MomoConfig>(
+                configuration.GetSection("MomoAPI"));
             service.AddSingleton<ICloudinaryUpload, CloudinaryUpload>();
+            service.AddSingleton<IMomoService, MomoService>();
         }
     }
 }

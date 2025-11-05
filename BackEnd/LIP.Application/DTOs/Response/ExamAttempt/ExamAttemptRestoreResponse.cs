@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.ExamAttempt
 {
-    public class ExamAttemptRestoreResponse : CommonReponse<ExamAttemptRestoreResponseDTO> { }
+    public class ExamAttemptRestoreResponse : CommonResponse<ExamAttemptRestoreResponseDTO> { }
 
     public class ExamAttemptRestoreResponseDTO
     {

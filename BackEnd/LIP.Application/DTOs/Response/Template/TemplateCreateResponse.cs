@@ -2,7 +2,7 @@ using System;
 
 namespace LIP.Application.DTOs.Response.Template;
 
-public class TemplateCreateResponse : CommonReponse<TemplateCreateResponseDTO>
+public class TemplateCreateResponse : CommonResponse<TemplateCreateResponseDTO>
 {
 
 }

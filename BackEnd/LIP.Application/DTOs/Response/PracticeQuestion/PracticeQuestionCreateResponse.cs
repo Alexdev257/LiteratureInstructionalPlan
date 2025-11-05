@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.PracticeQuestion
 {
-    public class PracticeQuestionCreateResponse : CommonReponse<PracticeQuestionCreateResponseDTO> { }
+    public class PracticeQuestionCreateResponse : CommonResponse<PracticeQuestionCreateResponseDTO> { }
 
     public class PracticeQuestionCreateResponseDTO
     {

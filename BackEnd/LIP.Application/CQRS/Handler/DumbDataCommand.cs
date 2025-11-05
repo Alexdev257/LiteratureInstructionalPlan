@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler;
 
-public class DumbDataCommand : IRequest<CommonReponse<string>>
+public class DumbDataCommand : IRequest<CommonResponse<string>>
 {
     
 }

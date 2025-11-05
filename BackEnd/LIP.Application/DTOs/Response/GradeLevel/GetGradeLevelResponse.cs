@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.GradeLevel
 {
-    public class GetGradeLevelResponse : CommonReponse<GetGradeLevelResponseDTO> { }
+    public class GetGradeLevelResponse : CommonResponse<GetGradeLevelResponseDTO> { }
     public class GetGradeLevelResponseDTO
     {
         public int GradeLevelId { get; set; }

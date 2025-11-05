@@ -9,7 +9,7 @@ public interface ITemplatebookingRepository
     Task<TemplateOrder?> GetAsync(TemplatebookingGetQuery query);
     Task<IEnumerable<TemplateOrder>> GetAllAsync(TemplatebookingGetAllQuery query);
     Task<IEnumerable<TemplateOrder>> GetByUserIdAsync(TemplatebookingGetByUserIdQuery query);
-    Task<bool> CreateAsync(TemplatebookingCreateCommand command);
-    Task<bool> UpdateAsync(TemplatebookingUpdateCommand command);
+    Task<TemplateOrder> CreateAsync(TemplatebookingCreateCommand command);
+    Task<TemplateOrder> UpdateAsync(TemplateOrder order);
     Task<bool> DeleteAsync(TemplatebookingDeleteCommand command);
 }

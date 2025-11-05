@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.User
 {
-    public class UserDeleteResponse : CommonReponse<UserDeleteResponseDTO> { }
+    public class UserDeleteResponse : CommonResponse<UserDeleteResponseDTO> { }
 
     public class UserDeleteResponseDTO
     {

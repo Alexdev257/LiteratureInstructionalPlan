@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class RefreshResponse : CommonReponse<RefreshResponseDTO> { }
+    public class RefreshResponse : CommonResponse<RefreshResponseDTO> { }
     public class RefreshResponseDTO
     {
         public string AccessToken { get; set; } = string.Empty;

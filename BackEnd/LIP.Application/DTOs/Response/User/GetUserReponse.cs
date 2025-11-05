@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.User
 {
-    public class GetUserReponse : CommonReponse<GetUserResponseDTO> { }
+    public class GetUserReponse : CommonResponse<GetUserResponseDTO> { }
 
     public class GetUserResponseDTO
     {

@@ -39,39 +39,5 @@ namespace LIP.WebApp.Controllers
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
-
-        [HttpPost("create-gradelevel")]
-        public async Task<IActionResult> CreateGradeLevel([FromBody] GradeLevelCreateRequest request)
-        {
-            var result = await _mediator.Send(new GradelevelCreateCommand
-            {
-                Name = request.Name,
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
-
-        [HttpPut("update-gradelevel/{id}")]
-        public async Task<IActionResult> UpdateGradeLevel(int id, [FromBody] GradeLevelUpdateRequest request)
-        {
-            var result = await _mediator.Send(new GradelevelUpdateCommand
-            {
-                GradeLevelId = id,
-                Name = request.Name,
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
-
-        [HttpDelete("delete-gradelevel/{id}")]
-        public async Task<IActionResult> DeleteGradeLevel(int id)
-        {
-            var result = await _mediator.Send(new GradelevelDeleteCommand
-            {
-                GradeLevelId = id
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
     }
 }

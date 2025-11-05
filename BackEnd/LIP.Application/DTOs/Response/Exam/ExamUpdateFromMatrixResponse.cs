@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Exam
 {
-    public class ExamUpdateFromMatrixResponse : CommonReponse<ExamUpdateFromMatrixResponseDTO> { }
+    public class ExamUpdateFromMatrixResponse : CommonResponse<ExamUpdateFromMatrixResponseDTO> { }
 
     public class ExamUpdateFromMatrixResponseDTO
     {

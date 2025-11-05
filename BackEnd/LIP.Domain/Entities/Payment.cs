@@ -22,6 +22,10 @@ public partial class Payment
     public bool IsDeleted { get; set; }
 
     public DateTime DeletedAt { get; set; }
+    
+    public int TemplateOrderId { get; set; }
+    
+    public virtual TemplateOrder? TemplateOrder { get; set; }
 
     public virtual ICollection<TemplateOrder> Templatebookings { get; set; } = new List<TemplateOrder>();
 

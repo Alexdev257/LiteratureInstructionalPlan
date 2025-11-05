@@ -1,11 +1,11 @@
 namespace LIP.Application.DTOs.Response.Template;
 
-public class TemplateGetResponse : CommonReponse<List<TemplateGetDTO>>
+public class TemplateGetResponse : CommonResponse<List<TemplateGetDTO>>
 {
     
 }
 
-public class TemplateGetByIdResponse : CommonReponse<TemplateGetDTO>
+public class TemplateGetByIdResponse : CommonResponse<TemplateGetDTO>
 {
     
 }

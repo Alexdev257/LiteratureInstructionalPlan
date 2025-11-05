@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace LIP.Application.CQRS.Pipeline;
 
 public class CustomValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-where TResponse : CommonReponseBase
+where TResponse : CommonResponseBase
 where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<CustomValidationBehavior<TRequest, TResponse>> _logger;

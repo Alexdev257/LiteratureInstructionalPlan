@@ -9,7 +9,6 @@ namespace LIP.Application.Interface.Repository
         Task<Template?> GetAsync(TemplateGetQuery query);
         Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query);
         Task<bool> CreateAsync(TemplateCreateCommand command);
-        Task<bool> UpdateAsync(TemplateUpdateCommand command);
         Task<bool> DeleteAsync(TemplateDeleteCommand command);
         
         Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.ExamAttempt
 {
-    public class GetAllExamAttemptResponse : CommonReponse<PaginationResponse<GetAllExamAttemptResponseDTO>> { }
+    public class GetAllExamAttemptResponse : CommonResponse<PaginationResponse<GetAllExamAttemptResponseDTO>> { }
 
     public class GetAllExamAttemptResponseDTO
     {

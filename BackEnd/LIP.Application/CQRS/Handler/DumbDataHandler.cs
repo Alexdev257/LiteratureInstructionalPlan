@@ -11,7 +11,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler;
 
-public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<string>>
+public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonResponse<string>>
 {
     private readonly IRoleRepository _roleRepository;
     private readonly IGradelevelRepository _gradelevelRepository;
@@ -24,7 +24,7 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
         _examtypeRepository = examtypeRepository;
     }
 
-    public async Task<CommonReponse<string>> Handle(DumbDataCommand request, CancellationToken cancellationToken)
+    public async Task<CommonResponse<string>> Handle(DumbDataCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -108,7 +108,7 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
                 messageBuilder.Append($"{gradeLevelsAddedCount} grade levels, ");
                 messageBuilder.Append($"{examTypesAddedCount} exam types.");
                 
-                return new CommonReponse<string>
+                return new CommonResponse<string>
                 {
                     Data = messageBuilder.ToString(),
                     IsSuccess = true,
@@ -116,7 +116,7 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
                 };
             }
 
-            return new CommonReponse<string>
+            return new CommonResponse<string>
             {
                 Data = "No data was added. All tables already contain data.",
                 IsSuccess = true,
@@ -125,7 +125,7 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonReponse<st
         }
         catch (Exception ex)
         {
-            return new CommonReponse<string>
+            return new CommonResponse<string>
             {
                 Data = ex.Message,
                 IsSuccess = false,

@@ -9,7 +9,5 @@ namespace LIP.Application.Interface.Repository
         Task<GradeLevel?> GetAsync(GradelevelGetQuery query);
         Task<IEnumerable<GradeLevel>> GetAllAsync(GradelevelGetAllQuery query);
         Task<bool> CreateAsync(GradelevelCreateCommand command);
-        Task<bool> UpdateAsync(GradelevelUpdateCommand command);
-        Task<bool> DeleteAsync(GradelevelDeleteCommand command);
     }
 }
