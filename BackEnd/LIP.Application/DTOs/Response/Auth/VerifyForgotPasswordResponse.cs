@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class VerifyForgotPasswordResponse : CommonReponse<VerifyForgotPasswordResponseDTO> { }
+    public class VerifyForgotPasswordResponse : CommonResponse<VerifyForgotPasswordResponseDTO> { }
 
     public class VerifyForgotPasswordResponseDTO
     {

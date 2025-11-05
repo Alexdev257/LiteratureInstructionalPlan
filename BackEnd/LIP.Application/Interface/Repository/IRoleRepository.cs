@@ -9,7 +9,5 @@ namespace LIP.Application.Interface.Repository
         Task<Role?> GetAsync(RoleGetQuery query);
         Task<IEnumerable<Role>> GetAllAsync(RoleGetAllQuery query);
         Task<bool> CreateAsync(RoleCreateCommand command);
-        Task<bool> UpdateAsync(RoleUpdateCommand command);
-        Task<bool> DeleteAsync(RoleDeleteCommand command);
     }
 }

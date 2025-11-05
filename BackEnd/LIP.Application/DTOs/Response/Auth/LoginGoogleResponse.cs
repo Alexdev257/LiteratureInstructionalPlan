@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class LoginGoogleResponse : CommonReponse<LoginGoogleResponseDTO> { }
+    public class LoginGoogleResponse : CommonResponse<LoginGoogleResponseDTO> { }
     public class LoginGoogleResponseDTO
     {
         public string AccessToken { get; set; } = string.Empty;

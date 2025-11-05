@@ -17,9 +17,9 @@ public class TemplatebookingRepository : ITemplatebookingRepository
         _context = context;
     }
 
-    public Task<TemplateOrder?> GetAsync(TemplatebookingGetQuery query)
+    public async Task<TemplateOrder?> GetAsync(TemplatebookingGetQuery query)
     {
-        throw new NotImplementedException();
+        return await _context.TemplateOrders.FindAsync(query.TemplatebookingId);
     }
 
     public Task<IEnumerable<TemplateOrder>> GetAllAsync(TemplatebookingGetAllQuery query)
@@ -37,14 +37,27 @@ public class TemplatebookingRepository : ITemplatebookingRepository
         return result;
     }
 
-    public Task<bool> CreateAsync(TemplatebookingCreateCommand command)
+    public async Task<TemplateOrder> CreateAsync(TemplatebookingCreateCommand command)
     {
-        throw new NotImplementedException();
+        var newTemplateOrder = new TemplateOrder
+        {
+            TemplateId = command.TemplateId,
+            UserId = command.UserId,
+            Status = nameof(TemplateBookingEnum.Pending),
+            BookingDate = DateTime.Now,
+        };
+        
+        _context.TemplateOrders.Add(newTemplateOrder);
+        var result = await _context.SaveChangesAsync();
+        
+        return result > 0 ? newTemplateOrder : null!;
     }
 
-    public Task<bool> UpdateAsync(TemplatebookingUpdateCommand command)
+    public async Task<TemplateOrder> UpdateAsync(TemplateOrder order)
     {
-        throw new NotImplementedException();
+        _context.TemplateOrders.Update(order);
+        var result = await _context.SaveChangesAsync();
+        return result > 0 ? order : null!;
     }
 
     public Task<bool> DeleteAsync(TemplatebookingDeleteCommand command)

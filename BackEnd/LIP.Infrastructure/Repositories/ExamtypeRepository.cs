@@ -44,24 +44,5 @@ namespace LIP.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
             
         }
-
-        public async Task<bool> UpdateAsync(ExamtypeUpdateCommand command)
-        {
-            var examtype = await _context.ExamTypes.FindAsync(command.ExamTypeId);
-            if (examtype == null) return false;
-
-            examtype.Name = command.Name;
-
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> DeleteAsync(ExamtypeDeleteCommand command)
-        {
-            var examtype = await _context.ExamTypes.FindAsync(command.ExamTypeId);
-            if (examtype == null) return false;
-
-            _context.ExamTypes.Remove(examtype);
-            return await _context.SaveChangesAsync() > 0;
-        }
     }
 }

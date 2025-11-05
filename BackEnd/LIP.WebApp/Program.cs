@@ -65,7 +65,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var conn = db.Database.GetConnectionString();
@@ -84,7 +84,7 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine("✅ No pending migrations.");
     }
-}
+}*/
 
 
 

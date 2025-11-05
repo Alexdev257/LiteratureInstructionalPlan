@@ -46,26 +46,5 @@ namespace LIP.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
             
         }
-
-        public async Task<bool> UpdateAsync(GradelevelUpdateCommand command)
-        {
-            var gradelevel = await _context.GradeLevels.FindAsync(command.GradeLevelId);
-            if (gradelevel == null) return false;
-
-            gradelevel.Name = command.Name;
-
-            return await _context.SaveChangesAsync() > 0;
-            
-        }
-
-        public async Task<bool> DeleteAsync(GradelevelDeleteCommand command)
-        {
-            var gradelevel = await _context.GradeLevels.FindAsync(command.GradeLevelId);
-            if (gradelevel == null) return false;
-
-            _context.GradeLevels.Remove(gradelevel);
-            return await _context.SaveChangesAsync() > 0;
-            
-        }
     }
 }

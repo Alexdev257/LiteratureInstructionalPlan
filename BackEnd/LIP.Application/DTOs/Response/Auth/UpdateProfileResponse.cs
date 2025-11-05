@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class UpdateProfileResponse : CommonReponse<UpdateProfileResponseDTO> { }
+    public class UpdateProfileResponse : CommonResponse<UpdateProfileResponseDTO> { }
 
     public class UpdateProfileResponseDTO
     {

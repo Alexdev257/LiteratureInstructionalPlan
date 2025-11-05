@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class LogoutResponse : CommonReponse<LogoutResponseDTO> { }
+    public class LogoutResponse : CommonResponse<LogoutResponseDTO> { }
     public class LogoutResponseDTO
     {
     }

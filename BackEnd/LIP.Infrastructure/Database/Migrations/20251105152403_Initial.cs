@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace LIP.Infrastructure.Migrations
+namespace LIP.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDBSoftDelete : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -101,15 +101,14 @@ namespace LIP.Infrastructure.Migrations
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GradeLevelId = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Status = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Notes = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,33 +127,6 @@ namespace LIP.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    PaymentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    Amount = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
-                    PaymentMethod = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PaymentDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Status = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.PaymentId);
-                    table.ForeignKey(
-                        name: "FK_Payments_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "PracticeQuestions",
                 columns: table => new
                 {
@@ -167,6 +139,8 @@ namespace LIP.Infrastructure.Migrations
                     Difficulty = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Answer = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CorrectAnswer = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GradeLevelId = table.Column<int>(type: "int", nullable: true),
                     CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true),
@@ -240,7 +214,6 @@ namespace LIP.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     ScorePerQuestion = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
-                    ExamMatricId = table.Column<int>(type: "int", nullable: true),
                     ExamMatrixMatrixId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -268,11 +241,10 @@ namespace LIP.Infrastructure.Migrations
                     GradeLevelId = table.Column<int>(type: "int", nullable: true),
                     ExamTypeId = table.Column<int>(type: "int", nullable: true),
                     MatrixId = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedByNavigationUserId = table.Column<int>(type: "int", nullable: true)
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,42 +267,6 @@ namespace LIP.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Exams_Users_CreatedByNavigationUserId",
                         column: x => x.CreatedByNavigationUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "TemplateOrders",
-                columns: table => new
-                {
-                    BookingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    TemplateId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    BookingDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Status = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PaymentId = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TemplateOrders", x => x.BookingId);
-                    table.ForeignKey(
-                        name: "FK_TemplateOrders_Payments_PaymentId",
-                        column: x => x.PaymentId,
-                        principalTable: "Payments",
-                        principalColumn: "PaymentId");
-                    table.ForeignKey(
-                        name: "FK_TemplateOrders_Templates_TemplateId",
-                        column: x => x.TemplateId,
-                        principalTable: "Templates",
-                        principalColumn: "TemplateId");
-                    table.ForeignKey(
-                        name: "FK_TemplateOrders_Users_UserId",
-                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
                 })
@@ -425,6 +361,70 @@ namespace LIP.Infrastructure.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    Amount = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
+                    PaymentMethod = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PaymentDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Status = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    TemplateOrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.PaymentId);
+                    table.ForeignKey(
+                        name: "FK_Payments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TemplateOrders",
+                columns: table => new
+                {
+                    BookingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TemplateId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    BookingDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Status = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    PaymentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TemplateOrders", x => x.BookingId);
+                    table.ForeignKey(
+                        name: "FK_TemplateOrders_Payments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payments",
+                        principalColumn: "PaymentId");
+                    table.ForeignKey(
+                        name: "FK_TemplateOrders_Templates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "Templates",
+                        principalColumn: "TemplateId");
+                    table.ForeignKey(
+                        name: "FK_TemplateOrders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ExamAnswers_AttemptId",
                 table: "ExamAnswers",
@@ -486,6 +486,11 @@ namespace LIP.Infrastructure.Migrations
                 column: "MatrixId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_TemplateOrderId",
+                table: "Payments",
+                column: "TemplateOrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_UserId",
                 table: "Payments",
                 column: "UserId");
@@ -529,11 +534,39 @@ namespace LIP.Infrastructure.Migrations
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Payments_TemplateOrders_TemplateOrderId",
+                table: "Payments",
+                column: "TemplateOrderId",
+                principalTable: "TemplateOrders",
+                principalColumn: "BookingId",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Payments_Users_UserId",
+                table: "Payments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_TemplateOrders_Users_UserId",
+                table: "TemplateOrders");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Templates_Users_CreatedByNavigationUserId",
+                table: "Templates");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Templates_GradeLevels_GradeLevelId",
+                table: "Templates");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Payments_TemplateOrders_TemplateOrderId",
+                table: "Payments");
+
             migrationBuilder.DropTable(
                 name: "ExamAnswers");
 
@@ -544,19 +577,10 @@ namespace LIP.Infrastructure.Migrations
                 name: "ExamPracticeQuestion");
 
             migrationBuilder.DropTable(
-                name: "TemplateOrders");
-
-            migrationBuilder.DropTable(
                 name: "ExamAttempts");
 
             migrationBuilder.DropTable(
                 name: "PracticeQuestions");
-
-            migrationBuilder.DropTable(
-                name: "Payments");
-
-            migrationBuilder.DropTable(
-                name: "Templates");
 
             migrationBuilder.DropTable(
                 name: "Exams");
@@ -568,13 +592,22 @@ namespace LIP.Infrastructure.Migrations
                 name: "ExamTypes");
 
             migrationBuilder.DropTable(
-                name: "GradeLevels");
-
-            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "GradeLevels");
+
+            migrationBuilder.DropTable(
+                name: "TemplateOrders");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "Templates");
         }
     }
 }

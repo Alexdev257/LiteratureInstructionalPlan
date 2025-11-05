@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LIP.Infrastructure.Migrations
+namespace LIP.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251031165610_UpdateDBSoftDelete")]
-    partial class UpdateDBSoftDelete
+    [Migration("20251105152403_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,9 +50,6 @@ namespace LIP.Infrastructure.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
 
                     b.Property<int?>("CreatedByNavigationUserId")
                         .HasColumnType("int");
@@ -184,9 +181,6 @@ namespace LIP.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CreatedByNavigationUserId")
                         .HasColumnType("int");
 
@@ -230,9 +224,6 @@ namespace LIP.Infrastructure.Migrations
 
                     b.Property<string>("Difficulty")
                         .HasColumnType("longtext");
-
-                    b.Property<int?>("ExamMatricId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("ExamMatrixMatrixId")
                         .HasColumnType("int");
@@ -314,10 +305,15 @@ namespace LIP.Infrastructure.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("TemplateOrderId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("PaymentId");
+
+                    b.HasIndex("TemplateOrderId");
 
                     b.HasIndex("UserId");
 
@@ -336,6 +332,9 @@ namespace LIP.Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Content")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CorrectAnswer")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -613,9 +612,17 @@ namespace LIP.Infrastructure.Migrations
 
             modelBuilder.Entity("LIP.Domain.Entities.Payment", b =>
                 {
+                    b.HasOne("LIP.Domain.Entities.TemplateOrder", "TemplateOrder")
+                        .WithMany()
+                        .HasForeignKey("TemplateOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LIP.Domain.Entities.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("TemplateOrder");
 
                     b.Navigation("User");
                 });
@@ -652,7 +659,7 @@ namespace LIP.Infrastructure.Migrations
 
             modelBuilder.Entity("LIP.Domain.Entities.TemplateOrder", b =>
                 {
-                    b.HasOne("LIP.Domain.Entities.Payment", "Payment")
+                    b.HasOne("LIP.Domain.Entities.Payment", null)
                         .WithMany("Templatebookings")
                         .HasForeignKey("PaymentId");
 
@@ -663,8 +670,6 @@ namespace LIP.Infrastructure.Migrations
                     b.HasOne("LIP.Domain.Entities.User", "User")
                         .WithMany("Templatebookings")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Payment");
 
                     b.Navigation("Template");
 

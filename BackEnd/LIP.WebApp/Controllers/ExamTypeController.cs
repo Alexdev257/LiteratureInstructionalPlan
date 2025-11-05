@@ -39,39 +39,6 @@ namespace LIP.WebApp.Controllers
             if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
             else return StatusCode(StatusCodes.Status400BadRequest, result);
         }
-
-        [HttpPost("create-examtype")]
-        public async Task<IActionResult> CreateExamType([FromBody] ExamTypeCreateRequest request)
-        {
-            var result = await _mediator.Send(new ExamtypeCreateCommand
-            {
-                Name = request.Name,
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
-
-        [HttpPut("update-examtype/{id}")]
-        public async Task<IActionResult> UpdateExamType(int id, [FromBody] ExamTypeUpdateRequest request)
-        {
-            var result = await _mediator.Send(new ExamtypeUpdateCommand
-            {
-                ExamTypeId = id,
-                Name = request.Name,
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
-
-        [HttpDelete("delete-examtype/{id}")]
-        public async Task<IActionResult> DeleteExamType(int id)
-        {
-            var result = await _mediator.Send(new ExamtypeDeleteCommand
-            {
-                ExamTypeId = id,
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        
     }
 }

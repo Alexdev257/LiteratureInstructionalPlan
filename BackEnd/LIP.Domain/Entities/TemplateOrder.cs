@@ -32,22 +32,12 @@ public partial class TemplateOrder
         get; set;
     }
 
-    public int? PaymentId
-    {
-        get; set;
-    }
-
     public bool IsDeleted
     {
         get; set;
     }
 
     public DateTime DeletedAt
-    {
-        get; set;
-    }
-
-    public virtual Payment? Payment
     {
         get; set;
     }

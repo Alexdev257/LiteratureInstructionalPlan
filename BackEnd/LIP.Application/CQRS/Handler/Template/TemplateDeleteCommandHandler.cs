@@ -7,7 +7,7 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Template
 {
-    public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonReponse<bool>>
+    public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
     {
         private readonly ITemplateRepository _templateRepository;
 
@@ -18,7 +18,7 @@ namespace LIP.Application.CQRS.Handler.Template
             _cloudinaryUpload = cloudinaryUpload;
         }
 
-        public async Task<CommonReponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+        public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
         {
             var result = await _templateRepository.GetAsync(new TemplateGetQuery
             {
@@ -32,7 +32,7 @@ namespace LIP.Application.CQRS.Handler.Template
             if (isSuccess)
             {
                 await _cloudinaryUpload.DeleteFile(publicId);
-                return new CommonReponse<bool>
+                return new CommonResponse<bool>
                 {
                     IsSuccess = true,
                     Message = "Delete template success",
@@ -41,7 +41,7 @@ namespace LIP.Application.CQRS.Handler.Template
             }
             else
             {
-                return new CommonReponse<bool>
+                return new CommonResponse<bool>
                 {
                     IsSuccess = false,
                     Message = "some errors occurred while delete",

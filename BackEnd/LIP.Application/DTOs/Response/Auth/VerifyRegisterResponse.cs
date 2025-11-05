@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LIP.Application.DTOs.Response.Auth
 {
-    public class VerifyRegisterResponse : CommonReponse<VerifyRegisterResponseDTO> { }
+    public class VerifyRegisterResponse : CommonResponse<VerifyRegisterResponseDTO> { }
 
     public class VerifyRegisterResponseDTO
     {

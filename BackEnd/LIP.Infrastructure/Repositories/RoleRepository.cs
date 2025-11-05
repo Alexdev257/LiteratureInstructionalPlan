@@ -41,26 +41,5 @@ namespace LIP.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public async Task<bool> UpdateAsync(RoleUpdateCommand command)
-        {
-            var role = await _context.Roles.FindAsync(command.RoleId);
-            if (role == null) return false;
-
-            role.RoleName = command.RoleName;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(RoleDeleteCommand command)
-        {
-            var role = await _context.Roles.FindAsync(command.RoleId);
-            if (role == null) return false;
-
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
-            return true;
-        }
     }
 }
