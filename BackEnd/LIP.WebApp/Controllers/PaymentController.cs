@@ -1,4 +1,5 @@
 using LIP.Application.CQRS.Command.Payment;
+using LIP.Application.CQRS.Query.Payment;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,5 +43,34 @@ public class PaymentController : ControllerBase
         });
         
         return StatusCode(result.IsSuccess ? 201 : 500, result);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAllPayments()
+    {
+        var result = await _mediator.Send(new GetAllPaymentQuery());
+        
+        return StatusCode(result.IsSuccess ? 200 : 500, result);
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetPaymentsByUserId(int userId)
+    {
+        var result = await _mediator.Send(new GetPaymentsByUserId
+        {
+            UserId = userId
+        });
+        
+        return StatusCode(result.IsSuccess ? 200 : 500, result);
+    }
+
+    [HttpGet("{paymentId}")]
+    public async Task<IActionResult> GetPaymentById(int paymentId)
+    {
+        var result = await _mediator.Send(new GetPaymentByIdQuery
+        {
+            PaymentId = paymentId
+        });
+        return StatusCode(result.IsSuccess ? 200 : 500, result);
     }
 }

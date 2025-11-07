@@ -8,4 +8,8 @@ public interface IPaymentRepository
     Task<Payment> UpdatePayment(Payment payment);
     
     Task<Payment?> GetPaymentIdAsync(int paymentId);
+    
+    Task<IEnumerable<Payment>> GetPaymentByUserIdAsync(int userId);
+    
+    Task<IEnumerable<Payment>> GetAllPayment( );
 }
