@@ -59,8 +59,9 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         var paymentUrl = await _momoService.CreatePaymentURL(new OrderInfoModel
         {
             Amount = (decimal)template.Price,
-            OrderId = resultPayment.PaymentId,
+            PaymentId = resultPayment.PaymentId,
             TemplateOrderId = resultTemplateBooking.BookingId,
+            OrderId = DateTime.Now.Ticks.ToString()
         }, request.HttpContext);
         
         var response = new PaymentCreateResponse
@@ -69,7 +70,8 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             Message = "Payment URL created successfully",
             Data = new PaymentCreateResponseDTO
             {
-                CheckoutUrl = paymentUrl
+                CheckoutUrl = paymentUrl,
+                PaymentId = resultPayment.PaymentId
             }
         };
         return response;

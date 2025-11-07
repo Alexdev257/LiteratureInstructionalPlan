@@ -24,7 +24,14 @@ public class MomoService : IMomoService
     public async Task<string> CreatePaymentURL(OrderInfoModel orderInfo, HttpContext context)
     {
         var rawData =
-            $"partnerCode={_momoConfig.Value.PartnerCode}&accessKey={_momoConfig.Value.AccessKey}&requestId={orderInfo.OrderId}&amount={orderInfo.Amount}&orderId={orderInfo.OrderId}&orderInfo={orderInfo.TemplateOrderId}&returnUrl={_momoConfig.Value.ReturnUrl}&notifyUrl={_momoConfig.Value.NotifyUrl}&extraData=";
+            $"partnerCode={_momoConfig.Value.PartnerCode}" +
+            $"&accessKey={_momoConfig.Value.AccessKey}" +
+            $"&requestId={orderInfo.OrderId}" +
+            $"&amount={orderInfo.Amount}" +
+            $"&orderId={orderInfo.OrderId}" +
+            $"&orderInfo={orderInfo.TemplateOrderId}" +
+            $"&returnUrl={_momoConfig.Value.ReturnUrl}" +
+            $"&notifyUrl={_momoConfig.Value.NotifyUrl}&extraData={orderInfo.PaymentId}";
         var signature = ComputeHmacSha256(rawData, _momoConfig.Value.SecretKey);
 
         var client = new RestClient(_momoConfig.Value.MomoApiUrl);
@@ -41,7 +48,7 @@ public class MomoService : IMomoService
             amount = orderInfo.Amount.ToString(),
             orderInfo = orderInfo.TemplateOrderId.ToString(),
             requestId = orderInfo.OrderId.ToString(),
-            extraData = "",
+            extraData = orderInfo.PaymentId.ToString(),
             signature = signature
         };
 
@@ -60,7 +67,7 @@ public class MomoService : IMomoService
     {
         var amount = collection.FirstOrDefault(s => s.Key == "amount").Value;
         var templateOrderId = collection.FirstOrDefault(s => s.Key == "orderInfo").Value;
-        var paymentId = collection.FirstOrDefault(s => s.Key == "orderId").Value;
+        var paymentId = collection.FirstOrDefault(s => s.Key == "extraData").Value;
         var message = collection.FirstOrDefault(s => s.Key == "message").Value == "Success";
         return await Task.FromResult(new PaymentCallbackResponseDTO()
         {

@@ -33,7 +33,7 @@ public class PaymentController : ControllerBase
         return StatusCode(result.IsSuccess ? 201 : 500, result);
     }
 
-    [HttpPost("callback")]
+    [HttpGet("callback")]
     public async Task<IActionResult> PaymentCallback()
     {
         var result = await _mediator.Send(new CallbackPaymentCommand
