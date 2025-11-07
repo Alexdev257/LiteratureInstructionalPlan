@@ -1,6 +1,7 @@
 using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
+using Microsoft.EntityFrameworkCore;
 
 namespace LIP.Infrastructure.Repositories;
 
@@ -30,5 +31,15 @@ public class PaymentRepository : IPaymentRepository
     public async Task<Payment?> GetPaymentIdAsync(int paymentId)
     {
         return await _context.Payments.FindAsync(paymentId);
+    }
+
+    public async Task<IEnumerable<Payment>> GetPaymentByUserIdAsync(int userId)
+    {
+        return await _context.Payments.Where(x => x.UserId == userId).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Payment>> GetAllPayment()
+    {
+        return await _context.Payments.ToListAsync();
     }
 }
