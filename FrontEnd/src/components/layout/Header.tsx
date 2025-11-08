@@ -1,6 +1,5 @@
 "use client";
 
-
 import { ModeToggle } from "../mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,24 +18,38 @@ import { useSessionStore } from "@/stores/sessionStore";
 
 export default function Header() {
   const router = useRouter();
-  const { user,logout } = useSessionStore();
+  const { user, logout } = useSessionStore();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartItems = useCartStore((state) => state.cartItems);
+
   const handleLogout = () => {
-    logout();
-    router.navigate({ to: "auth/login" });
+    logout?.();
+    try {
+      router?.navigate?.({ to: "/auth/login" });
+    } catch {
+      if (typeof window !== "undefined") window.location.href = "/auth/login";
+    }
   };
 
   const handleNavigate = (path: string) => {
-    router.navigate({ to: path });
     setIsMobileMenuOpen(false);
-  }; 
+    // Try client router first, fallback to full page load
+    try {
+      router?.navigate?.({ to: path });
+    } catch {
+      if (typeof window !== "undefined") window.location.href = path;
+    }
+  };
 
+  const initial = user?.FullName
+    ? user.FullName.charAt(0).toUpperCase()
+    : user?.Username
+    ? user.Username.charAt(0).toUpperCase()
+    : "U";
 
   return (
     <header className="w-full bg-background border-b border-border/40 shadow-sm fixed top-0 z-50">
-      {/* Main header bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -76,17 +89,18 @@ export default function Header() {
             >
               Giáo án
             </Link>
+
             {user ? (
               Number(user.RoleId) !== 1 ? (
                 <Link
-                  to="*"
+                  to="/templates"
                   className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
                 >
                   Giáo án
                 </Link>
               ) : (
                 <Link
-                  to="*"
+                  to="/results"
                   className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
                 >
                   Kết quả
@@ -123,7 +137,7 @@ export default function Header() {
             </div>
 
             {/* User section */}
-            {user && user.FullName ? (
+            {user && (user.FullName || user.Username) ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -133,18 +147,23 @@ export default function Header() {
                     <Avatar className="w-7 h-7">
                       <AvatarImage src="" />
                       <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                        {user.FullName.charAt(0).toUpperCase()}
+                        {initial}
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden sm:inline text-sm font-medium text-foreground">
-                      {user.FullName}
+                      {user.FullName || user.Username}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem className="text-sm">
+
+                   <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                   onClick={() => handleNavigate("/userprofile")} 
+                    className="text-sm"
+                      >
                     Hồ sơ cá nhân
-                  </DropdownMenuItem>
+                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     onClick={() => handleNavigate("/cart")}
                     className="text-sm md:hidden"
@@ -157,6 +176,7 @@ export default function Header() {
                       </Badge>
                     )}
                   </DropdownMenuItem>
+
                   <DropdownMenuItem
                     onClick={handleLogout}
                     className="text-sm text-destructive"
@@ -192,11 +212,7 @@ export default function Header() {
               className="md:hidden p-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
