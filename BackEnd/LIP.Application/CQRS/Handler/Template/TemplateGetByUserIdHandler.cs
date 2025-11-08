@@ -1,5 +1,6 @@
 using LIP.Application.CQRS.Query.Template;
 using LIP.Application.CQRS.Query.Templatebooking;
+using LIP.Application.CQRS.Query.User;
 using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -10,12 +11,13 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
 {
     private readonly ITemplatebookingRepository _templatebookingRepository;
     private readonly ITemplateRepository _templateRepository;
-
+    private readonly IUserRepository _userRepository;
     public TemplateGetByUserIdHandler(ITemplateRepository templateRepository,
-        ITemplatebookingRepository templatebookingRepository)
+        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)
     {
         _templateRepository = templateRepository;
         _templatebookingRepository = templatebookingRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<TemplateGetResponse> Handle(TemplateGetByUserId request, CancellationToken cancellationToken)
@@ -23,6 +25,11 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
         var createdTemplates = await _templateRepository.GetTemplateByUserIdAsync(request);
 
         var bookings = await _templatebookingRepository.GetByUserIdAsync(new TemplatebookingGetByUserIdQuery
+        {
+            UserId = request.UserId
+        });
+        
+        var user = await _userRepository.GetAsync(new UserGetQuery
         {
             UserId = request.UserId
         });
@@ -52,11 +59,20 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 Title = x.Title!,
                 ViewPath = x.ViewPath!,
                 CreatedAt = x.CreatedAt,
-                CreatedBy = x.CreatedBy,
-                GradeLevelId = x.GradeLevelId,
+                CreatedBy = new CreatedByDTO
+                {
+                    Email = user!.Email,
+                    Id = user.UserId,
+                    UserName = user.FullName
+                },
+                GradeLevelId = new GradeLevelDTO
+                {
+                    Id = x.GradeLevel!.GradeLevelId,
+                    Name = x.GradeLevel.Name!
+                },
                 Price = x.Price,
                 TemplateId = x.TemplateId,
-                Saled = saledCount // Gán count
+                TotalDownload = saledCount
             };
         });
 
@@ -70,15 +86,24 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 Title = x.Title!,
                 ViewPath = x.ViewPath!,
                 CreatedAt = x.CreatedAt,
-                CreatedBy = x.CreatedBy,
-                GradeLevelId = x.GradeLevelId,
+                CreatedBy = new CreatedByDTO
+                {
+                    Email = user!.Email,
+                    Id = user.UserId,
+                    UserName = user.FullName
+                },
+                GradeLevelId = new GradeLevelDTO
+                {
+                    Id = x.GradeLevel!.GradeLevelId,
+                    Name = x.GradeLevel.Name!
+                },
                 Price = x.Price,
                 TemplateId = x.TemplateId,
-                Saled = saledCount // Gán count
+                TotalDownload = saledCount
             };
         });
         
-        response.Data.AddRange((await Task.WhenAll(tasks)).ToList());
+        response.Data = (await Task.WhenAll(tasks)).ToList();
         response.Data.AddRange((await Task.WhenAll(tasks2)).ToList());
 
         response.IsSuccess = true;
