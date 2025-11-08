@@ -158,7 +158,7 @@ export default function Header() {
 
                    <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem
-                   onClick={() => handleNavigate("/userprofile")} 
+                   onClick={() => handleNavigate(`/userProfile/${user.UserId}`)} 
                     className="text-sm"
                       >
                     Hồ sơ cá nhân

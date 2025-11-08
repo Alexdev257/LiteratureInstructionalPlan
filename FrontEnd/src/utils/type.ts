@@ -43,6 +43,18 @@ export type User = {
     nbf: number;
 }
 
+export type GetUserById = {
+    userId: number;
+    userName: string;
+    fullName: string;
+    email: string;
+    roleId: number;
+    createdAt: string; 
+    isDeleted: boolean;
+    deletedAt: string; 
+
+}
+
 export type BodyRefreshToken = {
     id: number;
     accessToken: string;
@@ -95,7 +107,7 @@ export type Matrix = {
 export type MatrixDetail = {
     examMatrixDetailId: number;
     lessonName: string;
-    questionType: "1" | "2" | "3" ;   // 1: Multiple choice, 2: Single choice, 3: Text
+    questionType: "1" | "2" | "3";   // 1: Multiple choice, 2: Single choice, 3: Text
     difficulty: "1" | "2" | "3" | "4"; // 1: Easy, 2: Medium, 3: Hard, 4: Very hard
     quantity: number;
     scorePerQuestion: number;
@@ -239,7 +251,7 @@ export type ExamQuery = BaseFilterPagination & {
 }
 
 export type MatrixQuery = BaseFilterPagination & {
-     GradeLevelId?: number;
-     CreatedByUserId?: number;
-     IsAdmin?: boolean;
+    GradeLevelId?: number;
+    CreatedByUserId?: number;
+    IsAdmin?: boolean;
 }

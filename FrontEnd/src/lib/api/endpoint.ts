@@ -49,3 +49,8 @@ export const MATRIX_ENDPOINT = {
     GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`,
     CREATE_MATRIX: "ExamMatrix/create-matrix",
 }
+
+export const USER_ENDPOINT = {
+    GET_USER_PROFILE: (id: number) => `User/get/${id}`,
+    UPDATE_USER_PROFILE: (id: number) => `User/update-user/${id}`,
+}

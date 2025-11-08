@@ -1,162 +1,264 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useSessionStore } from '@/stores/sessionStore'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card'
-import { useRouter } from '@tanstack/react-router'
-import { toast } from 'sonner'
-// import { getProfile, updateProfile } from './userProfile.service'
+"use client";
 
-const profileSchema = z.object({
-  userName: z.string().min(3, 'Tên đăng nhập tối thiểu 3 ký tự'),
-  fullName: z.string().min(2, 'Họ tên tối thiểu 2 ký tự'),
-  email: z.string().email('Email không hợp lệ').min(1, 'Email là bắt buộc'),
-})
-type ProfileForm = z.infer<typeof profileSchema>
+import { useParams } from "@tanstack/react-router";
+import { Mail, User, Calendar, Shield, Trash2 } from "lucide-react";
+import { BaseHeader } from "@/components/layout/base/header";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/hooks/useUser";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const { user, updateUser } = useSessionStore()
+  const { id } = useParams({ from: "/userProfile/$id" });
+  const { useGetUserById } = useUser();
+  const { data: userProfile, isLoading, isError } = useGetUserById(Number(id));
 
-  const form = useForm<ProfileForm>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      userName: (user as any)?.userName ?? (user as any)?.UserName ?? '',
-      fullName: (user as any)?.fullName ?? (user as any)?.FullName ?? '',
-      email: (user as any)?.email ?? (user as any)?.Email ?? '',
-    },
-  })
+  const user = userProfile?.data;
 
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        userName: (user as any)?.userName ?? (user as any)?.UserName ?? '',
-        fullName: (user as any)?.fullName ?? (user as any)?.FullName ?? '',
-        email: (user as any)?.email ?? (user as any)?.Email ?? '',
-      })
-    }
-  }, [user, form.reset])
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
-  const onSubmit = async (values: ProfileForm) => {
-    try {
-      updateUser({
-        userName: values.userName as any,
-        fullName: values.fullName as any,
-        email: values.email as any,
-        UserName: values.userName as any,
-        FullName: values.fullName as any,
-        Email: values.email as any,
-      } as any)
+  // Get role name
+  const getRoleName = (roleId: number) => {
+    const roles: Record<number, string> = {
+      1: "Quản trị viên",
+      2: "Giáo viên",
+      3: "Học sinh",
+    };
+    return roles[roleId] || "Người dùng";
+  };
 
-      toast?.success?.('Cập nhật hồ sơ thành công')
-    } catch (e) {
-      console.error(e)
-      toast?.error?.('Cập nhật thất bại, thử lại sau')
-    }
+  // Get role color
+  const getRoleColor = (roleId: number) => {
+    const colors: Record<number, "destructive" | "default" | "secondary"> = {
+      1: "destructive",
+      2: "default",
+      3: "secondary",
+    };
+    return colors[roleId] || "secondary";
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-6 p-3">
+        <BaseHeader title="Hồ Sơ Người Dùng" description="Đang tải thông tin..." />
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center space-y-4">
+              <Skeleton className="h-24 w-24 rounded-full" />
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
-  if (!user) {
-    router.navigate({ to: '/auth/login' })
-    return null
+  // Error state
+  if (isError || !user) {
+    return (
+      <div className="space-y-6 p-3">
+        <BaseHeader title="Hồ Sơ Người Dùng" description="Không tìm thấy thông tin" />
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center text-muted-foreground">
+              Không thể tải thông tin người dùng. Vui lòng thử lại sau.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
-     <div className="max-w-7xl mx-auto px-4 py-8">
-  <Card className="bg-blue-50 border border-blue-200 shadow-sm scale-110">
-    <CardHeader className="border-b border-blue-200 pb-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
-        <div className="flex justify-center md:justify-start">
-          <img
-            src="/avatar-placeholder.png"
-            alt="Avatar"
-            className="w-28 h-28 rounded-full border-4 border-blue-300 shadow-sm bg-white"
-          />
-        </div>
+    <div className="space-y-6 p-3">
+      <BaseHeader
+        title="Hồ Sơ Người Dùng"
+        description="Thông tin chi tiết về tài khoản"
+      />
 
-        <div className="md:col-span-2 text-center md:text-left">
-          <CardTitle className="text-3xl font-bold text-blue-900">
-            Hồ sơ cá nhân
-          </CardTitle>
-          <CardDescription className="text-blue-600 mt-2">
-            Cập nhật thông tin tài khoản của bạn
-          </CardDescription>
-        </div>
+      {/* Profile Header Card */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            {/* Avatar */}
+            <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
+              <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.fullName}`} />
+              <AvatarFallback className="text-2xl font-bold bg-primary text-primary-foreground">
+                {getInitials(user.fullName)}
+              </AvatarFallback>
+            </Avatar>
+
+            {/* User Info */}
+            <div className="flex-1 text-center md:text-left space-y-2">
+              <div className="flex flex-col md:flex-row md:items-center gap-2">
+                <h2 className="text-3xl font-bold">{user.fullName}</h2>
+                <Badge variant={getRoleColor(user.roleId)}>
+                  {getRoleName(user.roleId)}
+                </Badge>
+                {user.isDeleted && (
+                  <Badge variant="destructive" className="gap-1">
+                    <Trash2 className="h-3 w-3" />
+                    Đã xóa
+                  </Badge>
+                )}
+              </div>
+              <p className="text-muted-foreground">@{user.userName}</p>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  Tham gia ngày{" "}
+                  {format(new Date(user.createdAt), "dd/MM/yyyy", { locale: vi })}
+                </span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Information Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Account Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Thông tin tài khoản
+            </CardTitle>
+            <CardDescription>Chi tiết về tài khoản người dùng</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Tên đăng nhập
+              </label>
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1 p-3 bg-muted rounded-md">
+                  {user.userName}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Họ và tên
+              </label>
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1 p-3 bg-muted rounded-md">
+                  {user.fullName}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Email
+              </label>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1 p-3 bg-muted rounded-md">
+                  {user.email}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* System Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Thông tin hệ thống
+            </CardTitle>
+            <CardDescription>Thông tin về quyền và trạng thái</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Vai trò
+              </label>
+              <div className="p-3 bg-muted rounded-md">
+                <Badge variant={getRoleColor(user.roleId)} className="w-full justify-center">
+                  {getRoleName(user.roleId)}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Ngày tạo
+              </label>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <div className="flex-1 p-3 bg-muted rounded-md">
+                  {format(new Date(user.createdAt), "dd/MM/yyyy HH:mm", {
+                    locale: vi,
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Trạng thái
+              </label>
+              <div className="p-3 bg-muted rounded-md">
+                {user.isDeleted ? (
+                  <Badge variant="destructive" className="w-full justify-center gap-1">
+                    <Trash2 className="h-3 w-3" />
+                    Đã xóa
+                  </Badge>
+                ) : (
+                  <Badge variant="default" className="w-full justify-center bg-green-500">
+                    Hoạt động
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {user.isDeleted && user.deletedAt && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Ngày xóa
+                </label>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex-1 p-3 bg-muted rounded-md">
+                    {format(new Date(user.deletedAt), "dd/MM/yyyy HH:mm", {
+                      locale: vi,
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
-    </CardHeader>
 
-    <CardContent className="pt-8">
-      <div className="w-full md:w-1/2 lg:w-2/3 space-y-6">
-        <div className="space-y-6">
-          <div>
-            <Label htmlFor="userName">Tên đăng nhập</Label>
-            <Input
-              id="userName"
-              {...form.register('userName')}
-              placeholder="username"
-              className="mt-2"
-            />
-            {form.formState.errors.userName && (
-              <p className="text-sm text-red-500 mt-1">
-                {form.formState.errors.userName.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="fullName">Họ và tên</Label>
-            <Input
-              id="fullName"
-              {...form.register('fullName')}
-              placeholder="Nguyễn Văn A"
-              className="mt-2"
-            />
-            {form.formState.errors.fullName && (
-              <p className="text-sm text-red-500 mt-1">
-                {form.formState.errors.fullName.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              {...form.register('email')}
-              placeholder="email@example.com"
-              className="mt-2"
-            />
-            {form.formState.errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {form.formState.errors.email.message}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </CardContent>
-
-    <CardFooter className="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-blue-200">
-      <Button
-        onClick={form.handleSubmit(onSubmit)}
-        className="bg-blue-700 hover:bg-blue-800 text-white md:w-auto w-full"
-      >
-        Lưu thay đổi
-      </Button>
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => form.reset()}
-        className="md:w-auto w-full"
-      >
-        Hoàn tác
-      </Button>
-    </CardFooter>
-  </Card>
-</div>
-
-  )
+     
+    </div>
+  );
 }

@@ -27,6 +27,8 @@ export const QUERY_KEY = {
     matrix : (param?: MatrixQuery) => ['matrix', param],
     getMatrixById: (id: number) => ['matrixById', id],
 
+    getUserProfileById: (id: number) => ['userProfileById', id],
+
 
 } as const
 

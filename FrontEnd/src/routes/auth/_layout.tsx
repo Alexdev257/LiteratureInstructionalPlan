@@ -16,7 +16,7 @@ function AuthLayout() {
             </h1>
           </div>
           <p className="text-gray-600 max-w-md mx-auto">
-            {/* Hệ thống quản lý kế hoạch giảng dạy văn học hiện đại */}
+            Hệ thống quản lý kế hoạch giảng dạy văn học hiện đại
           </p>
         </div>
       </div>

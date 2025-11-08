@@ -15,18 +15,23 @@ import { Route as authLayoutRoute } from "./auth/_layout";
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
 import { Route as dashboardUsersRoute } from "./dashboard/users";
 import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
-import { Route as userProfileRoute } from "./auth/userprofile"; 
 import { Route as teacherLayoutRoute } from "./teacher/_layout";
 import { Route as templateRouteByTeacher } from "./teacher/template";
+
+// Matrix routes
 import { Route as matrixLayoutRoute } from "./teacher/matrix/_layout";
 import { Route as matrixIndexRoute } from "./teacher/matrix/index";
 import { Route as matrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
 import { Route as matrixCreateIndexRoute } from "./teacher/matrix/create/index";
 
-const routeTree = rootRoute.addChildren([
+// User Profile routes
+import { Route as userProfileLayoutRoute } from "./userProfile/_layout";
+import { Route as userProfileRoute } from "./userProfile/[id]/index";
 
+
+
+const routeTree = rootRoute.addChildren([
     homeRoute,
-    userProfileRoute, 
     examLayoutRoute.addChildren([
         examIndexRoute,
         examDetailRoute.addChildren([
@@ -35,8 +40,7 @@ const routeTree = rootRoute.addChildren([
             ]),
         ]),
     ]),
-     
- 
+
     authLayoutRoute.addChildren([
         loginRoute,
         registerRoute,
@@ -53,8 +57,12 @@ const routeTree = rootRoute.addChildren([
         ]),
     ]),
 
+    userProfileLayoutRoute.addChildren([
+        userProfileRoute,
+    ]),
+
     dashboardLayoutRoute.addChildren([
-        dashboardUsersRoute, 
+        dashboardUsersRoute,
         dashboardQuestionsRoute,
     ]),
 ]);
