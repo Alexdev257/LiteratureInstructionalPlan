@@ -73,23 +73,32 @@ export type ExamData = {
 }
 
 
+
+
+
+
+
 export type Matrix = {
     matrixId: number;
     title: string;
     description: string;
-    grade: GradeLevel;
-    createdBy: {
-        userId: string;
-        username: string;
-    };
-    status: 'active' | 'inactive';
+    gradeLevelId: number;
+    createdByUserId: number;
+    createdAt: string;
+    status: string;
+    notes?: string;
+    details: MatrixDetail[];
+    totalQuestions?: number;
+    totalPoints?: number;
+
+}
+export type MatrixDetail = {
+    examMatrixDetailId: number;
     lessonName: string;
-    questionType: 'multiple-choice' | 'essay' | 'reading-comprehension' | 'mixed';
-    difficulty: 'easy' | 'medium' | 'hard';
+    questionType: "1" | "2" | "3" ;   // 1: Multiple choice, 2: Single choice, 3: Text
+    difficulty: "1" | "2" | "3" | "4"; // 1: Easy, 2: Medium, 3: Hard, 4: Very hard
     quantity: number;
     scorePerQuestion: number;
-    notes: string;
-
 }
 
 export type Question = {
@@ -107,18 +116,13 @@ export type Question = {
 }
 
 export type Template = {
-    id: string,
-    title: string,
-    price: number,
-    description: string,
-    urlView: string,
-    urlEdit: string,
-    urlDownload: string,
-    createdBy: {
-        userId: string;
-        username: string;
-    },
-    grade: GradeLevel
+    id: number;
+    title: string;
+    filePath: string;
+    viewPath: string;
+    gradeLevelId: number;
+    price: number;
+    createdBy: number
 }
 
 export type ExamFilters = {
@@ -129,8 +133,8 @@ export type ExamFilters = {
 }
 
 export type TemplateFilters = {
-  gradeLevel?: number;
-  priceRange?: string;
+    gradeLevel?: number;
+    priceRange?: string;
 }
 
 
@@ -150,58 +154,92 @@ export type Features = {
 }
 
 export type AdminUser = {
-  id: string;
-  fullName: string;
-  email: string;
-  avatarUrl?: string;
-  status: "Active" | "Suspended" | "Banned";
-  postCount: number;      
-  averageScore: number;    
-  lastActivity: string; 
+    id: string;
+    fullName: string;
+    email: string;
+    avatarUrl?: string;
+    status: "Active" | "Suspended" | "Banned";
+    postCount: number;
+    averageScore: number;
+    lastActivity: string;
 };
 
 export type UserFilters = {
-  page?: number;
-  limit?: number;
-  search?: string;
-  status?: "Active" | "Suspended" | "Banned" | "All";
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: "Active" | "Suspended" | "Banned" | "All";
 };
 
 // Dùng cho modal "Thêm Admin" sau này
 export type CreateAdminInput = {
-  fullName: string;
-  email: string;
+    fullName: string;
+    email: string;
 };
 
 export type QuestionStatus = "Pending" | "Active" | "Rejected";
 
 export type AdminQuestion = {
-  id: string;
-  questionText: string; 
-  grade: string;        
-  lesson: string;        
-  difficulty: "Easy" | "Medium" | "Hard"; 
-  status: QuestionStatus;
-  creatorName: string;   
-  createdAt: string;     
-  updatedAt: string;     
+    id: string;
+    questionText: string;
+    grade: string;
+    lesson: string;
+    difficulty: "Easy" | "Medium" | "Hard";
+    status: QuestionStatus;
+    creatorName: string;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type QuestionFilters = {
-  page?: number;
-  limit?: number;
-  search?: string;
-  grade?: string;
-  lesson?: string;
-  difficulty?: "Easy" | "Medium" | "Hard" | "All";
-  status?: QuestionStatus | "All";
-  creator?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    grade?: string;
+    lesson?: string;
+    difficulty?: "Easy" | "Medium" | "Hard" | "All";
+    status?: QuestionStatus | "All";
+    creator?: string;
 };
 
 // Dùng cho modal "Tạo câu hỏi" sau này
 export type CreateQuestionInput = {
-  questionText: string;
-  grade: string;
-  lesson: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+    questionText: string;
+    grade: string;
+    lesson: string;
+    difficulty: "Easy" | "Medium" | "Hard";
 };
+
+
+
+export type PaginationResponse<T> = {
+    items: T[];
+    totalItems: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
+export type BaseFilterPagination = {
+    PageNumber?: number;
+    PageSize?: number;
+}
+export type ExamTypeQuery = BaseFilterPagination & {
+    Name?: string;
+}
+export type GradeLevelQuery = BaseFilterPagination & {
+    Name?: string;
+}
+export type ExamQuery = BaseFilterPagination & {
+    GradeLevelId?: number;
+    // Difficulty?: 'easy' | 'medium' | 'hard';
+    ExamTypeId?: number;
+    // Search?: string;
+}
+
+export type MatrixQuery = BaseFilterPagination & {
+     GradeLevelId?: number;
+     CreatedByUserId?: number;
+     IsAdmin?: boolean;
+}

@@ -12,10 +12,10 @@ import RenderResults from "./RenderResults";
 
 type Props ={
     examData: ExamData[];
-    mockGradeLevels: GradeLevel[];
-    mockExamTypes: ExamType[];
+    gradeLevel: GradeLevel[];
+    examType: ExamType[];
 }
-const FilterSection = ({ examData, mockGradeLevels, mockExamTypes}: Props) => {
+const FilterSection = ({ examData, gradeLevel, examType}: Props) => {
     const [filters, setFilters] = useState<ExamFilters>({});
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -122,7 +122,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes}: Props) => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Tất cả lớp</SelectItem>
-                                    {mockGradeLevels.map((grade) => (
+                                    {gradeLevel.map((grade) => (
                                         <SelectItem key={grade.gradeLevelId} value={grade.gradeLevelId.toString()}>
                                             {grade.name}
                                         </SelectItem>
@@ -158,7 +158,7 @@ const FilterSection = ({ examData, mockGradeLevels, mockExamTypes}: Props) => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Tất cả loại</SelectItem>
-                                    {mockExamTypes.map((type) => (
+                                    {examType.map((type) => (
                                         <SelectItem key={type.examTypeId} value={type.examTypeId.toString()}>
                                             {type.name}
                                         </SelectItem>
