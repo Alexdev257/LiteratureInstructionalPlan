@@ -8,7 +8,6 @@ import { router } from "@/routes";
 import { isPublicEndpoint } from "@/utils/helper";
 import { useSessionStore } from "@/stores/sessionStore";
 
-
 export class BaseApi {
   protected createUrl(
     endpoint: string,
@@ -26,11 +25,14 @@ export class BaseApi {
     return url.toString();
   }
 
-  private getHeaders(): Record<string, string> {
+  private getHeaders(isFormData: boolean = false): Record<string, string> {
     const { token } = useSessionStore.getState(); 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+    const headers: Record<string, string> = {};
+
+    // Không set Content-Type nếu là FormData (browser tự động set)
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (token?.accessToken) {
       headers["Authorization"] = `Bearer ${token.accessToken}`;
@@ -39,17 +41,18 @@ export class BaseApi {
     return headers;
   }
 
-
   protected async requestData<T>(
     url: string,
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
-    body?: Record<string, any>
+    body?: Record<string, any> | FormData
   ): Promise<ResponseData<T>> {
-    // await this.refreshToken(url); 
+    // Check if body is FormData
+    const isFormData = body instanceof FormData;
+    
     const res = await fetch(url, {
       method,
-      headers: this.getHeaders(),
-      body: body ? JSON.stringify(body) : undefined,
+      headers: this.getHeaders(isFormData),
+      body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
     });
 
     if (!res.ok) {
@@ -59,7 +62,6 @@ export class BaseApi {
 
     return res.json() as Promise<ResponseData<T>>;
   }
-
 
   protected async refreshToken(endpoint: string): Promise<void> {
     const { token, user, setToken, logout } = useSessionStore.getState();
@@ -71,11 +73,10 @@ export class BaseApi {
       return;
     }
 
-   
     const exp = user?.exp;
     const currentTime = Math.floor(Date.now() / 1000);
 
-    if (exp && exp > currentTime) return; // Token còn hạn
+    if (exp && exp > currentTime) return;
 
     const url = this.createUrl(AUTH_ENDPOINT.REFRESH_TOKEN);
     const refreshToken = Cookies.get("refreshtoken");
@@ -118,21 +119,21 @@ export class BaseApi {
 
   protected postData<T>(
     url: string,
-    body: Record<string, any>
+    body: Record<string, any> | FormData
   ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "POST", body);
   }
 
   protected putData<T>(
     url: string,
-    body: Record<string, any>
+    body: Record<string, any> | FormData
   ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "PUT", body);
   }
 
   protected patchData<T>(
     url: string,
-    body: Record<string, any>
+    body: Record<string, any> | FormData
   ): Promise<ResponseData<T>> {
     return this.requestData<T>(url, "PATCH", body);
   }

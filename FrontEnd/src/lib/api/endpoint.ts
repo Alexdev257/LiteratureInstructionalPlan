@@ -23,3 +23,29 @@ export const ADMIN_ENDPOINT = {
   GET_QUESTIONS: "admin/questions",
   CREATE_QUESTION: "admin/questions"
 };
+
+export const TEMPLATE_ENDPOINT = {
+    GET_TEMPLATES: "Template",
+    GET_TEMPLATE_BY_ID: (id: number) => `Template/${id}`,
+}
+
+export const EXAM_TYPE_ENDPOINT = {
+    GET_EXAM_TYPES: "ExamType/get-all",
+    GET_EXAM_TYPE_BY_ID: (id: number) => `ExamType/get/${id}`
+}
+
+export const GRADE_LEVEL_ENDPOINT = {
+    GET_GRADE_LEVELS: "GradeLevel/get-all",
+    GET_GRADE_LEVEL_BY_ID: (id: number) => `GradeLevel/get/${id}`
+}
+
+export const EXAM_ENDPOINT = {
+    GET_EXAMS: "Exam/get-all",
+    GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`
+}
+
+export const MATRIX_ENDPOINT = {
+    GET_MATRICES: "ExamMatrix/get-all",
+    GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`,
+    CREATE_MATRIX: "ExamMatrix/create-matrix",
+}

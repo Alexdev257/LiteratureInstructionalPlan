@@ -21,7 +21,7 @@ export const ExamFooter = () => {
   const { examId } = useParams({ from: "/exam/$examId/$attemptId" });
   const exam = mockExamData.find(e => e.examId === Number(examId));
   
-  const isEssayExam = exam?.examTypeId === 2;
+  const isEssayExam = exam?.examType.examTypeId === 2;
   const currentTime = new Date().toLocaleTimeString('vi-VN', { 
     hour: '2-digit', 
     minute: '2-digit',
