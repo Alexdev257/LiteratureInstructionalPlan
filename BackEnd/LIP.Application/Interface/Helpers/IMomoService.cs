@@ -1,4 +1,3 @@
-using LIP.Application.CQRS.Command.Payment;
 using LIP.Application.DTOs.Response.Payment;
 using Microsoft.AspNetCore.Http;
 

@@ -1,4 +1,3 @@
-using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.CQRS.Query.Payment;
 using LIP.Application.DTOs.Response.Payment;
 using LIP.Application.Interface.Repository;
@@ -18,7 +17,7 @@ public class GetAllPaymentQueryHandler : IRequestHandler<GetAllPaymentQuery, Pay
     public Task<PaymentGetAllResponse> Handle(GetAllPaymentQuery request, CancellationToken cancellationToken)
     {
         var response = new PaymentGetAllResponse();
-        var payments =  _paymentRepository.GetAllPayment().Result;
+        var payments = _paymentRepository.GetAllPayment().Result;
 
         response.Data = payments.Select(p => new PaymentGetResponseDTO
         {

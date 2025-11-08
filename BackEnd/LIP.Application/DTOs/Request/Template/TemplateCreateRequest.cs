@@ -1,5 +1,3 @@
-using System;
-
 namespace LIP.Application.DTOs.Request.Template;
 
 public class TemplateCreateRequest

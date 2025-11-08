@@ -5,46 +5,44 @@ using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
 
-namespace LIP.Infrastructure.Repositories
+namespace LIP.Infrastructure.Repositories;
+
+public class GradelevelRepository : IGradelevelRepository
 {
-    public class GradelevelRepository : IGradelevelRepository
+    private readonly ApplicationDbContext _context;
+
+    public GradelevelRepository(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public GradelevelRepository(ApplicationDbContext context)
+    public async Task<GradeLevel?> GetAsync(GradelevelGetQuery query)
+    {
+        return await _context.GradeLevels
+            .Include(g => g.Exams)
+            .Include(g => g.Practicequestions)
+            .Include(g => g.Templates)
+            .FirstOrDefaultAsync(g => g.GradeLevelId == query.GradeLevelId);
+    }
+
+    public async Task<IEnumerable<GradeLevel>> GetAllAsync(GradelevelGetAllQuery query)
+    {
+        var GradeLevels = _context.GradeLevels.AsQueryable();
+
+        if (!string.IsNullOrEmpty(query.Name))
+            GradeLevels = GradeLevels.Where(g => g.Name!.Contains(query.Name));
+
+        return await GradeLevels.ToListAsync();
+    }
+
+    public async Task<bool> CreateAsync(GradelevelCreateCommand command)
+    {
+        var gradelevel = new GradeLevel
         {
-            _context = context;
-        }
+            Name = command.Name
+        };
 
-        public async Task<GradeLevel?> GetAsync(GradelevelGetQuery query)
-        {
-            return await _context.GradeLevels
-                .Include(g => g.Exams)
-                .Include(g => g.Practicequestions)
-                .Include(g => g.Templates)
-                .FirstOrDefaultAsync(g => g.GradeLevelId == query.GradeLevelId);
-        }
-
-        public async Task<IEnumerable<GradeLevel>> GetAllAsync(GradelevelGetAllQuery query)
-        {
-            var GradeLevels = _context.GradeLevels.AsQueryable();
-
-            if (!string.IsNullOrEmpty(query.Name))
-                GradeLevels = GradeLevels.Where(g => g.Name!.Contains(query.Name));
-
-            return await GradeLevels.ToListAsync();
-        }
-
-        public async Task<bool> CreateAsync(GradelevelCreateCommand command)
-        {
-            var gradelevel = new GradeLevel
-            {
-                Name = command.Name
-            };
-
-            _context.GradeLevels.Add(gradelevel);
-            return await _context.SaveChangesAsync() > 0;
-            
-        }
+        _context.GradeLevels.Add(gradelevel);
+        return await _context.SaveChangesAsync() > 0;
     }
 }

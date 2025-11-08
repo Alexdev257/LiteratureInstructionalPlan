@@ -1,4 +1,3 @@
-using System;
 using LIP.Application.DTOs.Response;
 using LIP.Application.Interface.Validation;
 using MediatR;
@@ -7,8 +6,8 @@ using Microsoft.Extensions.Logging;
 namespace LIP.Application.CQRS.Pipeline;
 
 public class CustomValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-where TResponse : CommonResponseBase
-where TRequest : IRequest<TResponse>
+    where TResponse : CommonResponseBase
+    where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<CustomValidationBehavior<TRequest, TResponse>> _logger;
 
@@ -26,7 +25,7 @@ where TRequest : IRequest<TResponse>
         {
             _logger.LogInformation("Running custom validation for {RequestName}", typeof(TRequest).Name);
             var result = await validatable.ValidateAsync();
-            if (result.IsSuccess == false)
+            if (!result.IsSuccess)
             {
                 _logger.LogWarning("{RequestName} failed custom validation", typeof(TRequest).Name);
                 return result;
@@ -36,4 +35,3 @@ where TRequest : IRequest<TResponse>
         return await next();
     }
 }
-

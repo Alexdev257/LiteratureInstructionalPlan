@@ -10,8 +10,9 @@ public class CreatePaymentCommand : IRequest<PaymentCreateResponse>, IValidatabl
 {
     public int UserId { get; set; }
     public int TemplateId { get; set; }
-        
+
     public HttpContext HttpContext { get; set; } = null!;
+
     public Task<PaymentCreateResponse> ValidateAsync()
     {
         var response = new PaymentCreateResponse();
@@ -25,6 +26,7 @@ public class CreatePaymentCommand : IRequest<PaymentCreateResponse>, IValidatabl
                 Detail = "Invalid UserId"
             });
         }
+
         if (TemplateId <= 0)
         {
             response.IsSuccess = false;
@@ -35,6 +37,7 @@ public class CreatePaymentCommand : IRequest<PaymentCreateResponse>, IValidatabl
                 Detail = "Invalid UserId"
             });
         }
+
         return Task.FromResult(response);
     }
 }

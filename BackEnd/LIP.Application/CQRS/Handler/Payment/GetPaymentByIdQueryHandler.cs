@@ -15,10 +15,11 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, C
         _paymentRepository = paymentRepository;
     }
 
-    public Task<CommonResponse<PaymentGetResponseDTO>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
+    public Task<CommonResponse<PaymentGetResponseDTO>> Handle(GetPaymentByIdQuery request,
+        CancellationToken cancellationToken)
     {
         var response = new CommonResponse<PaymentGetResponseDTO>();
-        var payment =  _paymentRepository.GetPaymentIdAsync(request.PaymentId).Result;
+        var payment = _paymentRepository.GetPaymentIdAsync(request.PaymentId).Result;
 
         if (payment == null)
         {

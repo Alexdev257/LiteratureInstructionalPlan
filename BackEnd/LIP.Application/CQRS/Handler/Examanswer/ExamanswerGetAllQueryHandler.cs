@@ -3,20 +3,20 @@ using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Examanswer
+namespace LIP.Application.CQRS.Handler.Examanswer;
+
+public class ExamanswerGetAllQueryHandler : IRequestHandler<ExamanswerGetAllQuery, IEnumerable<ExamAnswer>>
 {
-    public class ExamanswerGetAllQueryHandler : IRequestHandler<ExamanswerGetAllQuery, IEnumerable<LIP.Domain.Entities.ExamAnswer>>
+    private readonly IExamanswerRepository _examanswerRepository;
+
+    public ExamanswerGetAllQueryHandler(IExamanswerRepository examanswerRepository)
     {
-        private readonly IExamanswerRepository _examanswerRepository;
+        _examanswerRepository = examanswerRepository;
+    }
 
-        public ExamanswerGetAllQueryHandler(IExamanswerRepository examanswerRepository)
-        {
-            _examanswerRepository = examanswerRepository;
-        }
-
-        public async Task<IEnumerable<LIP.Domain.Entities.ExamAnswer>> Handle(ExamanswerGetAllQuery request, CancellationToken cancellationToken)
-        {
-            return await _examanswerRepository.GetAllAsync(request);
-        }
+    public async Task<IEnumerable<ExamAnswer>> Handle(ExamanswerGetAllQuery request,
+        CancellationToken cancellationToken)
+    {
+        return await _examanswerRepository.GetAllAsync(request);
     }
 }

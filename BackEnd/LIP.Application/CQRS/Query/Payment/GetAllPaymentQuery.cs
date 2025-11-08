@@ -5,5 +5,4 @@ namespace LIP.Application.CQRS.Query.Payment;
 
 public class GetAllPaymentQuery : IRequest<PaymentGetAllResponse>
 {
-    
 }

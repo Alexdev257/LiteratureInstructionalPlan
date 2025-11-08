@@ -8,10 +8,11 @@ namespace LIP.Application.CQRS.Query.Payment;
 public class GetPaymentsByUserId : IRequest<PaymentGetAllResponse>, IValidatable<PaymentGetAllResponse>
 {
     public int UserId { get; set; }
+
     public Task<PaymentGetAllResponse> ValidateAsync()
     {
         var response = new PaymentGetAllResponse();
-        
+
         if (UserId <= 0)
         {
             response.IsSuccess = false;
@@ -22,7 +23,7 @@ public class GetPaymentsByUserId : IRequest<PaymentGetAllResponse>, IValidatable
                 Detail = "Invalid PaymentId. It must be a positive integer."
             });
         }
-        
+
         return Task.FromResult(response);
     }
 }

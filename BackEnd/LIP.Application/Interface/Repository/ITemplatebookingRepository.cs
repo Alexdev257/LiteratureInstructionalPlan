@@ -12,4 +12,6 @@ public interface ITemplatebookingRepository
     Task<TemplateOrder> CreateAsync(TemplatebookingCreateCommand command);
     Task<TemplateOrder> UpdateAsync(TemplateOrder order);
     Task<bool> DeleteAsync(TemplatebookingDeleteCommand command);
+
+    Task<IEnumerable<TemplateOrder>> GetByTemplateIdAsync(int templateId);
 }

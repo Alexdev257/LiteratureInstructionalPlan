@@ -5,44 +5,42 @@ using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
 
-namespace LIP.Infrastructure.Repositories
+namespace LIP.Infrastructure.Repositories;
+
+public class ExamtypeRepository : IExamtypeRepository
 {
-    public class ExamtypeRepository : IExamtypeRepository
+    private readonly ApplicationDbContext _context;
+
+    public ExamtypeRepository(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public ExamtypeRepository(ApplicationDbContext context)
+    public async Task<ExamType?> GetAsync(ExamtypeGetQuery query)
+    {
+        return await _context.ExamTypes
+            .Include(e => e.Exams)
+            .FirstOrDefaultAsync(e => e.ExamTypeId == query.ExamTypeId);
+    }
+
+    public async Task<IEnumerable<ExamType>> GetAllAsync(ExamtypeGetAllQuery query)
+    {
+        var ExamTypes = _context.ExamTypes.AsQueryable();
+
+        if (!string.IsNullOrEmpty(query.Name))
+            ExamTypes = ExamTypes.Where(e => e.Name!.Contains(query.Name));
+
+        return await ExamTypes.ToListAsync();
+    }
+
+    public async Task<bool> CreateAsync(ExamtypeCreateCommand command)
+    {
+        var examtype = new ExamType
         {
-            _context = context;
-        }
+            Name = command.Name
+        };
 
-        public async Task<ExamType?> GetAsync(ExamtypeGetQuery query)
-        {
-            return await _context.ExamTypes
-                .Include(e => e.Exams)
-                .FirstOrDefaultAsync(e => e.ExamTypeId == query.ExamTypeId);
-        }
-
-        public async Task<IEnumerable<ExamType>> GetAllAsync(ExamtypeGetAllQuery query)
-        {
-            var ExamTypes = _context.ExamTypes.AsQueryable();
-
-            if (!string.IsNullOrEmpty(query.Name))
-                ExamTypes = ExamTypes.Where(e => e.Name!.Contains(query.Name));
-
-            return await ExamTypes.ToListAsync();
-        }
-
-        public async Task<bool> CreateAsync(ExamtypeCreateCommand command)
-        {
-            var examtype = new ExamType
-            {
-                Name = command.Name
-            };
-
-            _context.ExamTypes.Add(examtype);
-            return await _context.SaveChangesAsync() > 0;
-            
-        }
+        _context.ExamTypes.Add(examtype);
+        return await _context.SaveChangesAsync() > 0;
     }
 }

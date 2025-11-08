@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LIP.Domain.Entities;
 
-public partial class Payment
+public class Payment
 {
-    [Key]
-    public int PaymentId { get; set; }
+    [Key] public int PaymentId { get; set; }
 
     public int? UserId { get; set; }
 
@@ -22,9 +19,9 @@ public partial class Payment
     public bool IsDeleted { get; set; }
 
     public DateTime DeletedAt { get; set; }
-    
+
     public int TemplateOrderId { get; set; }
-    
+
     public virtual TemplateOrder? TemplateOrder { get; set; }
 
     public virtual ICollection<TemplateOrder> Templatebookings { get; set; } = new List<TemplateOrder>();

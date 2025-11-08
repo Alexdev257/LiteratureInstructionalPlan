@@ -1,31 +1,27 @@
-using MediatR;
-using LIP.Domain.Entities;
+using LIP.Application.DTOs.Response;
 using LIP.Application.DTOs.Response.Role;
 using LIP.Application.Interface.Validation;
-using LIP.Application.DTOs.Response;
+using MediatR;
 
-namespace LIP.Application.CQRS.Query.Role
+namespace LIP.Application.CQRS.Query.Role;
+
+public class RoleGetQuery : IRequest<RoleGetResponse>, IValidatable<RoleGetResponse>
 {
-    public class RoleGetQuery : IRequest<RoleGetResponse>, IValidatable<RoleGetResponse>
+    public int RoleId { get; set; }
+
+    public Task<RoleGetResponse> ValidateAsync()
     {
-        public int RoleId { get; set; }
+        var response = new RoleGetResponse();
 
-        public Task<RoleGetResponse> ValidateAsync()
-        {
-            var response = new RoleGetResponse();
-
-            if (this.RoleId == 0)
+        if (RoleId == 0)
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "RoleId",
-                    Detail = "RoleId can not is 0"
-                });
-            }
+                Field = "RoleId",
+                Detail = "RoleId can not is 0"
+            });
 
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
 
-            return Task.FromResult(response);
-        }
+        return Task.FromResult(response);
     }
 }

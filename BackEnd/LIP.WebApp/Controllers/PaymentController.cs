@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LIP.WebApp.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class PaymentController : ControllerBase
@@ -14,13 +15,7 @@ public class PaymentController : ControllerBase
     {
         _mediator = mediator;
     }
-    
-    public class CreatePaymentRequest
-    {
-        public int UserId { get; set; }
-        public int TemplateId { get; set; }
-    }
-    
+
     [HttpPost("payment")]
     public async Task<IActionResult> ProcessPayment([FromBody] CreatePaymentRequest command)
     {
@@ -30,7 +25,7 @@ public class PaymentController : ControllerBase
             TemplateId = command.TemplateId,
             HttpContext = HttpContext
         });
-        
+
         return StatusCode(result.IsSuccess ? 201 : 500, result);
     }
 
@@ -41,15 +36,15 @@ public class PaymentController : ControllerBase
         {
             collection = Request.Query
         });
-        
+
         return StatusCode(result.IsSuccess ? 201 : 500, result);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAllPayments()
     {
         var result = await _mediator.Send(new GetAllPaymentQuery());
-        
+
         return StatusCode(result.IsSuccess ? 200 : 500, result);
     }
 
@@ -60,7 +55,7 @@ public class PaymentController : ControllerBase
         {
             UserId = userId
         });
-        
+
         return StatusCode(result.IsSuccess ? 200 : 500, result);
     }
 
@@ -72,5 +67,11 @@ public class PaymentController : ControllerBase
             PaymentId = paymentId
         });
         return StatusCode(result.IsSuccess ? 200 : 500, result);
+    }
+
+    public class CreatePaymentRequest
+    {
+        public int UserId { get; set; }
+        public int TemplateId { get; set; }
     }
 }

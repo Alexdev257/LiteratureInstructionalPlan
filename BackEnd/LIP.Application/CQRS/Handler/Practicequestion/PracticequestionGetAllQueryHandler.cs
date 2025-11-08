@@ -3,20 +3,21 @@ using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Practicequestion
+namespace LIP.Application.CQRS.Handler.Practicequestion;
+
+public class
+    PracticequestionGetAllQueryHandler : IRequestHandler<PracticequestionGetAllQuery, IEnumerable<PracticeQuestion>>
 {
-    public class PracticequestionGetAllQueryHandler : IRequestHandler<PracticequestionGetAllQuery, IEnumerable<LIP.Domain.Entities.PracticeQuestion>>
+    private readonly IPracticequestionRepository _practicequestionRepository;
+
+    public PracticequestionGetAllQueryHandler(IPracticequestionRepository practicequestionRepository)
     {
-        private readonly IPracticequestionRepository _practicequestionRepository;
+        _practicequestionRepository = practicequestionRepository;
+    }
 
-        public PracticequestionGetAllQueryHandler(IPracticequestionRepository practicequestionRepository)
-        {
-            _practicequestionRepository = practicequestionRepository;
-        }
-
-        public async Task<IEnumerable<LIP.Domain.Entities.PracticeQuestion>> Handle(PracticequestionGetAllQuery request, CancellationToken cancellationToken)
-        {
-            return await _practicequestionRepository.GetAllAsync(request);
-        }
+    public async Task<IEnumerable<PracticeQuestion>> Handle(PracticequestionGetAllQuery request,
+        CancellationToken cancellationToken)
+    {
+        return await _practicequestionRepository.GetAllAsync(request);
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Response.PracticeQuestion;
 
-namespace LIP.Application.DTOs.Response.PracticeQuestion
+public class PracticeQuestionRestoreResponse : CommonResponse<PracticeQuestionRestoreResponseDTO>
 {
-    public class PracticeQuestionRestoreResponse : CommonResponse<PracticeQuestionRestoreResponseDTO> { }
+}
 
-    public class PracticeQuestionRestoreResponseDTO
-    {
-    }
+public class PracticeQuestionRestoreResponseDTO
+{
 }

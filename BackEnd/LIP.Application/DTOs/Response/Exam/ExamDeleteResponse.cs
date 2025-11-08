@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Response.Exam;
 
-namespace LIP.Application.DTOs.Response.Exam
+public class ExamDeleteResponse : CommonResponse<ExamDeleteResponseDTO>
 {
-    public class ExamDeleteResponse : CommonResponse<ExamDeleteResponseDTO> { }
+}
 
-    public class ExamDeleteResponseDTO
-    {
-    }
+public class ExamDeleteResponseDTO
+{
 }

@@ -2,11 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LIP.Domain.Entities;
 
-public partial class ExamMatrixDetail
+public class ExamMatrixDetail
 {
-    [Key]
-    public int ExamMatrixDetailId { get; set; }
-    
+    [Key] public int ExamMatrixDetailId { get; set; }
+
     public string? LessonName { get; set; }
 
     public string? QuestionType { get; set; }
@@ -16,8 +15,8 @@ public partial class ExamMatrixDetail
     public int? Quantity { get; set; }
 
     public decimal? ScorePerQuestion { get; set; }
-    
+
     public int? ExamMatrixMatrixId { get; set; }
-    
+
     public virtual ExamMatrix? ExamMatrix { get; set; }
 }

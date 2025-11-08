@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Request.User;
 
-namespace LIP.Application.DTOs.Request.User
+public class UserRestoreRequest
 {
-    public class UserRestoreRequest
-    {
-        public int UserId { get; set; }
-    }
+    public int UserId { get; set; }
 }

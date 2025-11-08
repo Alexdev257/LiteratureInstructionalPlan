@@ -1,146 +1,145 @@
-﻿using LIP.Application.CQRS.Command.Exam;
+﻿using System.Text.Json;
+using LIP.Application.CQRS.Command.Exam;
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs.Request.Exam;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
-namespace LIP.WebApp.Controllers
+namespace LIP.WebApp.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ExamController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ExamController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public ExamController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
-        public ExamController(IMediator mediator)
+        _mediator = mediator;
+    }
+
+    [HttpGet("get-all")]
+    public async Task<IActionResult> GetAllExamAsync([FromQuery] GetAllExamRequest request)
+    {
+        var result = await _mediator.Send(new GetAllExamQuery
         {
-            _mediator = mediator;
-        }
+            GradeLevelId = request.GradeLevelId,
+            ExamTypeId = request.ExamTypeId,
+            CreatedBy = request.CreatedBy,
+            IsAdmin = request.IsAdmin,
+            IsShowCorrectAnswer = request.IsShowCorrectAnswer,
+            PageSize = request.PageSize,
+            PageNumber = request.PageNumber
+        });
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllExamAsync([FromQuery] GetAllExamRequest request)
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
+
+    [HttpGet("get/{id}")]
+    public async Task<IActionResult> GetExamAsync(int id, [FromQuery] GetExamRequest request)
+    {
+        var result = await _mediator.Send(new GetExamQuery
         {
-            var result = await _mediator.Send(new GetAllExamQuery
-            {
-                GradeLevelId = request.GradeLevelId,
-                ExamTypeId = request.ExamTypeId,
-                CreatedBy = request.CreatedBy,
-                IsAdmin = request.IsAdmin,
-                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
-                PageSize = request.PageSize,
-                PageNumber = request.PageNumber,
-            });
+            ExamId = id,
+            IsAdmin = request.IsAdmin,
+            IsShowCorrectAnswer = request.IsShowCorrectAnswer
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetExamAsync(int id, [FromQuery] GetExamRequest request)
+    [HttpPost("create-exam-manual")]
+    public async Task<IActionResult> CreateManualAsync([FromBody] ExamCreateManualFromMatrixRequest request)
+    {
+        var result = await _mediator.Send(new ExamCreateManualFromMatrixCommand
         {
-            var result = await _mediator.Send(new GetExamQuery
-            {
-                ExamId = id,
-                IsAdmin = request.IsAdmin,
-                IsShowCorrectAnswer = request.IsShowCorrectAnswer,
-            });
+            Title = request.Title,
+            Description = request.Description,
+            DurationMinutes = request.DurationMinutes,
+            GradeLevelId = request.GradeLevelId,
+            ExamTypeId = request.ExamTypeId,
+            CreatedByNavigationUserId = request.CreatedByUserId,
+            MatrixId = request.MatrixId,
+            QuestionIds = request.QuestionIds
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status201Created, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpPost("create-exam-manual")]
-        public async Task<IActionResult> CreateManualAsync([FromBody] ExamCreateManualFromMatrixRequest request)
+    [HttpPut("update-exam/{id}")]
+    public async Task<IActionResult> UpdateExamAsync(int id, [FromBody] ExamUpdateFromMatrixRequest request)
+    {
+        var result = await _mediator.Send(new ExamUpdateFromMatrixCommand
         {
-            var result = await _mediator.Send(new ExamCreateManualFromMatrixCommand
-            {
-                Title = request.Title,
-                Description = request.Description,
-                DurationMinutes = request.DurationMinutes,
-                GradeLevelId = request.GradeLevelId,
-                ExamTypeId = request.ExamTypeId,
-                CreatedByNavigationUserId = request.CreatedByUserId,
-                MatrixId = request.MatrixId,
-                QuestionIds = request.QuestionIds,
-            });
+            ExamId = id,
+            Title = request.Title,
+            Description = request.Description,
+            DurationMinutes = request.DurationMinutes,
+            ExamTypeId = request.ExamTypeId,
+            GradeLevelId = request.GradeLevelId,
+            QuestionIds = request.QuestionIds
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status201Created, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpPut("update-exam/{id}")]
-        public async Task<IActionResult> UpdateExamAsync(int id, [FromBody] ExamUpdateFromMatrixRequest request)
+    [HttpPatch("delete-exam/{id}")]
+    public async Task<IActionResult> DeleteExamAsync(int id)
+    {
+        var result = await _mediator.Send(new ExamDeleteCommand
         {
-            var result = await _mediator.Send(new ExamUpdateFromMatrixCommand
-            {
-                ExamId = id,
-                Title = request.Title,
-                Description = request.Description,
-                DurationMinutes = request.DurationMinutes,
-                ExamTypeId = request.ExamTypeId,
-                GradeLevelId = request.GradeLevelId,
-                QuestionIds = request.QuestionIds
-            });
+            ExamId = id
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpPatch("delete-exam/{id}")]
-        public async Task<IActionResult> DeleteExamAsync(int id)
+    [HttpPatch("restore-exam/{id}")]
+    public async Task<IActionResult> RestoreExamAsync(int id)
+    {
+        var result = await _mediator.Send(new ExamRestoreCommand
         {
-            var result = await _mediator.Send(new ExamDeleteCommand
-            {
-                ExamId = id
-            });
+            ExamId = id
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpPatch("restore-exam/{id}")]
-        public async Task<IActionResult> RestoreExamAsync(int id)
+    [HttpPost("start-exam")]
+    public async Task<IActionResult> StartExamAsync([FromQuery] ExamStartRequest request)
+    {
+        var result = await _mediator.Send(new ExamStartCommand
         {
-            var result = await _mediator.Send(new ExamRestoreCommand
-            {
-                ExamId = id
-            });
+            ExamId = request.ExamId,
+            UserId = request.UserId
+        });
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpPost("start-exam")]
-        public async Task<IActionResult> StartExamAsync([FromQuery] ExamStartRequest request)
+    [HttpPost("submit-exam")]
+    public async Task<IActionResult> SubmitExamAsync([FromBody] ExamSubmitRequest request)
+    {
+        var answerList = request.Answers.Select(a => new SubmitAnswerCommandDTO
         {
-            var result = await _mediator.Send(new ExamStartCommand
-            {
-                ExamId = request.ExamId,
-                UserId = request.UserId,
-            });
+            QuestionId = a.QuestionId,
+            AnswerContent = JsonSerializer.Serialize(a.AnswerContent)
+        }).ToList();
 
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
-
-        [HttpPost("submit-exam")]
-        public async Task<IActionResult> SubmitExamAsync([FromBody] ExamSubmitRequest request)
+        var result = await _mediator.Send(new ExamSubmitCommand
         {
-            var answerList = request.Answers.Select(a => new SubmitAnswerCommandDTO
-            {
-                QuestionId = a.QuestionId,
-                AnswerContent = JsonSerializer.Serialize(a.AnswerContent)
-            }).ToList();
+            AttemptId = request.AttemptId,
+            Answers = answerList
+        });
 
-            var result = await _mediator.Send(new ExamSubmitCommand
-            {
-                AttemptId = request.AttemptId,
-                Answers = answerList
-            });
-
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
     }
 }

@@ -1,11 +1,10 @@
-using MediatR;
 using LIP.Domain.Entities;
+using MediatR;
 
-namespace LIP.Application.CQRS.Query.Examattempt
+namespace LIP.Application.CQRS.Query.Examattempt;
+
+public class ExamattemptGetQuery : IRequest<ExamAttempt?>
 {
-    public class ExamattemptGetQuery : IRequest<LIP.Domain.Entities.ExamAttempt?>
-    {
-        public int AttemptId { get; set; }
-        public bool? IsAdmin { get; set; } = false!;
-    }
+    public int AttemptId { get; set; }
+    public bool? IsAdmin { get; set; } = false!;
 }
