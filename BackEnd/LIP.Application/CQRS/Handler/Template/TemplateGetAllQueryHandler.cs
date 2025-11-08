@@ -25,7 +25,8 @@ namespace LIP.Application.CQRS.Handler.Template
                 Data = result.Select(x => new TemplateGetDTO
                 {
                     FilePath = x.FilePath!,
-                    Title = x.Title!
+                    Title = x.Title!,
+                    ViewPath = x.ViewPath!
                 }).ToList()
             };
         }

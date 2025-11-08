@@ -71,40 +71,26 @@ namespace LIP.WebApp.Controllers
         /// <summary>
         /// Get template by id
         /// </summary>
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetTemplateById([FromRoute] TemplateGetByIdRequest request)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTemplateById([FromRoute] int id )
         {
             var result = await _mediatoR.Send(new TemplateGetQuery
             {
-                TemplateId = request.Id
+                TemplateId = id
             });
             
             return StatusCode(StatusCodes.Status200OK, result);
         }
 
         /// <summary>
-        /// Delete template by id
-        /// </summary>
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteTemplateById([FromRoute] TemplateDeleteRequest request)
-        {
-            var result = await _mediatoR.Send(new TemplateDeleteCommand
-            {
-                TemplateId = request.Id
-            });
-            
-            return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError, result);
-        }
-
-        /// <summary>
         /// Get template by user id
         /// </summary>
-        [HttpGet("user/{UserId}")]
-        public async Task<IActionResult> GetTemplatesByUserId([FromRoute] TemplateGetByUserIdRequest request)
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetTemplatesByUserId([FromRoute] int userId)
         {
             var result = await _mediatoR.Send(new TemplateGetByUserId
             {
-                UserId = request.UserId
+                UserId = userId
             });
             
             return StatusCode(StatusCodes.Status200OK, result);

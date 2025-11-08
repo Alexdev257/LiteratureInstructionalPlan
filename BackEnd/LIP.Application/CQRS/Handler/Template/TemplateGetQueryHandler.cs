@@ -28,6 +28,7 @@ namespace LIP.Application.CQRS.Handler.Template
                     {
                         FilePath = result.FilePath!,
                         Title = result.Title!,
+                        ViewPath = result.ViewPath!
                     }
                 };
             }

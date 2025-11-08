@@ -41,6 +41,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 {
                     FilePath = addedTemplate!.FilePath!,
                     Title = addedTemplate.Title!,
+                    ViewPath = addedTemplate.ViewPath!
                 });
             }
         }
@@ -51,6 +52,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
             {
                 FilePath =  entity.FilePath!,
                 Title = entity.Title!,
+                ViewPath = entity.ViewPath!
             });
         }
         
