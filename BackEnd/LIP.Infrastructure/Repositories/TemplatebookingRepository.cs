@@ -67,6 +67,10 @@ public class TemplatebookingRepository : ITemplatebookingRepository
 
     public async Task<IEnumerable<TemplateOrder>> GetByTemplateIdAsync(int templateId)
     {
-        return await _context.TemplateOrders.Where(x => x.TemplateId == templateId && x.Status == nameof(TemplateBookingEnum.Success)).ToListAsync();
+        return await _context.TemplateOrders
+            .Include(o => o.User)
+            .Include(h => h.Template)
+                .ThenInclude(hi => hi!.GradeLevel)
+            .Where(x => x.TemplateId == templateId && x.Status == nameof(TemplateBookingEnum.Success)).ToListAsync();
     }
 }

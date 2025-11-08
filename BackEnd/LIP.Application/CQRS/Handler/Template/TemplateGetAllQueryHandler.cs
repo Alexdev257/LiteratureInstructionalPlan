@@ -1,4 +1,5 @@
 using LIP.Application.CQRS.Query.Template;
+using LIP.Application.CQRS.Query.User;
 using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -9,12 +10,14 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
 {
     private readonly ITemplatebookingRepository _templatebookingRepository;
     private readonly ITemplateRepository _templateRepository;
+    private readonly IUserRepository _userRepository;
 
     public TemplateGetAllQueryHandler(ITemplateRepository templateRepository,
-        ITemplatebookingRepository templatebookingRepository)
+        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)
     {
         _templateRepository = templateRepository;
         _templatebookingRepository = templatebookingRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<TemplateGetResponse> Handle(TemplateGetAllQuery request, CancellationToken cancellationToken)
@@ -24,18 +27,30 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
         var tasks = result.Select(async x =>
         {
             var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();
-
+            var user = await _userRepository.GetAsync(new UserGetQuery
+            {
+                UserId = x.CreatedBy!.Value
+            });
             return new TemplateGetDTO
             {
                 FilePath = x.FilePath!,
                 Title = x.Title!,
                 ViewPath = x.ViewPath!,
                 CreatedAt = x.CreatedAt,
-                CreatedBy = x.CreatedBy,
-                GradeLevelId = x.GradeLevelId,
+                CreatedBy = new CreatedByDTO
+                {
+                    Email = user!.Email,
+                    Id = user.UserId,
+                    UserName = user.FullName
+                },
+                GradeLevelId = new GradeLevelDTO
+                {
+                    Id = x.GradeLevel!.GradeLevelId,
+                    Name = x.GradeLevel.Name!
+                },
                 Price = x.Price,
                 TemplateId = x.TemplateId,
-                Saled = saledCount // Gán count
+                TotalDownload = saledCount
             };
         });
 

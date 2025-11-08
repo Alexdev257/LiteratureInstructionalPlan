@@ -33,7 +33,6 @@ public class TemplateRepository : ITemplateRepository
             .AsNoTracking()
             .Include(t => t.CreatedByNavigation)
             .Include(t => t.GradeLevel)
-            //.Include(t => t.Series)
             .Where(t => !t.IsDeleted)
             .AsQueryable();
 
@@ -72,6 +71,8 @@ public class TemplateRepository : ITemplateRepository
     public async Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query)
     {
         var result = await _context.Templates.AsNoTracking()
+            .Include(g => g.GradeLevel)
+            .Include(c => c.CreatedByNavigation)
             .Where(t => !t.IsDeleted && t.CreatedBy == query.UserId)
             .ToListAsync();
 
@@ -84,6 +85,8 @@ public class TemplateRepository : ITemplateRepository
 
         return await _context.Templates
             .Where(t => templateIds.Contains(t.TemplateId))
+            .Include(g => g.GradeLevel)
+            .Include(o => o.CreatedByNavigation)
             .AsNoTracking()
             .ToListAsync();
     }
