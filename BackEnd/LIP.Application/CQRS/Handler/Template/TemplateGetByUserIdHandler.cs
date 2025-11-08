@@ -8,10 +8,11 @@ namespace LIP.Application.CQRS.Handler.Template;
 
 public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, TemplateGetResponse>
 {
-    private readonly ITemplateRepository _templateRepository;
     private readonly ITemplatebookingRepository _templatebookingRepository;
+    private readonly ITemplateRepository _templateRepository;
 
-    public TemplateGetByUserIdHandler(ITemplateRepository templateRepository, ITemplatebookingRepository templatebookingRepository)
+    public TemplateGetByUserIdHandler(ITemplateRepository templateRepository,
+        ITemplatebookingRepository templatebookingRepository)
     {
         _templateRepository = templateRepository;
         _templatebookingRepository = templatebookingRepository;
@@ -19,43 +20,67 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
 
     public async Task<TemplateGetResponse> Handle(TemplateGetByUserId request, CancellationToken cancellationToken)
     {
-        var result = await _templateRepository.GetTemplateByUserIdAsync(request);
-        var result2 = await _templatebookingRepository.GetByUserIdAsync(new TemplatebookingGetByUserIdQuery
+        var createdTemplates = await _templateRepository.GetTemplateByUserIdAsync(request);
+
+        var bookings = await _templatebookingRepository.GetByUserIdAsync(new TemplatebookingGetByUserIdQuery
         {
             UserId = request.UserId
         });
 
-        var response = new TemplateGetResponse();
-        response.Data = new List<TemplateGetDTO>();
+        var bookedTemplateIds = bookings
+            .Where(b => b.TemplateId is not null)
+            .Select(b => (int)b.TemplateId!)
+            .Distinct()
+            .ToList();
 
-        foreach (var entity in result2)
+        var bookedTemplates = new List<Domain.Entities.Template>();
+        if (bookedTemplateIds.Any()) bookedTemplates = await _templateRepository.GetByIdsAsync(bookedTemplateIds);
+
+
+        var response = new TemplateGetResponse
         {
-            if (entity.TemplateId is not null)
-            {
-                var addedTemplate = await _templateRepository.GetAsync(new TemplateGetQuery
-                {
-                    TemplateId = (int)entity.TemplateId
-                });
-                
-                response.Data!.Add( new TemplateGetDTO
-                {
-                    FilePath = addedTemplate!.FilePath!,
-                    Title = addedTemplate.Title!,
-                    ViewPath = addedTemplate.ViewPath!
-                });
-            }
-        }
-        
-        foreach (var entity in result)
+            Data = new List<TemplateGetDTO>()
+        };
+
+        var tasks = bookedTemplates.Select(async x =>
         {
-            response.Data!.Add( new TemplateGetDTO
+            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();
+
+            return new TemplateGetDTO
             {
-                FilePath =  entity.FilePath!,
-                Title = entity.Title!,
-                ViewPath = entity.ViewPath!
-            });
-        }
+                FilePath = x.FilePath!,
+                Title = x.Title!,
+                ViewPath = x.ViewPath!,
+                CreatedAt = x.CreatedAt,
+                CreatedBy = x.CreatedBy,
+                GradeLevelId = x.GradeLevelId,
+                Price = x.Price,
+                TemplateId = x.TemplateId,
+                Saled = saledCount // Gán count
+            };
+        });
+
+        var tasks2 = createdTemplates.Select(async x =>
+        {
+            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();
+
+            return new TemplateGetDTO
+            {
+                FilePath = x.FilePath!,
+                Title = x.Title!,
+                ViewPath = x.ViewPath!,
+                CreatedAt = x.CreatedAt,
+                CreatedBy = x.CreatedBy,
+                GradeLevelId = x.GradeLevelId,
+                Price = x.Price,
+                TemplateId = x.TemplateId,
+                Saled = saledCount // Gán count
+            };
+        });
         
+        response.Data.AddRange((await Task.WhenAll(tasks)).ToList());
+        response.Data.AddRange((await Task.WhenAll(tasks2)).ToList());
+
         response.IsSuccess = true;
         response.Message = "Get templates by user id success";
         return response;

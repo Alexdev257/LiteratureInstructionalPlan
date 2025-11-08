@@ -5,49 +5,46 @@ using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Template
+namespace LIP.Application.CQRS.Handler.Template;
+
+public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
 {
-    public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
+    private readonly ICloudinaryUpload _cloudinaryUpload;
+    private readonly ITemplateRepository _templateRepository;
+
+    public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
     {
-        private readonly ITemplateRepository _templateRepository;
+        _templateRepository = templateRepository;
+        _cloudinaryUpload = cloudinaryUpload;
+    }
 
-        private readonly ICloudinaryUpload _cloudinaryUpload;
-        public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
+    public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+    {
+        var result = await _templateRepository.GetAsync(new TemplateGetQuery
         {
-            _templateRepository = templateRepository;
-            _cloudinaryUpload = cloudinaryUpload;
+            TemplateId = request.TemplateId
+        });
+
+        var publicId = await _cloudinaryUpload.GetPublicId(result!.FilePath!);
+
+        var isSuccess = await _templateRepository.DeleteAsync(request);
+
+        if (isSuccess)
+        {
+            await _cloudinaryUpload.DeleteFile(publicId);
+            return new CommonResponse<bool>
+            {
+                IsSuccess = true,
+                Message = "Delete template success",
+                Data = true
+            };
         }
 
-        public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+        return new CommonResponse<bool>
         {
-            var result = await _templateRepository.GetAsync(new TemplateGetQuery
-            {
-                TemplateId = request.TemplateId
-            });
-            
-            var publicId =await _cloudinaryUpload.GetPublicId(result!.FilePath!);
-            
-            bool isSuccess = await _templateRepository.DeleteAsync(request);
-            
-            if (isSuccess)
-            {
-                await _cloudinaryUpload.DeleteFile(publicId);
-                return new CommonResponse<bool>
-                {
-                    IsSuccess = true,
-                    Message = "Delete template success",
-                    Data = true
-                };
-            }
-            else
-            {
-                return new CommonResponse<bool>
-                {
-                    IsSuccess = false,
-                    Message = "some errors occurred while delete",
-                    Data = false
-                };
-            }
-        }
+            IsSuccess = false,
+            Message = "some errors occurred while delete",
+            Data = false
+        };
     }
 }

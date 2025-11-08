@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LIP.Domain.Entities;
 
-public partial class ExamAnswer
+public class ExamAnswer
 {
-    [Key]
-    public int AnswerId { get; set; }
+    [Key] public int AnswerId { get; set; }
 
     public int? AttemptId { get; set; }
 

@@ -1,21 +1,16 @@
 ﻿using LIP.Application.Interface.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LIP.Infrastructure.Implements.Helpers
+namespace LIP.Infrastructure.Implements.Helpers;
+
+public class BCryptHelper : IBcryptHelper
 {
-    public class BCryptHelper : IBcryptHelper
+    public string HashPassword(string password)
     {
-        public string HashPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(password);
-        }
-        public bool VerifyPassword(string password, string hashedPassword)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-        }
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public bool VerifyPassword(string password, string hashedPassword)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 }

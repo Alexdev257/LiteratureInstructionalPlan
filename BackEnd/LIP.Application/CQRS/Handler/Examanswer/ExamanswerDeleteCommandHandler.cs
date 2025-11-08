@@ -2,20 +2,19 @@ using LIP.Application.CQRS.Command.Examanswer;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Examanswer
+namespace LIP.Application.CQRS.Handler.Examanswer;
+
+public class ExamanswerDeleteCommandHandler : IRequestHandler<ExamanswerDeleteCommand, bool>
 {
-    public class ExamanswerDeleteCommandHandler : IRequestHandler<ExamanswerDeleteCommand, bool>
+    private readonly IExamanswerRepository _examanswerRepository;
+
+    public ExamanswerDeleteCommandHandler(IExamanswerRepository examanswerRepository)
     {
-        private readonly IExamanswerRepository _examanswerRepository;
+        _examanswerRepository = examanswerRepository;
+    }
 
-        public ExamanswerDeleteCommandHandler(IExamanswerRepository examanswerRepository)
-        {
-            _examanswerRepository = examanswerRepository;
-        }
-
-        public async Task<bool> Handle(ExamanswerDeleteCommand request, CancellationToken cancellationToken)
-        {
-            return await _examanswerRepository.DeleteAsync(request);
-        }
+    public async Task<bool> Handle(ExamanswerDeleteCommand request, CancellationToken cancellationToken)
+    {
+        return await _examanswerRepository.DeleteAsync(request);
     }
 }

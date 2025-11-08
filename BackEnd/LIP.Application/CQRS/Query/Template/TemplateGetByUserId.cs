@@ -8,6 +8,7 @@ namespace LIP.Application.CQRS.Query.Template;
 public class TemplateGetByUserId : IRequest<TemplateGetResponse>, IValidatable<TemplateGetResponse>
 {
     public int UserId { get; set; }
+
     public Task<TemplateGetResponse> ValidateAsync()
     {
         var response = new TemplateGetResponse();
@@ -20,6 +21,7 @@ public class TemplateGetByUserId : IRequest<TemplateGetResponse>, IValidatable<T
                 Detail = "UserId must be greater than zero."
             });
         }
+
         return Task.FromResult(response);
     }
 }

@@ -5,5 +5,4 @@ namespace LIP.Application.CQRS.Handler;
 
 public class DumbDataCommand : IRequest<CommonResponse<string>>
 {
-    
 }

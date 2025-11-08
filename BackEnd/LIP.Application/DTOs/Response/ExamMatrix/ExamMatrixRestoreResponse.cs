@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Response.ExamMatrix;
 
-namespace LIP.Application.DTOs.Response.ExamMatrix
+public class ExamMatrixRestoreResponse : CommonResponse<ExamMatrixRestoreResponseDTO>
 {
-    public class ExamMatrixRestoreResponse : CommonResponse<ExamMatrixRestoreResponseDTO> { }
+}
 
-    public class ExamMatrixRestoreResponseDTO
-    {
-    }
+public class ExamMatrixRestoreResponseDTO
+{
 }

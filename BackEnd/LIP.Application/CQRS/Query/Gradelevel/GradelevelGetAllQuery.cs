@@ -1,10 +1,9 @@
-using MediatR;
 using LIP.Domain.Entities;
+using MediatR;
 
-namespace LIP.Application.CQRS.Query.Gradelevel
+namespace LIP.Application.CQRS.Query.Gradelevel;
+
+public class GradelevelGetAllQuery : IRequest<IEnumerable<GradeLevel>>
 {
-    public class GradelevelGetAllQuery : IRequest<IEnumerable<LIP.Domain.Entities.GradeLevel>>
-    {
-        public string? Name { get; set; }
-    }
+    public string? Name { get; set; }
 }

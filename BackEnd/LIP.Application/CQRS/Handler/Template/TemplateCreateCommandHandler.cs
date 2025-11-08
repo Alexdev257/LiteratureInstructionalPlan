@@ -4,34 +4,34 @@ using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Template
+namespace LIP.Application.CQRS.Handler.Template;
+
+public class TemplateCreateCommandHandler : IRequestHandler<TemplateCreateCommand, TemplateCreateResponse>
 {
-    public class TemplateCreateCommandHandler : IRequestHandler<TemplateCreateCommand, TemplateCreateResponse>
+    private readonly ICloudinaryUpload _cloudinaryUpload;
+    private readonly ITemplateRepository _templateRepository;
+
+    public TemplateCreateCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
     {
-        private readonly ITemplateRepository _templateRepository;
+        _templateRepository = templateRepository;
+        _cloudinaryUpload = cloudinaryUpload;
+    }
 
-        private readonly ICloudinaryUpload _cloudinaryUpload;
-
-        public TemplateCreateCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
+    public async Task<TemplateCreateResponse> Handle(TemplateCreateCommand request, CancellationToken cancellationToken)
+    {
+        var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
+        var isSuccess = false;
+        if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
         {
-            _templateRepository = templateRepository;
-            _cloudinaryUpload = cloudinaryUpload;
+            request.FilePath = result.Url;
+            request.ViewPath = result.ViewUrl;
+            request.CreatedAt = DateTime.Now;
+
+            isSuccess = await _templateRepository.CreateAsync(request);
         }
 
-        public async Task<TemplateCreateResponse> Handle(TemplateCreateCommand request, CancellationToken cancellationToken)
-        {
-            var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
-            bool isSuccess = false;
-            if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
-            {
-                request.FilePath = result.Url;
-                request.ViewPath = result.ViewUrl;
-                request.CreatedAt = DateTime.Now;
-
-                isSuccess = await _templateRepository.CreateAsync(request);
-            }
-
-            if (isSuccess) return new TemplateCreateResponse
+        if (isSuccess)
+            return new TemplateCreateResponse
             {
                 IsSuccess = true,
                 Message = "Create template success",
@@ -46,11 +46,10 @@ namespace LIP.Application.CQRS.Handler.Template
                 }
             };
 
-            else return new TemplateCreateResponse
-            {
-                IsSuccess = false,
-                Message = "some errors occurred while update"
-            };
-        }
+        return new TemplateCreateResponse
+        {
+            IsSuccess = false,
+            Message = "some errors occurred while update"
+        };
     }
 }

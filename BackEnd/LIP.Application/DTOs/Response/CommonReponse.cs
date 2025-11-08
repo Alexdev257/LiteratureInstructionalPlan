@@ -1,12 +1,10 @@
-using System;
-
 namespace LIP.Application.DTOs.Response;
 
 public class CommonResponse<T> : CommonResponseBase
 {
     public T? Data { get; set; }
 
-    public List<Errors> ListErrors { get; set; } = new List<Errors>();
+    public List<Errors> ListErrors { get; set; } = new();
 }
 
 public class CommonResponseBase

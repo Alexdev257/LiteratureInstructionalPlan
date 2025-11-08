@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LIP.Domain.Entities;
 
-public partial class GradeLevel
+public class GradeLevel
 {
-    [Key]
-    public int GradeLevelId { get; set; }
+    [Key] public int GradeLevelId { get; set; }
 
     public string? Name { get; set; }
 

@@ -1,10 +1,9 @@
-using MediatR;
 using LIP.Domain.Entities;
+using MediatR;
 
-namespace LIP.Application.CQRS.Query.Examtype
+namespace LIP.Application.CQRS.Query.Examtype;
+
+public class ExamtypeGetQuery : IRequest<ExamType?>
 {
-    public class ExamtypeGetQuery : IRequest<LIP.Domain.Entities.ExamType?>
-    {
-        public int ExamTypeId { get; set; }
-    }
+    public int ExamTypeId { get; set; }
 }

@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-using LIP.Application.CQRS.Command.Payment;
 using LIP.Application.DTOs.Response.Payment;
 using LIP.Application.Interface.Helpers;
 using LIP.Domain.Enum;
@@ -35,7 +34,7 @@ public class MomoService : IMomoService
         var signature = ComputeHmacSha256(rawData, _momoConfig.Value.SecretKey);
 
         var client = new RestClient(_momoConfig.Value.MomoApiUrl);
-        var request = new RestRequest() { Method = Method.Post };
+        var request = new RestRequest { Method = Method.Post };
         request.AddHeader("Content-Type", "application/json; charset=UTF-8");
         var requestData = new
         {
@@ -44,21 +43,21 @@ public class MomoService : IMomoService
             requestType = _momoConfig.Value.RequestType,
             notifyUrl = _momoConfig.Value.NotifyUrl,
             returnUrl = _momoConfig.Value.ReturnUrl,
-            orderId = orderInfo.OrderId.ToString(),
+            orderId = orderInfo.OrderId,
             amount = orderInfo.Amount.ToString(),
             orderInfo = orderInfo.TemplateOrderId.ToString(),
-            requestId = orderInfo.OrderId.ToString(),
+            requestId = orderInfo.OrderId,
             extraData = orderInfo.PaymentId.ToString(),
-            signature = signature
+            signature
         };
 
         request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
         var response = await client.ExecuteAsync(request);
 
-        string jsonString = response.Content!;
-        JObject json = JObject.Parse(jsonString);
-        string payUrl = json["payUrl"]?.ToString()!; 
+        var jsonString = response.Content!;
+        var json = JObject.Parse(jsonString);
+        var payUrl = json["payUrl"]?.ToString()!;
 
         return payUrl!;
     }
@@ -69,14 +68,15 @@ public class MomoService : IMomoService
         var templateOrderId = collection.FirstOrDefault(s => s.Key == "orderInfo").Value;
         var paymentId = collection.FirstOrDefault(s => s.Key == "extraData").Value;
         var message = collection.FirstOrDefault(s => s.Key == "message").Value == "Success";
-        return await Task.FromResult(new PaymentCallbackResponseDTO()
+        return await Task.FromResult(new PaymentCallbackResponseDTO
         {
             Amount = decimal.Parse(amount!),
             PaymentId = int.Parse(paymentId!),
             TemplateOrderId = int.Parse(templateOrderId!),
-            Message = (message ? PaymentEnum.Success : PaymentEnum.Failed).ToString(),
+            Message = (message ? PaymentEnum.Success : PaymentEnum.Failed).ToString()
         });
     }
+
     private string ComputeHmacSha256(string message, string secretKey)
     {
         var keyBytes = Encoding.UTF8.GetBytes(secretKey);
@@ -93,6 +93,7 @@ public class MomoService : IMomoService
 
         return hashString;
     }
+
     public class MomoConfig
     {
         public string MomoApiUrl { get; set; } = string.Empty;

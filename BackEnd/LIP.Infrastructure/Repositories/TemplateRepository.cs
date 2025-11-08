@@ -5,93 +5,102 @@ using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
 
-namespace LIP.Infrastructure.Repositories
+namespace LIP.Infrastructure.Repositories;
+
+public class TemplateRepository : ITemplateRepository
 {
-    public class TemplateRepository : ITemplateRepository
+    private readonly ApplicationDbContext _context;
+
+    public TemplateRepository(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public TemplateRepository(ApplicationDbContext context)
+    public async Task<Template?> GetAsync(TemplateGetQuery query)
+    {
+        return await _context.Templates
+            .AsNoTracking()
+            .Include(t => t.CreatedByNavigation)
+            .Include(t => t.GradeLevel)
+            //.Include(t => t.Series)
+            .Where(t => !t.IsDeleted)
+            .FirstOrDefaultAsync(t => t.TemplateId == query.TemplateId);
+    }
+
+    public async Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query)
+    {
+        var templates = _context.Templates
+            .AsNoTracking()
+            .Include(t => t.CreatedByNavigation)
+            .Include(t => t.GradeLevel)
+            //.Include(t => t.Series)
+            .Where(t => !t.IsDeleted)
+            .AsQueryable();
+
+        return await templates.ToListAsync();
+    }
+
+    public async Task<bool> CreateAsync(TemplateCreateCommand command)
+    {
+        var template = new Template
         {
-            _context = context;
-        }
+            Title = command.Title,
+            FilePath = command.FilePath,
+            ViewPath = command.ViewPath,
+            GradeLevelId = command.GradeLevelId,
+            Price = (float)command.Price!,
+            CreatedBy = command.CreatedBy,
+            CreatedAt = command.CreatedAt
+        };
 
-        public async Task<Template?> GetAsync(TemplateGetQuery query)
-        {
-            return await _context.Templates
-                .AsNoTracking()
-                .Include(t => t.CreatedByNavigation)
-                .Include(t => t.GradeLevel)
-                //.Include(t => t.Series)
-                .Where(t => !t.IsDeleted)
-                .FirstOrDefaultAsync(t => t.TemplateId == query.TemplateId);
-        }
+        _context.Templates.Add(template);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-        public async Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query)
-        {
-            var templates = _context.Templates
-                .AsNoTracking()
-                .Include(t => t.CreatedByNavigation)
-                .Include(t => t.GradeLevel)
-                //.Include(t => t.Series)
-                .Where(t => !t.IsDeleted)
-                .AsQueryable();
+    public async Task<bool> DeleteAsync(TemplateDeleteCommand command)
+    {
+        var template = await _context.Templates.FindAsync(command.TemplateId);
+        if (template == null) return false;
 
-            return await templates.ToListAsync();
-        }
+        template.IsDeleted = true;
+        template.DeletedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-        public async Task<bool> CreateAsync(TemplateCreateCommand command)
-        {
-            var template = new Template
-            {
-                Title = command.Title,
-                FilePath = command.FilePath,
-                ViewPath = command.ViewPath,
-                GradeLevelId = command.GradeLevelId,
-                Price = (float)command.Price!,
-                CreatedBy = command.CreatedBy,
-                CreatedAt = command.CreatedAt
-            };
+    public async Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query)
+    {
+        var result = await _context.Templates.AsNoTracking()
+            .Where(t => !t.IsDeleted && t.CreatedBy == query.UserId)
+            .ToListAsync();
 
-            _context.Templates.Add(template);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        return result;
+    }
 
-        public async Task<bool> UpdateAsync(TemplateUpdateCommand command)
-        {
-            var template = await _context.Templates.FindAsync(command.TemplateId);
-            if (template == null || template.IsDeleted) return false;
+    public async Task<List<Template>> GetByIdsAsync(List<int>? templateIds)
+    {
+        if (templateIds == null || !templateIds.Any()) return new List<Template>();
 
-            template.Title = command.Title;
-            template.FilePath = command.FilePath;
-            template.GradeLevelId = command.GradeLevelId;
-            //template.SeriesId = command.SeriesId;
-            template.CreatedBy = command.CreatedBy;
-            template.CreatedAt = command.CreatedAt;
+        return await _context.Templates
+            .Where(t => templateIds.Contains(t.TemplateId))
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
-            await _context.SaveChangesAsync();
-            return true;
-        }
+    public async Task<bool> UpdateAsync(TemplateUpdateCommand command)
+    {
+        var template = await _context.Templates.FindAsync(command.TemplateId);
+        if (template == null || template.IsDeleted) return false;
 
-        public async Task<bool> DeleteAsync(TemplateDeleteCommand command)
-        {
-            var template = await _context.Templates.FindAsync(command.TemplateId);
-            if (template == null) return false;
+        template.Title = command.Title;
+        template.FilePath = command.FilePath;
+        template.GradeLevelId = command.GradeLevelId;
+        //template.SeriesId = command.SeriesId;
+        template.CreatedBy = command.CreatedBy;
+        template.CreatedAt = command.CreatedAt;
 
-            template.IsDeleted = true;
-            template.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query)
-        {
-            var result = await _context.Templates.AsNoTracking()
-                .Where(t => !t.IsDeleted && t.CreatedBy == query.UserId)
-                .ToListAsync();
-
-            return result;
-        }
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

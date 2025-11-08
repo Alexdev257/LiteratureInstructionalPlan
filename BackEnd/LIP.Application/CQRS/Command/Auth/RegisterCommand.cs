@@ -1,137 +1,103 @@
-﻿using LIP.Application.DTOs.Response.Auth;
+﻿using System.Text.RegularExpressions;
+using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.Auth;
 using LIP.Application.Interface.Validation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using LIP.Application.DTOs.Response;
-using LIP.Application.Interface.Repository;
 
-namespace LIP.Application.CQRS.Command.Auth
+namespace LIP.Application.CQRS.Command.Auth;
+
+public class RegisterCommand : IRequest<RegisterResponse>, IValidatable<RegisterResponse>
 {
-    public class RegisterCommand : IRequest<RegisterResponse>, IValidatable<RegisterResponse>
+    public string UserName { get; set; } = null!;
+
+    public string FullName { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+
+    public string Password { get; set; } = null!;
+
+    public Task<RegisterResponse> ValidateAsync()
     {
-        public string UserName { get; set; } = null!;
-
-        public string FullName { get; set; } = null!;
-
-        public string Email { get; set; } = null!;
-
-        public string Password { get; set; } = null!;
-
-        public Task<RegisterResponse> ValidateAsync()
-        {
-            RegisterResponse response = new();
-            if (string.IsNullOrEmpty(this.UserName))
+        RegisterResponse response = new();
+        if (string.IsNullOrEmpty(UserName))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Username",
-                    Detail = "Username is null or empty"
-                });
-            }
-            if (string.IsNullOrEmpty(this.FullName))
+                Field = "Username",
+                Detail = "Username is null or empty"
+            });
+        if (string.IsNullOrEmpty(FullName))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Fullname",
-                    Detail = "Fullname is null or empty"
-                });
-            }
-            if (string.IsNullOrEmpty(this.Email))
+                Field = "Fullname",
+                Detail = "Fullname is null or empty"
+            });
+        if (string.IsNullOrEmpty(Email))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Email",
-                    Detail = "Email is null or empty"
-                });
-            }
-            if (string.IsNullOrEmpty(this.Password))
+                Field = "Email",
+                Detail = "Email is null or empty"
+            });
+        if (string.IsNullOrEmpty(Password))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password is null or empty"
-                });
-            }
+                Field = "Password",
+                Detail = "Password is null or empty"
+            });
 
-            if (!Regex.IsMatch(this.UserName, @"([a-zA-Z\d]+)"))
+        if (!Regex.IsMatch(UserName, @"([a-zA-Z\d]+)"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Username",
-                    Detail = "Username is not allowed special characters!"
-                });
-            }
+                Field = "Username",
+                Detail = "Username is not allowed special characters!"
+            });
 
-            if (!Regex.IsMatch(this.FullName, @"([a-zA-Z\s]+)"))
+        if (!Regex.IsMatch(FullName, @"([a-zA-Z\s]+)"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Fullname",
-                    Detail = "Fullname is not allowed special characters and digits!"
-                });
-            }
-            if (!Regex.IsMatch(this.Email, @"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"))
+                Field = "Fullname",
+                Detail = "Fullname is not allowed special characters and digits!"
+            });
+        if (!Regex.IsMatch(Email, @"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Email",
-                    Detail = "Email is not valid!"
-                });
-            }
+                Field = "Email",
+                Detail = "Email is not valid!"
+            });
 
-            if (this.Password.Length < 8)
+        if (Password.Length < 8)
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password must be at least 8 characters!"
-                });
-            }
+                Field = "Password",
+                Detail = "Password must be at least 8 characters!"
+            });
 
-            if (!Regex.IsMatch(this.Password, @"^(?=.*[A-Z]).+$"))
+        if (!Regex.IsMatch(Password, @"^(?=.*[A-Z]).+$"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password must contain at least 1 Upper character!"
-                });
-            }
-            if (!Regex.IsMatch(this.Password, @"^(?=.*[a-z]).+$"))
+                Field = "Password",
+                Detail = "Password must contain at least 1 Upper character!"
+            });
+        if (!Regex.IsMatch(Password, @"^(?=.*[a-z]).+$"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password must contain at least 1 Lower character!"
-                });
-            }
-            if (!Regex.IsMatch(this.Password, @"^(?=.*[\d]).+$"))
+                Field = "Password",
+                Detail = "Password must contain at least 1 Lower character!"
+            });
+        if (!Regex.IsMatch(Password, @"^(?=.*[\d]).+$"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password must contain at least 1 digit!"
-                });
-            }
-            if (!Regex.IsMatch(this.Password, @"^(?=.*[!@#$%^&*(),.?"":{}|<>]).+$"))
+                Field = "Password",
+                Detail = "Password must contain at least 1 digit!"
+            });
+        if (!Regex.IsMatch(Password, @"^(?=.*[!@#$%^&*(),.?"":{}|<>]).+$"))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "Password",
-                    Detail = "Password must contain at least 1 special character(!@#$%^&*(),.?\":{}|<>)!"
-                });
-            }
+                Field = "Password",
+                Detail = "Password must contain at least 1 special character(!@#$%^&*(),.?\":{}|<>)!"
+            });
 
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
 
-            return Task.FromResult(response);
-
-
-
-        }
+        return Task.FromResult(response);
     }
 }

@@ -1,67 +1,59 @@
-﻿using LIP.Application.Interface.Helpers;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+using LIP.Application.Interface.Helpers;
+using Microsoft.Extensions.Configuration;
 
-namespace LIP.Infrastructure.Implements.Helpers
+namespace LIP.Infrastructure.Implements.Helpers;
+
+public class EmailHelper : IEmailHelper
 {
-    public class EmailHelper : IEmailHelper
+    private readonly IConfiguration _configuration;
+
+    public EmailHelper(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+    }
 
-        public EmailHelper(IConfiguration configuration)
+    public async Task<bool> SendEmailAsync(string toEmail, string subject, string templateHtml,
+        Dictionary<string, string> placeholders)
+    {
+        var emailSettings = _configuration.GetSection("EmailSettings");
+        var smtpServer = emailSettings["SmtpServer"]!;
+        var smtpPort = int.Parse(emailSettings["SmtpPort"]!);
+        var senderEmail = emailSettings["SenderEmail"]!;
+        var senderPassword = emailSettings["SenderPassword"]!;
+        var senderName = emailSettings["SenderName"]!;
+
+        //string body = File.ReadAllText(templateHtml);
+        var body = templateHtml;
+
+
+        foreach (var placeholder in placeholders)
+            //body = body.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
+            body = body.Replace(placeholder.Key, placeholder.Value);
+
+        using (var client = new SmtpClient(smtpServer))
         {
-            _configuration = configuration;
-        }
-
-        public async Task<bool> SendEmailAsync(string toEmail, string subject, string templateHtml, Dictionary<string, string> placeholders)
-        {
-            var emailSettings = _configuration.GetSection("EmailSettings");
-            string smtpServer = emailSettings["SmtpServer"]!;
-            int smtpPort = int.Parse(emailSettings["SmtpPort"]!);
-            string senderEmail = emailSettings["SenderEmail"]!;
-            string senderPassword = emailSettings["SenderPassword"]!;
-            string senderName = emailSettings["SenderName"]!;
-
-            //string body = File.ReadAllText(templateHtml);
-            string body = templateHtml;
-
-
-            foreach (var placeholder in placeholders)
+            client.Port = smtpPort;
+            client.Credentials = new NetworkCredential(senderEmail, senderPassword);
+            client.EnableSsl = true;
+            var mailMessage = new MailMessage
             {
-                //body = body.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
-                body = body.Replace(placeholder.Key, placeholder.Value);
+                From = new MailAddress(senderEmail, senderName),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            mailMessage.To.Add(toEmail);
+            try
+            {
+                await client.SendMailAsync(mailMessage);
+                return true;
             }
-
-            using (var client = new SmtpClient(smtpServer))
+            catch (Exception ex)
             {
-                client.Port = smtpPort;
-                client.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                client.EnableSsl = true;
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(senderEmail, senderName),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                mailMessage.To.Add(toEmail);
-                try
-                {
-                    await client.SendMailAsync(mailMessage);
-                    return true;
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return false;
-                }
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
     }

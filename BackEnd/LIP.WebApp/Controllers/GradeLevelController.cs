@@ -1,43 +1,42 @@
-﻿using LIP.Application.CQRS.Command.Gradelevel;
-using LIP.Application.CQRS.Query.Gradelevel;
+﻿using LIP.Application.CQRS.Query.Gradelevel;
 using LIP.Application.DTOs.Request.GradeLevel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LIP.WebApp.Controllers
+namespace LIP.WebApp.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class GradeLevelController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GradeLevelController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public GradeLevelController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
-        public GradeLevelController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        _mediator = mediator;
+    }
 
-        [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllGradeLevels([FromQuery] GetAllGradeLevelRequest request)
+    [HttpGet("get-all")]
+    public async Task<IActionResult> GetAllGradeLevels([FromQuery] GetAllGradeLevelRequest request)
+    {
+        var result = await _mediator.Send(new GetAllGradeLevelQuery
         {
-            var result = await _mediator.Send(new GetAllGradeLevelQuery
-            {
-                Name = request.Name,
-                PageSize = request.PageSize,
-                PageNumber = request.PageNumber
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+            Name = request.Name,
+            PageSize = request.PageSize,
+            PageNumber = request.PageNumber
+        });
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
+    }
 
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetGradeLevelById(int id)
+    [HttpGet("get/{id}")]
+    public async Task<IActionResult> GetGradeLevelById(int id)
+    {
+        var result = await _mediator.Send(new GetGradeLevelQuery
         {
-            var result = await _mediator.Send(new GetGradeLevelQuery
-            {
-                GradeLevelId = id
-            });
-            if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
-            else return StatusCode(StatusCodes.Status400BadRequest, result);
-        }
+            GradeLevelId = id
+        });
+        if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
+        return StatusCode(StatusCodes.Status400BadRequest, result);
     }
 }

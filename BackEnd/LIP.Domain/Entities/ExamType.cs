@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LIP.Domain.Entities;
 
-public partial class ExamType
+public class ExamType
 {
-    [Key]
-    public int ExamTypeId { get; set; }
+    [Key] public int ExamTypeId { get; set; }
 
     public string? Name { get; set; }
 

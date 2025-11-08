@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.CQRS.Query.ExamMatrixDetail;
 
-namespace LIP.Application.CQRS.Query.ExamMatrixDetail
+public class ExamMatrixDetailGetAllQuery
 {
-    public class ExamMatrixDetailGetAllQuery
-    {
-        public int? ExamMatricId { get; set; }
-    }
+    public int? ExamMatricId { get; set; }
 }

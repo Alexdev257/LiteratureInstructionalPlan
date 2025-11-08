@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.Interface.Helpers;
 
-namespace LIP.Application.Interface.Helpers
+public interface IOtpHelper
 {
-    public interface IOtpHelper
-    {
-        string GenerateOtpAsync(int length);
-    }
+    string GenerateOtpAsync(int length);
 }

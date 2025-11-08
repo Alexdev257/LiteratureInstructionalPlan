@@ -1,45 +1,38 @@
-using LIP.Application.DTOs.Response.User;
 using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.User;
 using LIP.Application.Interface.Validation;
 using MediatR;
 
-namespace LIP.Application.CQRS.Command.User
+namespace LIP.Application.CQRS.Command.User;
+
+public class UserDeleteCommand : IRequest<UserDeleteResponse>, IValidatable<UserDeleteResponse>
 {
-    public class UserDeleteCommand : IRequest<UserDeleteResponse>, IValidatable<UserDeleteResponse>
+    public int UserId { get; set; }
+
+    public Task<UserDeleteResponse> ValidateAsync()
     {
-        public int UserId { get; set; }
-
-        public Task<UserDeleteResponse> ValidateAsync()
-        {
-            UserDeleteResponse response = new UserDeleteResponse();
-            if (string.IsNullOrEmpty(this.UserId.ToString()))
+        var response = new UserDeleteResponse();
+        if (string.IsNullOrEmpty(UserId.ToString()))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "UserId",
-                    Detail = "UserId is not null or empty!"
-                });
-            }
+                Field = "UserId",
+                Detail = "UserId is not null or empty!"
+            });
 
-            if (!Int32.TryParse(this.UserId.ToString(), out var _))
+        if (!int.TryParse(UserId.ToString(), out _))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "UserId",
-                    Detail = "UserId must be an integer!"
-                });
-            }
+                Field = "UserId",
+                Detail = "UserId must be an integer!"
+            });
 
-            if (this.UserId <= 0)
+        if (UserId <= 0)
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "UserId",
-                    Detail = "UserId must be larger than 0!"
-                });
-            }
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
-            return Task.FromResult(response);
-        }
+                Field = "UserId",
+                Detail = "UserId must be larger than 0!"
+            });
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        return Task.FromResult(response);
     }
 }

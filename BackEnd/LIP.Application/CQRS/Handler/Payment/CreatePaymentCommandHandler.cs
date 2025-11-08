@@ -18,7 +18,9 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
     private readonly ITemplateRepository _templateRepository;
     private readonly IUserRepository _userRepository;
 
-    public CreatePaymentCommandHandler(IMomoService momoService, IPaymentRepository paymentRepository, ITemplatebookingRepository templatebookingRepository, ITemplateRepository templateRepository, IUserRepository userRepository)
+    public CreatePaymentCommandHandler(IMomoService momoService, IPaymentRepository paymentRepository,
+        ITemplatebookingRepository templatebookingRepository, ITemplateRepository templateRepository,
+        IUserRepository userRepository)
     {
         _momoService = momoService;
         _paymentRepository = paymentRepository;
@@ -31,23 +33,21 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
     {
         var template = await _templateRepository.GetAsync(new TemplateGetQuery { TemplateId = request.TemplateId });
         var user = await _userRepository.GetAsync(new UserGetQuery { UserId = request.UserId });
-        
-        if(template == null || user == null)
-        {
+
+        if (template == null || user == null)
             return new PaymentCreateResponse
             {
                 IsSuccess = false,
                 Message = "Template or User not found"
             };
-        }
-        
+
         // Add templateOrder to database with status "Pending"
         var resultTemplateBooking = await _templatebookingRepository.CreateAsync(new TemplatebookingCreateCommand
         {
             TemplateId = request.TemplateId,
             UserId = request.UserId
         });
-        var resultPayment = await _paymentRepository.CreatePayment( new Domain.Entities.Payment
+        var resultPayment = await _paymentRepository.CreatePayment(new Domain.Entities.Payment
         {
             UserId = request.UserId,
             Amount = (decimal?)template.Price,
@@ -63,7 +63,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             TemplateOrderId = resultTemplateBooking.BookingId,
             OrderId = DateTime.Now.Ticks.ToString()
         }, request.HttpContext);
-        
+
         var response = new PaymentCreateResponse
         {
             IsSuccess = true,

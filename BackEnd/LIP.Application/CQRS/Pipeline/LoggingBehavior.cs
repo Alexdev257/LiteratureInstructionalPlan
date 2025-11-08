@@ -1,4 +1,3 @@
-using System;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +13,8 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         _logger = logger;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Handling {typeof(TRequest).Name}");
         var response = await next();

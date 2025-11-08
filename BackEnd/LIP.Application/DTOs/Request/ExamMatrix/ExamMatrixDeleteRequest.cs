@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Request.ExamMatrix;
 
-namespace LIP.Application.DTOs.Request.ExamMatrix
+public class ExamMatrixDeleteRequest
 {
-    public class ExamMatrixDeleteRequest
-    {
-        public int MatrixId { get; set; }
-    }
+    public int MatrixId { get; set; }
 }

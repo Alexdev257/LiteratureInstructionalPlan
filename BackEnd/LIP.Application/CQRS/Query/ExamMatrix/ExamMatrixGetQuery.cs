@@ -1,49 +1,37 @@
-﻿using LIP.Application.DTOs.Response.ExamMatrix;
-    using LIP.Application.DTOs.Response;
+﻿using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Validation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Query.ExamMatrix
+namespace LIP.Application.CQRS.Query.ExamMatrix;
+
+public class ExamMatrixGetQuery : IRequest<ExamMatrixGetResponse>, IValidatable<ExamMatrixGetResponse>
 {
-    public class ExamMatrixGetQuery : IRequest<ExamMatrixGetResponse>, IValidatable<ExamMatrixGetResponse>
-    {
-        public int MatrixId { get; set; }
-        public bool? IsAdmin { get; set; } = false;
+    public int MatrixId { get; set; }
+    public bool? IsAdmin { get; set; } = false;
 
-        public Task<ExamMatrixGetResponse> ValidateAsync()
-        {
-            ExamMatrixGetResponse response = new ExamMatrixGetResponse();
-            if (string.IsNullOrEmpty(this.MatrixId.ToString()))
+    public Task<ExamMatrixGetResponse> ValidateAsync()
+    {
+        var response = new ExamMatrixGetResponse();
+        if (string.IsNullOrEmpty(MatrixId.ToString()))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId is not null or empty!"
-                });
-            }
-            if (!Int32.TryParse(this.MatrixId.ToString(),out var _))
+                Field = "MatrixId",
+                Detail = "MatrixId is not null or empty!"
+            });
+        if (!int.TryParse(MatrixId.ToString(), out _))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId must be an Integer!"
-                });
-            }
-            if (this.MatrixId <= 0)
+                Field = "MatrixId",
+                Detail = "MatrixId must be an Integer!"
+            });
+        if (MatrixId <= 0)
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId must larger than 0!"
-                });
-            }
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
-            return Task.FromResult(response);
-        }
+                Field = "MatrixId",
+                Detail = "MatrixId must larger than 0!"
+            });
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        return Task.FromResult(response);
     }
 }

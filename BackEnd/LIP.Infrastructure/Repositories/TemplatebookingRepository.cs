@@ -44,12 +44,12 @@ public class TemplatebookingRepository : ITemplatebookingRepository
             TemplateId = command.TemplateId,
             UserId = command.UserId,
             Status = nameof(TemplateBookingEnum.Pending),
-            BookingDate = DateTime.Now,
+            BookingDate = DateTime.Now
         };
-        
+
         _context.TemplateOrders.Add(newTemplateOrder);
         var result = await _context.SaveChangesAsync();
-        
+
         return result > 0 ? newTemplateOrder : null!;
     }
 
@@ -63,5 +63,10 @@ public class TemplatebookingRepository : ITemplatebookingRepository
     public Task<bool> DeleteAsync(TemplatebookingDeleteCommand command)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<TemplateOrder>> GetByTemplateIdAsync(int templateId)
+    {
+        return await _context.TemplateOrders.Where(x => x.TemplateId == templateId && x.Status == nameof(TemplateBookingEnum.Success)).ToListAsync();
     }
 }

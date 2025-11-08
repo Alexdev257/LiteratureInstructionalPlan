@@ -5,9 +5,11 @@ using MediatR;
 
 namespace LIP.Application.CQRS.Query.Payment;
 
-public class GetPaymentByIdQuery : IRequest<CommonResponse<PaymentGetResponseDTO>>, IValidatable<CommonResponse<PaymentGetResponseDTO>>
+public class GetPaymentByIdQuery : IRequest<CommonResponse<PaymentGetResponseDTO>>,
+    IValidatable<CommonResponse<PaymentGetResponseDTO>>
 {
     public int PaymentId { get; set; }
+
     public Task<CommonResponse<PaymentGetResponseDTO>> ValidateAsync()
     {
         var response = new CommonResponse<PaymentGetResponseDTO>();

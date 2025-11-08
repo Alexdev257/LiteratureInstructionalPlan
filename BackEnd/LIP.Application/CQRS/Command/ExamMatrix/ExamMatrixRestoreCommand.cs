@@ -2,47 +2,35 @@
 using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Validation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LIP.Application.CQRS.Command.ExamMatrix
+namespace LIP.Application.CQRS.Command.ExamMatrix;
+
+public class ExamMatrixRestoreCommand : IRequest<ExamMatrixRestoreResponse>, IValidatable<ExamMatrixRestoreResponse>
 {
-    public class ExamMatrixRestoreCommand : IRequest<ExamMatrixRestoreResponse>, IValidatable<ExamMatrixRestoreResponse>
-    {
-        public int MatrixId { get; set; }
+    public int MatrixId { get; set; }
 
-        public Task<ExamMatrixRestoreResponse> ValidateAsync()
-        {
-            ExamMatrixRestoreResponse response = new ExamMatrixRestoreResponse();
-            if (string.IsNullOrEmpty(this.MatrixId.ToString()))
+    public Task<ExamMatrixRestoreResponse> ValidateAsync()
+    {
+        var response = new ExamMatrixRestoreResponse();
+        if (string.IsNullOrEmpty(MatrixId.ToString()))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId is not null or empty!",
-                });
-            }
-            if (!Int32.TryParse(this.MatrixId.ToString(), out var _))
+                Field = "MatrixId",
+                Detail = "MatrixId is not null or empty!"
+            });
+        if (!int.TryParse(MatrixId.ToString(), out _))
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId must be an Integer!",
-                });
-            }
-            if (this.MatrixId <= 0)
+                Field = "MatrixId",
+                Detail = "MatrixId must be an Integer!"
+            });
+        if (MatrixId <= 0)
+            response.ListErrors.Add(new Errors
             {
-                response.ListErrors.Add(new Errors
-                {
-                    Field = "MatrixId",
-                    Detail = "MatrixId must be larger than 0!",
-                });
-            }
-            if (response.ListErrors.Count > 0) response.IsSuccess = false;
-            return Task.FromResult(response);
-        }
+                Field = "MatrixId",
+                Detail = "MatrixId must be larger than 0!"
+            });
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        return Task.FromResult(response);
     }
 }

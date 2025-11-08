@@ -10,22 +10,24 @@ namespace LIP.Application.CQRS.Handler.Payment;
 
 public class CallbackPaymentCommandHandler : IRequestHandler<CallbackPaymentCommand, PaymentCallbackResponse>
 {
-    private readonly ITemplatebookingRepository _templatebookingRepository;
-    private readonly IPaymentRepository _paymentRepository;
     private readonly IMomoService _momoService;
+    private readonly IPaymentRepository _paymentRepository;
+    private readonly ITemplatebookingRepository _templatebookingRepository;
 
-    public CallbackPaymentCommandHandler(ITemplatebookingRepository templatebookingRepository, IPaymentRepository paymentRepository, IMomoService momoService)
+    public CallbackPaymentCommandHandler(ITemplatebookingRepository templatebookingRepository,
+        IPaymentRepository paymentRepository, IMomoService momoService)
     {
         _templatebookingRepository = templatebookingRepository;
         _paymentRepository = paymentRepository;
         _momoService = momoService;
     }
 
-    public async Task<PaymentCallbackResponse> Handle(CallbackPaymentCommand request, CancellationToken cancellationToken)
+    public async Task<PaymentCallbackResponse> Handle(CallbackPaymentCommand request,
+        CancellationToken cancellationToken)
     {
         var resultPayment = await _momoService.GetPaymentStatus(request.collection);
-        
-        if (resultPayment.Message.Equals(nameof(Domain.Enum.PaymentEnum.Success)))
+
+        if (resultPayment.Message.Equals(nameof(PaymentEnum.Success)))
         {
             var templateBooking = await _templatebookingRepository.GetAsync(new TemplatebookingGetQuery
             {
@@ -36,8 +38,8 @@ public class CallbackPaymentCommandHandler : IRequestHandler<CallbackPaymentComm
 
             var payment = await _paymentRepository.GetPaymentIdAsync(resultPayment.PaymentId);
             payment!.Status = nameof(PaymentEnum.Success);
-            var updatedPayment =  await _paymentRepository.UpdatePayment(payment);
-            
+            var updatedPayment = await _paymentRepository.UpdatePayment(payment);
+
             return new PaymentCallbackResponse
             {
                 IsSuccess = true,
@@ -55,8 +57,8 @@ public class CallbackPaymentCommandHandler : IRequestHandler<CallbackPaymentComm
 
             var payment = await _paymentRepository.GetPaymentIdAsync(resultPayment.PaymentId);
             payment!.Status = nameof(PaymentEnum.Failed);
-            var updatedPayment =  await _paymentRepository.UpdatePayment(payment);
-            
+            var updatedPayment = await _paymentRepository.UpdatePayment(payment);
+
             return new PaymentCallbackResponse
             {
                 IsSuccess = false,

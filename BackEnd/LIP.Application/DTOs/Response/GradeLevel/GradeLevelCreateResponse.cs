@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Response.GradeLevel;
 
-namespace LIP.Application.DTOs.Response.GradeLevel
+public class GradeLevelCreateResponse : CommonResponse<GradeLevelCreateResponseDTO>
 {
-    public class GradeLevelCreateResponse : CommonResponse<GradeLevelCreateResponseDTO> { }
+}
 
-    public class GradeLevelCreateResponseDTO
-    { 
-    }
+public class GradeLevelCreateResponseDTO
+{
 }

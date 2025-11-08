@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LIP.Application.DTOs.Response.User;
 
-namespace LIP.Application.DTOs.Response.User
+public class UserCreateResponse : CommonResponse<UserCreateResponseDTO>
 {
-    public class UserCreateResponse : CommonResponse<UserCreateResponseDTO> { }
+}
 
-    public class UserCreateResponseDTO
-    {
-    }
+public class UserCreateResponseDTO
+{
 }

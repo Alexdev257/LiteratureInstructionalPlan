@@ -1,10 +1,7 @@
-using System;
-
 namespace LIP.Application.DTOs.Response.Role;
 
 public class RoleGetResponse : CommonResponse<RoleGetResponseDTO>
 {
-
 }
 
 public class RoleGetResponseDTO

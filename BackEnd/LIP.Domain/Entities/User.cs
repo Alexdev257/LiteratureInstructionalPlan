@@ -2,13 +2,9 @@
 
 namespace LIP.Domain.Entities;
 
-public partial class User
+public class User
 {
-    [Key]
-    public int UserId
-    {
-        get; set;
-    }
+    [Key] public int UserId { get; set; }
 
     public string UserName { get; set; } = null!;
 
@@ -18,25 +14,13 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public int? RoleId
-    {
-        get; set;
-    }
+    public int? RoleId { get; set; }
 
-    public DateTime? CreatedAt
-    {
-        get; set;
-    }
+    public DateTime? CreatedAt { get; set; }
 
-    public bool IsDeleted
-    {
-        get; set;
-    }
+    public bool IsDeleted { get; set; }
 
-    public DateTime DeletedAt
-    {
-        get; set;
-    }
+    public DateTime DeletedAt { get; set; }
 
     public virtual ICollection<ExamAttempt> Examattempts { get; set; } = new List<ExamAttempt>();
 
@@ -48,10 +32,7 @@ public partial class User
 
     public virtual ICollection<PracticeQuestion> Practicequestions { get; set; } = new List<PracticeQuestion>();
 
-    public virtual Role? Role
-    {
-        get; set;
-    }
+    public virtual Role? Role { get; set; }
 
     public virtual ICollection<TemplateOrder> Templatebookings { get; set; } = new List<TemplateOrder>();
 
