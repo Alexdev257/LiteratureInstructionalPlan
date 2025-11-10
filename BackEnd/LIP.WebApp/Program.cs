@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Vaccine Tracking API",
+        Title = "Literature Instructional Plan API",
         Version = "v1"
     });
     // Thêm tùy chọn nhập Bearer Token vào Swagger UI
