@@ -21,7 +21,7 @@ export function TeacherLayout() {
     {
       title: 'Ma trận',
       icon: BookOpen,
-      href: '/teacher/matrices',
+      href: '/teacher/matrix',
     },
     {
       title: 'Đề thi',

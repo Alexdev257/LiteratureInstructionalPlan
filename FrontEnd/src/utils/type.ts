@@ -49,9 +49,9 @@ export type GetUserById = {
     fullName: string;
     email: string;
     roleId: number;
-    createdAt: string; 
+    createdAt: string;
     isDeleted: boolean;
-    deletedAt: string; 
+    deletedAt: string;
 
 }
 
@@ -99,16 +99,17 @@ export type Matrix = {
     createdAt: string;
     status: string;
     notes?: string;
+    totalQuestions: number;
+    totalPoint: number;
     details: MatrixDetail[];
-    totalQuestions?: number;
-    totalPoints?: number;
+
 
 }
 export type MatrixDetail = {
     examMatrixDetailId: number;
     lessonName: string;
-    questionType: "1" | "2" | "3";   // 1: Multiple choice, 2: Single choice, 3: Text
-    difficulty: "1" | "2" | "3" | "4"; // 1: Easy, 2: Medium, 3: Hard, 4: Very hard
+    questionType: "1" | "2" | "3";
+    difficulty: "1" | "2" | "3" | "4";
     quantity: number;
     scorePerQuestion: number;
 }
@@ -128,13 +129,23 @@ export type Question = {
 }
 
 export type Template = {
-    id: number;
+    templateId: number;
     title: string;
     filePath: string;
     viewPath: string;
-    gradeLevelId: number;
     price: number;
-    createdBy: number
+    gradeLevel: {
+        gradeLevelId: number;
+        name: string;
+    };
+    createdBy: {
+        UserId: string;
+        FullName: string;
+        Email: string;
+    };
+    totalDownload: number;
+    isDeleted: boolean;
+    createdAt: Date;
 }
 
 export type ExamFilters = {
@@ -214,7 +225,7 @@ export type QuestionFilters = {
     creator?: string;
 };
 
-// Dùng cho modal "Tạo câu hỏi" sau này
+
 export type CreateQuestionInput = {
     questionText: string;
     grade: string;
@@ -236,6 +247,7 @@ export type PaginationResponse<T> = {
 export type BaseFilterPagination = {
     PageNumber?: number;
     PageSize?: number;
+    search?: string
 }
 export type ExamTypeQuery = BaseFilterPagination & {
     Name?: string;
@@ -252,6 +264,10 @@ export type ExamQuery = BaseFilterPagination & {
 
 export type MatrixQuery = BaseFilterPagination & {
     GradeLevelId?: number;
-    CreatedByUserId?: number;
-    IsAdmin?: boolean;
+    status?: string
+}
+
+export type TemplateQuery = BaseFilterPagination & {
+    GradeLevelId?: number;
+    isDeleted?: boolean
 }

@@ -1,4 +1,4 @@
-// --- File: src/routes/index.tsx ---
+
 
 import { createRouter } from "@tanstack/react-router";
 import { Route as rootRoute } from "./_root";
@@ -17,18 +17,16 @@ import { Route as dashboardUsersRoute } from "./dashboard/users";
 import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
 import { Route as teacherLayoutRoute } from "./teacher/_layout";
 import { Route as templateRouteByTeacher } from "./teacher/template";
-
-// Matrix routes
 import { Route as matrixLayoutRoute } from "./teacher/matrix/_layout";
-import { Route as matrixIndexRoute } from "./teacher/matrix/index";
-import { Route as matrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
 import { Route as matrixCreateIndexRoute } from "./teacher/matrix/create/index";
-
-// User Profile routes
+import { Route as editMatrixRoute } from "./teacher/matrix/[id]/edit/index";
 import { Route as userProfileLayoutRoute } from "./userProfile/_layout";
 import { Route as userProfileRoute } from "./userProfile/[id]/index";
-
-
+import { Route as matrixDetailLayoutRoute } from "./teacher/matrix/[id]/_layout";
+import { Route as matrixIndexRoute } from "./teacher/matrix/index";
+import { Route as matrixDetailRoute } from "./teacher/matrix/[id]/index";
+import { Route as matrixEditRoute } from "./teacher/matrix/[id]/edit/_layout";
+import { Route as matrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
 
 const routeTree = rootRoute.addChildren([
     homeRoute,
@@ -54,7 +52,13 @@ const routeTree = rootRoute.addChildren([
             matrixCreateLayoutRoute.addChildren([
                 matrixCreateIndexRoute,
             ]),
-        ]),
+            matrixDetailLayoutRoute.addChildren([
+                matrixDetailRoute,
+                matrixEditRoute.addChildren([
+                    editMatrixRoute,
+                ])
+            ])
+        ])
     ]),
 
     userProfileLayoutRoute.addChildren([

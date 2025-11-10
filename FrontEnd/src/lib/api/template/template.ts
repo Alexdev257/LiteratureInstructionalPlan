@@ -1,9 +1,13 @@
 import type { TemplateInput } from "@/schema/templateSchema";
 import { BaseApi } from "../baseFetch"
 import { TEMPLATE_ENDPOINT } from "../endpoint";
-import type { ResponseData, Template } from "@/utils/type";
+import type { PaginationResponse, ResponseData, Template, TemplateQuery } from "@/utils/type";
 
 class TemplateApi extends BaseApi  {
+     async getTemplates(params?:TemplateQuery) : Promise<ResponseData<PaginationResponse<Template>>> {
+          const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATES, params);
+          return this.getData<PaginationResponse<Template>>(url);
+     }
      async createTemplate(data: TemplateInput) : Promise<ResponseData<Template>> {
           const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATES);
           
@@ -26,6 +30,10 @@ class TemplateApi extends BaseApi  {
      async deleteTemplate(id:number) : Promise<ResponseData<null>> {
           const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATE_BY_ID(id));
           return this.deleteData<null>(url);
+     }
+     async getTemplateById(id:number) : Promise<ResponseData<Template>> {
+          const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATE_BY_ID(id));
+          return this.getData<Template>(url);
      }
 }
 

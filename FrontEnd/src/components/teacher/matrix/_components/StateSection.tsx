@@ -1,9 +1,9 @@
 import { BaseStats } from "@/components/layout/base/stats";
-import { useTemplateStats } from "@/hooks/stats/template";
+import { useMatrixStats } from "@/hooks/stats/matrix";
 
 
 export default function StateSection() {
-  const { stats, isLoading } = useTemplateStats();
+  const { stats, isLoading } = useMatrixStats();
 
   return (
     <BaseStats 

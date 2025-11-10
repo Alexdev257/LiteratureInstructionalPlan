@@ -48,6 +48,9 @@ export const MATRIX_ENDPOINT = {
     GET_MATRICES: "ExamMatrix/get-all",
     GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`,
     CREATE_MATRIX: "ExamMatrix/create-matrix",
+    DELETE_MATRIX: (id: number) => `ExamMatrix/delete-matrix/${id}`,
+    UPDATE_MATRIX: (id: number) => `ExamMatrix/update-matrix/${id}`,
+    RESTORE_MATRIX: (id: number) => `ExamMatrix/restore-matrix/${id}`,
 }
 
 export const USER_ENDPOINT = {
