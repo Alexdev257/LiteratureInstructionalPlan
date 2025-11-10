@@ -30,16 +30,32 @@ public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserC
         request.CreatedAt = DateTime.UtcNow;
         var rs = await _userRepository.CreateAsync(request);
         if (rs)
+        {
+            var curUserList = await _userRepository.GetAllAsync(new UserGetAllQuery { });
+            var curUser = curUserList.OrderByDescending(u => u.UserId).FirstOrDefault();
+            var dto = new UserCreateResponseDTO
+            {
+                UserId = curUser.UserId,
+                UserName = curUser.UserName,
+                FullName = curUser.FullName,
+                Email = curUser.Email,
+                RoleId = curUser.RoleId,
+                CreatedAt = curUser.CreatedAt,
+            };
             return new UserCreateResponse
             {
                 IsSuccess = true,
+                Data = dto,
                 Message = "Create User successfully!"
             };
-
-        return new UserCreateResponse
+        }
+        else
         {
-            IsSuccess = false,
-            Message = "Create User failed"
-        };
+            return new UserCreateResponse
+            {
+                IsSuccess = false,
+                Message = "Create User failed"
+            };
+        }
     }
 }

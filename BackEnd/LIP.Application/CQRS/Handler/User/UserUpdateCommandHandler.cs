@@ -45,16 +45,31 @@ public class UserUpdateCommandHandler : IRequestHandler<UserUpdateCommand, UserU
             };
         var rs = await _userRepository.UpdateAsync(request);
         if (rs)
+        {
+            var curUser = await _userRepository.GetAsync(new UserGetQuery { UserId = request.UserId });
+            var dto = new UserUpdateResponseDTO
+            {
+                UserId = curUser.UserId,
+                UserName = curUser.UserName,
+                FullName = curUser.FullName,
+                Email = curUser.Email,
+                RoleId = curUser.RoleId,
+                CreatedAt = curUser.CreatedAt,
+            };
             return new UserUpdateResponse
             {
                 IsSuccess = true,
+                Data = dto,
                 Message = "Update User successfully!"
             };
-
-        return new UserUpdateResponse
+        }
+        else
         {
-            IsSuccess = false,
-            Message = "Update User failed!"
-        };
+            return new UserUpdateResponse
+            {
+                IsSuccess = false,
+                Message = "Update User failed!"
+            };
+        }
     }
 }

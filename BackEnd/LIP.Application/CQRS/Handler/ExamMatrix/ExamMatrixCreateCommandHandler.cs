@@ -1,4 +1,5 @@
 ﻿using LIP.Application.CQRS.Command.ExamMatrix;
+using LIP.Application.CQRS.Query.User;
 using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -22,16 +23,52 @@ public class ExamMatrixCreateCommandHandler : IRequestHandler<ExamMatrixCreateCo
     {
         var rs = await _examMatrixRepository.CreateAsync(request);
         if (rs)
+        {
+            var curMatrixList = await _examMatrixRepository.GetAllAsync(new Query.ExamMatrix.ExamMatrixGetAllQuery { });
+            var curMatrix = curMatrixList.OrderByDescending(u => u.MatrixId).FirstOrDefault();
+            int totalQuestions = 0;
+            decimal totalPoint = 0;
+            foreach(var detail in curMatrix.Exammatrixdetails)
+            {
+                totalQuestions += detail.Quantity!.Value;
+                totalPoint += detail.ScorePerQuestion!.Value * (decimal)detail.Quantity!.Value;
+            }
+            var dto = new ExamMatrixCreateResponseDTO
+            {
+                MatrixId = curMatrix.MatrixId,
+                Title = curMatrix.Title,
+                Description = curMatrix.Description,
+                GradeLevelId = curMatrix.GradeLevelId,
+                CreatedByUserId = curMatrix.CreatedByNavigationUserId,
+                CreatedAt = curMatrix.CreatedAt,
+                Status = curMatrix.Status,
+                Notes = curMatrix.Notes,
+                TotalQuestions = totalQuestions,
+                TotalPoint = totalPoint,
+                Details = curMatrix.Exammatrixdetails.Select(d => new ExamMatrixDetailResponseDTO
+                {
+                    ExamMatrixDetailId = d.ExamMatrixDetailId,
+                    LessonName = d.LessonName,
+                    QuestionType = d.QuestionType,
+                    Difficulty = d.Difficulty,
+                    Quantity = d.Quantity,
+                    ScorePerQuestion = d.ScorePerQuestion,
+                }).ToList(),
+            };
             return new ExamMatrixCreateResponse
             {
                 IsSuccess = true,
+                Data = dto,
                 Message = "Create Exam Matrix successfully!"
             };
-
-        return new ExamMatrixCreateResponse
+        }
+        else
         {
-            IsSuccess = false,
-            Message = "Create Exam Matrix failed!"
-        };
+            return new ExamMatrixCreateResponse
+            {
+                IsSuccess = false,
+                Message = "Create Exam Matrix failed!"
+            };
+        }        
     }
 }

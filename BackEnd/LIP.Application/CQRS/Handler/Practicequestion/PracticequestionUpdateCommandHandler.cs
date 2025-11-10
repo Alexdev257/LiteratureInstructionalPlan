@@ -2,9 +2,11 @@ using LIP.Application.CQRS.Command.Practicequestion;
 using LIP.Application.CQRS.Query.Gradelevel;
 using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.CQRS.Query.User;
+using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
+using System.Text.Json;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion;
 
@@ -56,21 +58,38 @@ public class
         request.CreatedAt = question.CreatedAt; // keep the old created at
         var rs = await _practicequestionRepository.UpdateAsync(request);
         if (rs)
+        {
+            var curQuestion = await _practicequestionRepository.GetAsync(new Query.Practicequestion.PracticequestionGetQuery { QuestionId = request.QuestionId});
+            var dto = new PracticeQuestionUpdateResponseDTO
+            {
+                QuestionId = curQuestion.QuestionId,
+                Content = curQuestion.Content,
+                QuestionType = curQuestion.QuestionType,
+                Difficulty = curQuestion.Difficulty,
+                Answer = string.IsNullOrEmpty(curQuestion.Answer)
+                            ? new List<AnswerOption>()
+                            : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.Answer),
+                CorrectAnswer = string.IsNullOrEmpty(curQuestion.CorrectAnswer)
+                                    ? new List<AnswerOption>()
+                                    : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.CorrectAnswer),
+                GradeLevelId = curQuestion.GradeLevelId,
+                CreatedByNavigationUserId = curQuestion.CreatedByNavigationUserId,
+                CreatedAt = curQuestion.CreatedAt,
+            };
             return new PracticeQuestionUpdateResponse
             {
                 IsSuccess = true,
+                Data = dto,
                 Message = "Update Practice Question successfully!"
             };
-
-        return new PracticeQuestionUpdateResponse
+        }
+        else
         {
-            IsSuccess = false,
-            Message = "Update Practice Question failed"
-        };
+            return new PracticeQuestionUpdateResponse
+            {
+                IsSuccess = false,
+                Message = "Update Practice Question failed"
+            };
+        }   
     }
-
-    //public async Task<bool> Handle(PracticequestionUpdateCommand request, CancellationToken cancellationToken)
-    //{
-    //    return await _practicequestionRepository.UpdateAsync(request);
-    //}
 }

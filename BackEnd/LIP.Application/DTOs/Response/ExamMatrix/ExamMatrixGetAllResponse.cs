@@ -14,6 +14,8 @@ public class ExamMatrixGetAllResponseDTO
     public DateTime? CreatedAt { get; set; }
     public string? Status { get; set; }
     public string? Notes { get; set; }
+    public int TotalQuestions { get; set; }
+    public decimal TotalPoint { get; set; }
     public List<ExamMatrixDetailResponseDTO> Details { get; set; }
 }
 

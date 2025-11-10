@@ -26,12 +26,12 @@ public class
             QuestionType = request.QuestionType, GradeLevelId = request.GradeLevelId,
             CreatedBy = request.CreatedByUserId, IsAdmin = request.IsAdmin
         });
-        if (rs == null)
-            return new GetAllPracticeQuestionResponse
-            {
-                IsSuccess = false,
-                Message = "No Questions in system!"
-            };
+        //if (rs == null)
+        //    return new GetAllPracticeQuestionResponse
+        //    {
+        //        IsSuccess = false,
+        //        Message = "No Questions in system!"
+        //    };
         var dataList = rs.Select(r => new GetAllPracticeQuestionResponseDTO
         {
             QuestionId = r.QuestionId,
@@ -57,7 +57,7 @@ public class
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllPracticeQuestionResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All Question successfully!"
