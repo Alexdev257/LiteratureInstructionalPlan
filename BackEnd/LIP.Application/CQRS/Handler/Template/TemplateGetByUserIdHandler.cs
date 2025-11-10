@@ -46,7 +46,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
 
         var response = new TemplateGetResponse
         {
-            Data = new List<TemplateGetDTO>()
+            Data = new DTOs.Response.PaginationResponse<TemplateGetDTO>()
         };
 
         var tasks = bookedTemplates.Select(async x =>
@@ -103,8 +103,8 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
             };
         });
         
-        response.Data = (await Task.WhenAll(tasks)).ToList();
-        response.Data.AddRange((await Task.WhenAll(tasks2)).ToList());
+        response.Data.Items = (await Task.WhenAll(tasks)).ToList();
+        response.Data.Items.AddRange((await Task.WhenAll(tasks2)).ToList());
 
         response.IsSuccess = true;
         response.Message = "Get templates by user id success";
