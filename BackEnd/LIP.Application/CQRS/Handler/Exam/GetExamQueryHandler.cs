@@ -2,6 +2,7 @@
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.Exam;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -33,10 +34,26 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
             Title = exam.Title,
             Description = exam.Description,
             DurationMinutes = exam.DurationMinutes!.Value,
-            GradeLevelId = exam.GradeLevelId!.Value,
-            ExamTypeId = exam.ExamTypeId!.Value,
+            //GradeLevelId = exam.GradeLevelId!.Value,
+            //ExamTypeId = exam.ExamTypeId!.Value,
+            GradeLevel = exam.GradeLevel != null ? new GradeLevelDTO
+            {
+                Id = exam.GradeLevel.GradeLevelId,
+                Name = exam.GradeLevel.Name
+            } : null!,
+            ExamType = exam.ExamType != null ? new ExamTypeDTO
+            {
+                Id = exam.ExamType.ExamTypeId,
+                Name = exam.ExamType.Name,
+            } : null!,
             MatrixId = exam.MatrixId!.Value,
-            CreateByUserId = exam.CreatedByNavigationUserId!.Value,
+            //CreateByUserId = exam.CreatedByNavigationUserId!.Value,
+            CreatedBy = exam.CreatedByNavigation != null ? new CreatedByDTO
+            {
+                Id = exam.CreatedByNavigation.UserId,
+                UserName = exam.CreatedByNavigation.UserName,
+                Email = exam.CreatedByNavigation.Email,
+            } : null!,
             CreatedAt = exam.CreatedAt!.Value,
             Questions = exam.Questions.Select(q => new QuestionDTO
             {

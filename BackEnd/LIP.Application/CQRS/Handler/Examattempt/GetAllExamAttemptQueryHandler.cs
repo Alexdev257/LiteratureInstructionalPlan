@@ -39,6 +39,9 @@ public class GetAllExamAttemptQueryHandler : IRequestHandler<GetAllExamAttemptQu
             Feedback = a.Feedback,
             LastSavedAt = a.LastSavedAt
         }).ToList();
+
+        dataList = dataList.OrderByDescending(a => a.LastSavedAt).ToList();
+
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllExamAttemptResponse
         {

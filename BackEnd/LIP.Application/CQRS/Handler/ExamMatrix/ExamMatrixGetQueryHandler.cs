@@ -1,5 +1,6 @@
 ﻿using LIP.Application.CQRS.Query.ExamMatrix;
 using LIP.Application.DTOs.Response.ExamMatrix;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -36,8 +37,17 @@ public class ExamMatrixGetQueryHandler : IRequestHandler<ExamMatrixGetQuery, Exa
             MatrixId = rs.MatrixId,
             Title = rs.Title,
             Description = rs.Description,
-            GradeLevelId = rs.GradeLevelId,
-            CreatedByUserId = rs.CreatedByNavigationUserId,
+            GradeLevel = rs.GradeLevel != null ? new GradeLevelDTO
+            {
+                Id = rs.GradeLevel.GradeLevelId,
+                Name = rs.GradeLevel.Name
+            } : null!,
+            CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
+            {
+                Id = rs.CreatedByNavigation.UserId,
+                UserName = rs.CreatedByNavigation.UserName,
+                Email = rs.CreatedByNavigation.Email
+            } : null!,
             CreatedAt = rs.CreatedAt,
             Status = rs.Status,
             Notes = rs.Notes,

@@ -25,14 +25,19 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
     {
         var result = await _templateRepository.GetAllAsync(request);
 
-        var tasks = result.Select(async x =>
+        var dtoList = new List<TemplateGetDTO>();
+
+        foreach (var x in result)
         {
-            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();
+            var bookings = await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId);
+            var saledCount = bookings.Count();
+
             var user = await _userRepository.GetAsync(new UserGetQuery
             {
                 UserId = x.CreatedBy!.Value
             });
-            return new TemplateGetDTO
+
+            dtoList.Add(new TemplateGetDTO
             {
                 FilePath = x.FilePath!,
                 Title = x.Title!,
@@ -52,10 +57,11 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
                 Price = x.Price,
                 TemplateId = x.TemplateId,
                 TotalDownload = saledCount
-            };
-        });
+            });
+        }
 
-        var dtoList = (await Task.WhenAll(tasks)).ToList();
+        dtoList = dtoList.OrderByDescending(d => d.CreatedAt.Value).ToList();
+
         var paged = dtoList.ToPagedListAsync(request.PageNumber, request.PageSize);
 
         return new TemplateGetResponse
@@ -65,4 +71,5 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
             Data = paged
         };
     }
+
 }

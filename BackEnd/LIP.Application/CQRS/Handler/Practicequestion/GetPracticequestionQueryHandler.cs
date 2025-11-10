@@ -2,6 +2,7 @@
 using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -45,8 +46,17 @@ public class GetPracticequestionQueryHandler : IRequestHandler<GetPracticequesti
                 : string.IsNullOrEmpty(rs.CorrectAnswer)
                     ? new List<AnswerOption>()
                     : JsonSerializer.Deserialize<List<AnswerOption>>(rs.CorrectAnswer),
-            GradeLevelId = rs.GradeLevelId,
-            CreatedByNavigationUserId = rs.CreatedByNavigationUserId,
+            GradeLevel = rs.GradeLevel != null ? new GradeLevelDTO
+            {
+                Id = rs.GradeLevel.GradeLevelId,
+                Name = rs.GradeLevel.Name
+            } : null!,
+            CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
+            {
+                Id = rs.CreatedByNavigation.UserId,
+                UserName = rs.CreatedByNavigation.UserName,
+                Email = rs.CreatedByNavigation.Email
+            } : null!,
             CreatedAt = rs.CreatedAt
         };
         return new GetPracticequestionResponse

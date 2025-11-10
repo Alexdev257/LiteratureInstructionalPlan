@@ -1,6 +1,7 @@
 ﻿using LIP.Application.CQRS.Query.ExamMatrix;
 using LIP.Application.DTOs;
 using LIP.Application.DTOs.Response.ExamMatrix;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -52,8 +53,19 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
                 MatrixId = m.MatrixId,
                 Title = m.Title,
                 Description = m.Description,
-                GradeLevelId = m.GradeLevelId,
-                CreatedByUserId = m.CreatedByNavigationUserId,
+                //GradeLevelId = m.GradeLevelId,
+                //CreatedByUserId = m.CreatedByNavigationUserId,
+                GradeLevel = m.GradeLevel != null ? new GradeLevelDTO
+                {
+                    Id = m.GradeLevel.GradeLevelId,
+                    Name = m.GradeLevel.Name
+                } : null!,
+                CreatedBy = m.CreatedByNavigation != null ? new CreatedByDTO
+                {
+                    Id = m.CreatedByNavigation.UserId,
+                    UserName = m.CreatedByNavigation.UserName,
+                    Email = m.CreatedByNavigation.Email
+                } : null!,
                 CreatedAt = m.CreatedAt,
                 Status = m.Status,
                 Notes = m.Notes,
@@ -70,6 +82,8 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
                 }).ToList() ?? new List<ExamMatrixDetailResponseDTO>()
             };
         }).ToList();
+
+        dataList = dataList.OrderByDescending(d => d.CreatedAt).ToList();
 
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new ExamMatrixGetAllResponse
