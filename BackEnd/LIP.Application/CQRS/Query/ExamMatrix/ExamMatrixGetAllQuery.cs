@@ -11,6 +11,7 @@ public class ExamMatrixGetAllQuery : PaginationRequest, IRequest<ExamMatrixGetAl
 {
     public int? GradeLevelId { get; set; }
     public int? CreatedByUserId { get; set; }
+    public string? Search { get; set; }
     public bool? IsAdmin { get; set; } = false;
 
     public Task<ExamMatrixGetAllResponse> ValidateAsync()

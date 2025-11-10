@@ -36,6 +36,11 @@ public class TemplateRepository : ITemplateRepository
             .Where(t => !t.IsDeleted)
             .AsQueryable();
 
+        if (!string.IsNullOrEmpty(query.Search))
+        {
+            templates = templates.Where(t => t.Title.ToLower().Contains(query.Search.ToLower()));
+        }
+
         return await templates.ToListAsync();
     }
 
