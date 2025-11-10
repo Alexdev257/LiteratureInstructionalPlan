@@ -48,7 +48,7 @@ public class GetAllUserQueryHandler : IRequestHandler<GetAllUserQuery, GetAllUse
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllUserResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All Users successfully!"

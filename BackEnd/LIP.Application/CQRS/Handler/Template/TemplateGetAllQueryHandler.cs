@@ -1,5 +1,6 @@
 using LIP.Application.CQRS.Query.Template;
 using LIP.Application.CQRS.Query.User;
+using LIP.Application.DTOs;
 using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -54,13 +55,14 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
             };
         });
 
-        var data = (await Task.WhenAll(tasks)).ToList();
+        var dtoList = (await Task.WhenAll(tasks)).ToList();
+        var paged = dtoList.ToPagedListAsync(request.PageNumber, request.PageSize);
 
         return new TemplateGetResponse
         {
             IsSuccess = true,
             Message = "Get all templates success",
-            Data = data
+            Data = paged
         };
     }
 }

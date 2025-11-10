@@ -24,12 +24,12 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             GradeLevelId = request.GradeLevelId, ExamTypeId = request.ExamTypeId, CreatedBy = request.CreatedBy,
             IsAdmin = request.IsAdmin
         });
-        if (exams == null || !exams.Any())
-            return new GetAllExamResponse
-            {
-                IsSuccess = false,
-                Message = "No exam in the system!"
-            };
+        //if (exams == null || !exams.Any())
+        //    return new GetAllExamResponse
+        //    {
+        //        IsSuccess = false,
+        //        Message = "No exam in the system!"
+        //    };
 
         var examDTO = exams.Select(e => new GetAllExamResponseDTO
         {
@@ -72,7 +72,7 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
         var paged = examDTO.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllExamResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All Exams successfully!"

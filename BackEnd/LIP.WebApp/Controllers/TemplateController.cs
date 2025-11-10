@@ -52,9 +52,9 @@ public class TemplateController : ControllerBase
     ///     Get all templates
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAllTemplates()
+    public async Task<IActionResult> GetAllTemplates([FromQuery] TemplateGetAllRequest request)
     {
-        var result = await _mediatoR.Send(new TemplateGetAllQuery());
+        var result = await _mediatoR.Send(new TemplateGetAllQuery{ PageSize = request.PageSize, PageNumber = request.PageNumber });
 
         return StatusCode(StatusCodes.Status200OK, result);
     }

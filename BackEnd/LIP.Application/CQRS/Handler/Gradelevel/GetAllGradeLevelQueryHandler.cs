@@ -46,7 +46,7 @@ public class GetAllGradeLevelQueryHandler : IRequestHandler<GetAllGradeLevelQuer
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllGradeLevelResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All Grade Level successfully!"

@@ -23,6 +23,13 @@ public class ExamMatrixGetQueryHandler : IRequestHandler<ExamMatrixGetQuery, Exa
                 IsSuccess = false,
                 Message = "Exam Matrix is not found"
             };
+        int totalQuestions = 0;
+        decimal totalPoint = 0;
+        foreach (var detail in rs.Exammatrixdetails)
+        {
+            totalQuestions += detail.Quantity!.Value;
+            totalPoint += detail.ScorePerQuestion!.Value * (decimal)detail.Quantity!.Value;
+        }
 
         var matrixDTO = new ExamMatrixGetResponseDTO
         {
@@ -34,6 +41,8 @@ public class ExamMatrixGetQueryHandler : IRequestHandler<ExamMatrixGetQuery, Exa
             CreatedAt = rs.CreatedAt,
             Status = rs.Status,
             Notes = rs.Notes,
+            TotalQuestions = totalQuestions,
+            TotalPoint = totalPoint,
             Details = rs.Exammatrixdetails.Select(d => new ExamMatrixDetailResponseDTO
             {
                 ExamMatrixDetailId = d.ExamMatrixDetailId,

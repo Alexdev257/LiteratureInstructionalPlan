@@ -44,7 +44,7 @@ public class GetAllExamTypeQueryHandler : IRequestHandler<GetAllExamTypeQuery, G
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllExamTypeResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All ExamTypes successfully!"

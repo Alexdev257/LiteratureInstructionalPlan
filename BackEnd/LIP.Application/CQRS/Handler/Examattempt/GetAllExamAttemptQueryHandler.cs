@@ -20,12 +20,12 @@ public class GetAllExamAttemptQueryHandler : IRequestHandler<GetAllExamAttemptQu
     {
         var attempts = await _examattemptRepository.GetAllAsync(new ExamattemptGetAllQuery
             { ExamId = request.ExamId, UserId = request.UserId, Status = request.Status, IsAdmin = request.IsAdmin });
-        if (attempts == null || !attempts.Any())
-            return new GetAllExamAttemptResponse
-            {
-                IsSuccess = false,
-                Message = "No Attempt in the system!"
-            };
+        //if (attempts == null || !attempts.Any())
+        //    return new GetAllExamAttemptResponse
+        //    {
+        //        IsSuccess = true,
+        //        Message = "No Attempt in the system!"
+        //    };
 
         var dataList = attempts.Select(a => new GetAllExamAttemptResponseDTO
         {
@@ -42,7 +42,7 @@ public class GetAllExamAttemptQueryHandler : IRequestHandler<GetAllExamAttemptQu
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllExamAttemptResponse
         {
-            IsSuccess = paged.Items.Any(),
+            IsSuccess = true,
             Data = paged,
             Message = paged.Items.Any()
                 ? "Get All Attempts successfully!"
