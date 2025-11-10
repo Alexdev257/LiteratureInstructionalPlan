@@ -6,4 +6,5 @@ namespace LIP.Application.CQRS.Query.Template;
 
 public class TemplateGetAllQuery : PaginationRequest, IRequest<TemplateGetResponse>
 {
+    public string? Search { get; set; }
 }

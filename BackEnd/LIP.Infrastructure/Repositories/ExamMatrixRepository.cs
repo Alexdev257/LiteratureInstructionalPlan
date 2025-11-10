@@ -47,6 +47,10 @@ public class ExamMatrixRepository : IExamMatrixRepository
 
         if (query.IsAdmin != true)
             matrixes = matrixes.Where(em => !em.IsDeleted);
+        if (!string.IsNullOrEmpty(query.Search))
+        {
+            matrixes = matrixes.Where(em => em.Title.ToLower().Contains(query.Search.ToLower()));
+        }
 
         if (query.CreatedByUserId.HasValue)
             matrixes = matrixes.Where(em => em.CreatedByNavigationUserId == query.CreatedByUserId);

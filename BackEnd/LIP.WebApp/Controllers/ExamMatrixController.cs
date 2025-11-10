@@ -25,6 +25,7 @@ public class ExamMatrixController : ControllerBase
         {
             CreatedByUserId = request.CreatedByUserId,
             GradeLevelId = request.GradeLevelId,
+            Search = request.Search,
             IsAdmin = request.IsAdmin,
             PageSize = request.PageSize,
             PageNumber = request.PageNumber
