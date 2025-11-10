@@ -3,6 +3,7 @@ using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.DTOs;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -49,10 +50,21 @@ public class
                 : string.IsNullOrWhiteSpace(r.CorrectAnswer)
                     ? new List<AnswerOption>()
                     : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer!),
-            GradeLevelId = r.GradeLevelId,
-            CreatedByNavigationUserId = r.CreatedByNavigationUserId,
+            GradeLevel = r.GradeLevel != null ? new GradeLevelDTO
+            {
+                Id = r.GradeLevel.GradeLevelId,
+                Name = r.GradeLevel.Name
+            } : null!,
+            CreatedBy = r.CreatedByNavigation != null ? new CreatedByDTO
+            {
+                Id = r.CreatedByNavigation.UserId,
+                UserName = r.CreatedByNavigation.UserName,
+                Email = r.CreatedByNavigation.Email
+            } : null!,
             CreatedAt = r.CreatedAt
         }).ToList();
+
+        dataList = dataList.OrderByDescending(d => d.CreatedAt.Value).ToList();
 
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllPracticeQuestionResponse

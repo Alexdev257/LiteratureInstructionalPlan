@@ -45,6 +45,8 @@ public class GetAllUserQueryHandler : IRequestHandler<GetAllUserQuery, GetAllUse
             RoleId = r.RoleId
         }).ToList();
 
+        dataList = dataList.OrderByDescending(d => d.CreatedAt.Value).ToList();
+
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllUserResponse
         {

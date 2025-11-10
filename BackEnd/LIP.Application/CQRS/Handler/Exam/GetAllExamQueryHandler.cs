@@ -3,6 +3,7 @@ using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.Exam;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -37,10 +38,26 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             Title = e.Title,
             Description = e.Description,
             DurationMinutes = e.DurationMinutes!.Value,
-            GradeLevelId = e.GradeLevelId!.Value,
-            ExamTypeId = e.ExamTypeId!.Value,
+            //GradeLevelId = e.GradeLevelId!.Value,
+            //ExamTypeId = e.ExamTypeId!.Value,
+            GradeLevel = e.GradeLevel != null ? new GradeLevelDTO
+            {
+                Id = e.GradeLevel.GradeLevelId,
+                Name = e.GradeLevel.Name
+            } : null!,
+            ExamType = e.ExamType != null ? new ExamTypeDTO
+            {
+                Id = e.ExamType.ExamTypeId,
+                Name = e.ExamType.Name,
+            } : null!,
             MatrixId = e.MatrixId!.Value,
-            CreateByUserId = e.CreatedByNavigationUserId!.Value,
+            //CreateByUserId = e.CreatedByNavigationUserId!.Value,
+            CreatedBy = e.CreatedByNavigation != null ? new CreatedByDTO
+            {
+                Id = e.CreatedByNavigation.UserId,
+                UserName = e.CreatedByNavigation.UserName,
+                Email = e.CreatedByNavigation.Email,
+            } : null!,
             CreatedAt = e.CreatedAt!.Value,
             Questions = e.Questions.Select(q => new QuestionDTO
             {
@@ -61,6 +78,8 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
                         : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer)
             }).ToList()
         }).ToList();
+
+        examDTO = examDTO.OrderByDescending(e => e.CreatedAt).ToList();
 
         //return new GetAllExamResponse
         //{
