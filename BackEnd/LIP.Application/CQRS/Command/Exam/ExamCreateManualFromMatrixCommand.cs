@@ -11,7 +11,7 @@ public class ExamCreateManualFromMatrixCommand : IRequest<ExamCreateManualFromMa
     public string? Title { get; set; }
     public string? Description { get; set; }
     public int DurationMinutes { get; set; }
-    public int GradeLevelId { get; set; }
+    //public int GradeLevelId { get; set; }
     public int ExamTypeId { get; set; }
 
     public int CreatedByNavigationUserId { get; set; }
@@ -57,24 +57,24 @@ public class ExamCreateManualFromMatrixCommand : IRequest<ExamCreateManualFromMa
                 Field = "DurationMinutes",
                 Detail = "DurationMinutes must be larger than 0!"
             });
-        if (string.IsNullOrEmpty(GradeLevelId.ToString()))
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId is not null or empty!"
-            });
-        if (!int.TryParse(GradeLevelId.ToString(), out _))
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId must be an Integer!"
-            });
-        if (GradeLevelId <= 0)
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId must be larger than 0!"
-            });
+        //if (string.IsNullOrEmpty(GradeLevelId.ToString()))
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId is not null or empty!"
+        //    });
+        //if (!int.TryParse(GradeLevelId.ToString(), out _))
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId must be an Integer!"
+        //    });
+        //if (GradeLevelId <= 0)
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId must be larger than 0!"
+        //    });
         if (string.IsNullOrEmpty(ExamTypeId.ToString()))
             response.ListErrors.Add(new Errors
             {

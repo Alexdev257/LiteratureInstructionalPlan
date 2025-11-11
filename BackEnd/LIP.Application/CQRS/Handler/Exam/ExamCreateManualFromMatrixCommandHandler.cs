@@ -49,7 +49,7 @@ public class
         var allQuestions = await _practicequestionRepository.GetAllAsync(new PracticequestionGetAllQuery
         {
             CreatedBy = request.CreatedByNavigationUserId,
-            GradeLevelId = request.GradeLevelId
+            GradeLevelId = matrix.GradeLevelId
         });
 
         if (!allQuestions.Any())
@@ -106,7 +106,7 @@ public class
             Title = request.Title ?? matrix.Title,
             Description = request.Description ?? $"Exam created from matrix {matrix.Title}",
             DurationMinutes = request.DurationMinutes,
-            GradeLevelId = request.GradeLevelId,
+            GradeLevelId = matrix.GradeLevelId,
             ExamTypeId = request.ExamTypeId,
             MatrixId = matrix.MatrixId,
             CreatedByNavigationUserId = request.CreatedByNavigationUserId,

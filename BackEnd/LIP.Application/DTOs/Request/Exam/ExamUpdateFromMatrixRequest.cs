@@ -7,7 +7,7 @@ public class ExamUpdateFromMatrixRequest
     public string? Description { get; set; }
     public int DurationMinutes { get; set; }
     public int ExamTypeId { get; set; }
-    public int GradeLevelId { get; set; }
+    //public int GradeLevelId { get; set; }
     public int MatrixId { get; set; }
     public List<int> QuestionIds { get; set; } = new();
 }
