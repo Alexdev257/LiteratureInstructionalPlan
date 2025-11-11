@@ -19,7 +19,7 @@ public class TemplateGetDTO
 
     public int TotalDownload { get; set; }
     
-    public bool IdDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }
 
 public class GradeLevelDTO

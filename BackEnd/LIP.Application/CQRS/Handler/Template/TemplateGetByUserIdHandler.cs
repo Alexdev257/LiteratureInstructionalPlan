@@ -73,7 +73,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 Price = x.Price,
                 TemplateId = x.TemplateId,
                 TotalDownload = saledCount,
-                IdDeleted = x.IsDeleted
+                IsDeleted = x.IsDeleted
             };
         });
 
@@ -101,7 +101,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 Price = x.Price,
                 TemplateId = x.TemplateId,
                 TotalDownload = saledCount,
-                IdDeleted = x.IsDeleted
+                IsDeleted = x.IsDeleted
             };
         });
         

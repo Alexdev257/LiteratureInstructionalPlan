@@ -57,7 +57,7 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
                 Price = x.Price,
                 TemplateId = x.TemplateId,
                 TotalDownload = saledCount,
-                IdDeleted = x.IsDeleted
+                IsDeleted = x.IsDeleted
             });
         }
 
