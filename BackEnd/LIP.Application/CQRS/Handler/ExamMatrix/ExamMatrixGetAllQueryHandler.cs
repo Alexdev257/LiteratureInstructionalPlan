@@ -63,7 +63,7 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
                 CreatedBy = m.CreatedByNavigation != null ? new CreatedByDTO
                 {
                     UserId = m.CreatedByNavigation.UserId,
-                    FullName = m.CreatedByNavigation.UserName,
+                    FullName = m.CreatedByNavigation.FullName,
                     Email = m.CreatedByNavigation.Email
                 } : null!,
                 CreatedAt = m.CreatedAt,
