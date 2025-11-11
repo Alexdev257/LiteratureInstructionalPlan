@@ -58,7 +58,6 @@ public class ExamController : ControllerBase
             Title = request.Title,
             Description = request.Description,
             DurationMinutes = request.DurationMinutes,
-            GradeLevelId = request.GradeLevelId,
             ExamTypeId = request.ExamTypeId,
             CreatedByNavigationUserId = request.CreatedByUserId,
             MatrixId = request.MatrixId,
@@ -79,7 +78,7 @@ public class ExamController : ControllerBase
             Description = request.Description,
             DurationMinutes = request.DurationMinutes,
             ExamTypeId = request.ExamTypeId,
-            GradeLevelId = request.GradeLevelId,
+            //GradeLevelId = request.GradeLevelId,
             QuestionIds = request.QuestionIds
         });
 

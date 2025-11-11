@@ -27,6 +27,7 @@ public class PracticeQuestionController : ControllerBase
             GradeLevelId = request.GradeLevelId,
             CreatedByUserId = request.CreatedByUserId,
             Search = request.Search,
+            Difficulty = request.Difficulty,
             IsAdmin = request.IsAdmin,
             IsShowAnswer = request.IsShowAnswer,
             IsShowCorrectAnswer = request.IsShowCorrectAnswer,

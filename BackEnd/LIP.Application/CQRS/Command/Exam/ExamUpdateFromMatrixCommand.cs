@@ -14,7 +14,7 @@ public class ExamUpdateFromMatrixCommand : IRequest<ExamUpdateFromMatrixResponse
     public int DurationMinutes { get; set; }
     public int ExamTypeId { get; set; }
 
-    public int GradeLevelId { get; set; }
+    //public int GradeLevelId { get; set; }
 
     //public int MatrixId { get; set; }
     public List<int> QuestionIds { get; set; } = new();
@@ -40,24 +40,24 @@ public class ExamUpdateFromMatrixCommand : IRequest<ExamUpdateFromMatrixResponse
                 Field = "DurationMinutes",
                 Detail = "DurationMinutes must be larger than 0!"
             });
-        if (string.IsNullOrEmpty(GradeLevelId.ToString()))
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId is not null or empty!"
-            });
-        if (!int.TryParse(GradeLevelId.ToString(), out _))
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId must be an Integer!"
-            });
-        if (GradeLevelId <= 0)
-            response.ListErrors.Add(new Errors
-            {
-                Field = "GradeLevelId",
-                Detail = "GradeLevelId must be larger than 0!"
-            });
+        //if (string.IsNullOrEmpty(GradeLevelId.ToString()))
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId is not null or empty!"
+        //    });
+        //if (!int.TryParse(GradeLevelId.ToString(), out _))
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId must be an Integer!"
+        //    });
+        //if (GradeLevelId <= 0)
+        //    response.ListErrors.Add(new Errors
+        //    {
+        //        Field = "GradeLevelId",
+        //        Detail = "GradeLevelId must be larger than 0!"
+        //    });
         if (string.IsNullOrEmpty(ExamTypeId.ToString()))
             response.ListErrors.Add(new Errors
             {

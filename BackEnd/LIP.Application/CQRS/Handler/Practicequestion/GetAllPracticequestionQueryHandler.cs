@@ -26,7 +26,7 @@ public class
         {
             QuestionType = request.QuestionType, GradeLevelId = request.GradeLevelId,
             CreatedBy = request.CreatedByUserId, IsAdmin = request.IsAdmin,
-            Search = request.Search
+            Search = request.Search, Difficulty = request.Difficulty,
         });
         //if (rs == null)
         //    return new GetAllPracticeQuestionResponse
@@ -65,7 +65,7 @@ public class
             CreatedAt = r.CreatedAt
         }).ToList();
 
-        dataList = dataList.OrderByDescending(d => d.Difficulty).ThenByDescending(d => d.CreatedAt).ToList();
+        dataList = dataList.OrderByDescending(d => d.Difficulty).ToList();
 
         var paged = dataList.ToPagedListAsync(request.PageNumber, request.PageSize);
         return new GetAllPracticeQuestionResponse

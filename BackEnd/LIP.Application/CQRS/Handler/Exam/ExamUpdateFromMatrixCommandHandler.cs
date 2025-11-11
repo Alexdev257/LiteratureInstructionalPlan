@@ -102,7 +102,7 @@ public class
         exam.Description = request.Description ?? exam.Description;
         exam.DurationMinutes = request.DurationMinutes;
         exam.ExamTypeId = request.ExamTypeId;
-        exam.GradeLevelId = request.GradeLevelId;
+        exam.GradeLevelId = matrix.GradeLevelId;
 
         var result = await _examRepository.UpdateWithQuestionsAsync(exam, request.QuestionIds);
 
