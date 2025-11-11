@@ -1,6 +1,7 @@
 using LIP.Application.CQRS.Command.User;
 using LIP.Application.CQRS.Query.User;
 using LIP.Application.DTOs.Response.User;
+using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
@@ -9,10 +10,12 @@ namespace LIP.Application.CQRS.Handler.User;
 public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserCreateResponse>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IBcryptHelper _bcryptHelper;
 
-    public UserCreateCommandHandler(IUserRepository userRepository)
+    public UserCreateCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper)
     {
         _userRepository = userRepository;
+        _bcryptHelper = bcryptHelper;
     }
 
     public async Task<UserCreateResponse> Handle(UserCreateCommand request, CancellationToken cancellationToken)
@@ -28,6 +31,7 @@ public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserC
             };
 
         request.CreatedAt = DateTime.UtcNow;
+        request.Password = _bcryptHelper.HashPassword(request.Password);
         var rs = await _userRepository.CreateAsync(request);
         if (rs)
         {

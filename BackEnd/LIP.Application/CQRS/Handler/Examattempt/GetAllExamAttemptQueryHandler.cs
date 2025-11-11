@@ -1,8 +1,10 @@
 ﻿using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.DTOs;
+using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.ExamAttempt;
 using LIP.Application.Interface.Repository;
 using MediatR;
+using System.Text.Json;
 
 namespace LIP.Application.CQRS.Handler.Examattempt;
 
@@ -31,13 +33,26 @@ public class GetAllExamAttemptQueryHandler : IRequestHandler<GetAllExamAttemptQu
         {
             AttemptId = a.AttemptId,
             ExamId = a.ExamId,
-            UserId = a.UserId,
+            //UserId = a.UserId,
+            User = new DTOs.Response.Template.CreatedByDTO
+            {
+                Id = a.User.UserId,
+                UserName = a.User.UserName,
+                Email = a.User.Email,
+            },
             StartTime = a.StartTime,
             EndTime = a.EndTime,
             Status = a.Status,
             Score = a.Score,
             Feedback = a.Feedback,
-            LastSavedAt = a.LastSavedAt
+            LastSavedAt = a.LastSavedAt,
+            ExamAnswer = a.Examanswers.Select(ass => new ExamAnswerDTO
+            {
+                QuestionId = ass.QuestionId,
+                AnswerContent = string.IsNullOrEmpty(ass.AnswerContent)
+                    ? new List<DTOs.Request.PracticeQuestion.AnswerOption>()
+                    : JsonSerializer.Deserialize<List<AnswerOption>>(ass.AnswerContent)
+            }).ToList(),
         }).ToList();
 
         dataList = dataList.OrderByDescending(a => a.LastSavedAt).ToList();

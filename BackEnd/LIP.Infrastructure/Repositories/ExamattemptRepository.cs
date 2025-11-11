@@ -36,6 +36,7 @@ public class ExamattemptRepository : IExamattemptRepository
             .AsNoTracking()
             .Include(e => e.Exam)
             .Include(e => e.User)
+            .Include(e => e.Examanswers)
             //.Where(e => !e.IsDeleted)
             .AsQueryable();
 

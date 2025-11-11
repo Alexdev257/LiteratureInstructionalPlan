@@ -77,8 +77,8 @@ public class LoginGoogleCommandHandler : IRequestHandler<LoginGoogleCommand, Log
             };
             var body =
                 $"Your account has been created successfully. Your username is {user.UserName} and your password is PASSWORD. Please change your password after logging in.";
-            var rsEmail = await _emailHelper.SendEmailAsync(user.Email, "Welcome to LIP Company", body, dictionnary);
-            var AccessToken = _jwtHelper.GenerateAccessToken(user);
+            var rsEmail = await _emailHelper.SendEmailAsync(userEmail.Email, "Welcome to LIP Company", body, dictionnary);
+            var AccessToken = _jwtHelper.GenerateAccessToken(userEmail);
             var RefreshToken = _jwtHelper.GenerateRefreshToken();
             await _redisHelper.SetAsync($"RT_{userEmail?.UserId}", RefreshToken, TimeSpan.FromHours(1));
             return new LoginGoogleResponse
