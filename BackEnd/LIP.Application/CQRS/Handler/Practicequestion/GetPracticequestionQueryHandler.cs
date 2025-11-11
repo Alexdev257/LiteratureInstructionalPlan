@@ -48,13 +48,13 @@ public class GetPracticequestionQueryHandler : IRequestHandler<GetPracticequesti
                     : JsonSerializer.Deserialize<List<AnswerOption>>(rs.CorrectAnswer),
             GradeLevel = rs.GradeLevel != null ? new GradeLevelDTO
             {
-                Id = rs.GradeLevel.GradeLevelId,
+                GradeLevelId = rs.GradeLevel.GradeLevelId,
                 Name = rs.GradeLevel.Name
             } : null!,
             CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
             {
-                Id = rs.CreatedByNavigation.UserId,
-                UserName = rs.CreatedByNavigation.UserName,
+                UserId = rs.CreatedByNavigation.UserId,
+                FullName = rs.CreatedByNavigation.UserName,
                 Email = rs.CreatedByNavigation.Email
             } : null!,
             CreatedAt = rs.CreatedAt

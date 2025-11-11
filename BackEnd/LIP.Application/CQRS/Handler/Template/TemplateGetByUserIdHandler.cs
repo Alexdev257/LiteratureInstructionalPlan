@@ -62,7 +62,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 CreatedBy = new CreatedByDTO
                 {
                     Email = user!.Email,
-                    Id = user.UserId,
+                    UserId = user.UserId,
                     FullName = user.FullName
                 },
                 GradeLevel = new GradeLevelDTO
@@ -90,7 +90,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 CreatedBy = new CreatedByDTO
                 {
                     Email = user!.Email,
-                    Id = user.UserId,
+                    UserId = user.UserId,
                     FullName = user.FullName
                 },
                 GradeLevel = new GradeLevelDTO

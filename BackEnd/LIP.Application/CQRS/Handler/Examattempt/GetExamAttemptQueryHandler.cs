@@ -33,9 +33,9 @@ public class GetExamAttemptQueryHandler : IRequestHandler<GetExamAttemptQuery, G
             ExamId = attempt.ExamId,
             User = new DTOs.Response.Template.CreatedByDTO
             {
-                Id = attempt.User.UserId,
+                UserId = attempt.User.UserId,
                 Email = attempt.User.Email,
-                UserName = attempt.User.UserName,
+                FullName = attempt.User.UserName,
             },
             StartTime = attempt.StartTime,
             EndTime = attempt.EndTime,

@@ -36,8 +36,8 @@ public class GetAllExamAttemptQueryHandler : IRequestHandler<GetAllExamAttemptQu
             //UserId = a.UserId,
             User = new DTOs.Response.Template.CreatedByDTO
             {
-                Id = a.User.UserId,
-                UserName = a.User.UserName,
+                UserId = a.User.UserId,
+                FullName = a.User.UserName,
                 Email = a.User.Email,
             },
             StartTime = a.StartTime,

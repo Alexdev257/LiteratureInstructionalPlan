@@ -41,7 +41,7 @@ public class TemplateGetQueryHandler : IRequestHandler<TemplateGetQuery, Templat
                     CreatedBy = new CreatedByDTO
                     {
                         Email = user!.Email,
-                        Id = user.UserId,
+                        UserId = user.UserId,
                         FullName = user.FullName
                     },
                     GradeLevel = new GradeLevelDTO

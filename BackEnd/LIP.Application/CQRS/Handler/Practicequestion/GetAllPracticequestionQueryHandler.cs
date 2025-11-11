@@ -53,13 +53,13 @@ public class
                     : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer!),
             GradeLevel = r.GradeLevel != null ? new GradeLevelDTO
             {
-                Id = r.GradeLevel.GradeLevelId,
+                GradeLevelId = r.GradeLevel.GradeLevelId,
                 Name = r.GradeLevel.Name
             } : null!,
             CreatedBy = r.CreatedByNavigation != null ? new CreatedByDTO
             {
-                Id = r.CreatedByNavigation.UserId,
-                UserName = r.CreatedByNavigation.UserName,
+                UserId = r.CreatedByNavigation.UserId,
+                FullName = r.CreatedByNavigation.UserName,
                 Email = r.CreatedByNavigation.Email
             } : null!,
             CreatedAt = r.CreatedAt

@@ -57,13 +57,13 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
                 //CreatedByUserId = m.CreatedByNavigationUserId,
                 GradeLevel = m.GradeLevel != null ? new GradeLevelDTO
                 {
-                    Id = m.GradeLevel.GradeLevelId,
+                    GradeLevelId = m.GradeLevel.GradeLevelId,
                     Name = m.GradeLevel.Name
                 } : null!,
                 CreatedBy = m.CreatedByNavigation != null ? new CreatedByDTO
                 {
-                    Id = m.CreatedByNavigation.UserId,
-                    UserName = m.CreatedByNavigation.UserName,
+                    UserId = m.CreatedByNavigation.UserId,
+                    FullName = m.CreatedByNavigation.UserName,
                     Email = m.CreatedByNavigation.Email
                 } : null!,
                 CreatedAt = m.CreatedAt,

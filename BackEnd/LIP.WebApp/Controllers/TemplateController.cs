@@ -88,15 +88,31 @@ public class TemplateController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromBody] FormData request)
+    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromForm] FormData form)
     {
+        await using var stream = form.File!.OpenReadStream();
+
+        var request = new TemplateUpdateCommand
+        {
+            Title = form.Title,
+            GradeLevelId = form.GradeLevelId,
+            Price = form.Price,
+            CreatedBy = form.CreatedById,
+
+            FileName = form.File.FileName,
+            FileStream = stream
+        };
+        
         var result = await _mediatoR.Send(new TemplateUpdateCommand
         {
             TemplateId = id,
             Title =  request.Title,
             GradeLevelId = request.GradeLevelId,
             Price = request.Price,
-            CreatedBy = request.CreatedById
+            CreatedBy = request.CreatedBy,
+            
+            FileName = request.FileName,
+            FileStream = request.FileStream
         });
 
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
