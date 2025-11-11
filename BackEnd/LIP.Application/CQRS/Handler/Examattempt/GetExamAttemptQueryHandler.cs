@@ -35,7 +35,7 @@ public class GetExamAttemptQueryHandler : IRequestHandler<GetExamAttemptQuery, G
             {
                 UserId = attempt.User.UserId,
                 Email = attempt.User.Email,
-                FullName = attempt.User.UserName,
+                FullName = attempt.User.FullName,
             },
             StartTime = attempt.StartTime,
             EndTime = attempt.EndTime,

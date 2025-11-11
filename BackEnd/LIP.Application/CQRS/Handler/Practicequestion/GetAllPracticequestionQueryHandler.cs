@@ -59,7 +59,7 @@ public class
             CreatedBy = r.CreatedByNavigation != null ? new CreatedByDTO
             {
                 UserId = r.CreatedByNavigation.UserId,
-                FullName = r.CreatedByNavigation.UserName,
+                FullName = r.CreatedByNavigation.FullName,
                 Email = r.CreatedByNavigation.Email
             } : null!,
             CreatedAt = r.CreatedAt

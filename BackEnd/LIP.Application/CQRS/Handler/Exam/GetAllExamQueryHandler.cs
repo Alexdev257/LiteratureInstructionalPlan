@@ -55,7 +55,7 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             CreatedBy = e.CreatedByNavigation != null ? new CreatedByDTO
             {
                 UserId = e.CreatedByNavigation.UserId,
-                FullName = e.CreatedByNavigation.UserName,
+                FullName = e.CreatedByNavigation.FullName,
                 Email = e.CreatedByNavigation.Email,
             } : null!,
             CreatedAt = e.CreatedAt!.Value,

@@ -54,7 +54,7 @@ public class GetPracticequestionQueryHandler : IRequestHandler<GetPracticequesti
             CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
             {
                 UserId = rs.CreatedByNavigation.UserId,
-                FullName = rs.CreatedByNavigation.UserName,
+                FullName = rs.CreatedByNavigation.FullName,
                 Email = rs.CreatedByNavigation.Email
             } : null!,
             CreatedAt = rs.CreatedAt
