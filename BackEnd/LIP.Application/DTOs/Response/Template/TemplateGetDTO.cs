@@ -39,6 +39,6 @@ public class CreatedByDTO
 
 public class ExamTypeDTO
 {
-    public int Id { get; set; }
+    public int ExamTypeId { get; set; }
     public string Name { get; set; } = string.Empty;
 }

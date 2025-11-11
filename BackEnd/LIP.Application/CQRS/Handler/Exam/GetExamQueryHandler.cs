@@ -43,7 +43,7 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
             } : null!,
             ExamType = exam.ExamType != null ? new ExamTypeDTO
             {
-                Id = exam.ExamType.ExamTypeId,
+                ExamTypeId = exam.ExamType.ExamTypeId,
                 Name = exam.ExamType.Name,
             } : null!,
             MatrixId = exam.MatrixId!.Value,
