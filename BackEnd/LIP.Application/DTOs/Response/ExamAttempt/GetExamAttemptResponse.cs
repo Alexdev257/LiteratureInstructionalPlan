@@ -1,4 +1,6 @@
-﻿namespace LIP.Application.DTOs.Response.ExamAttempt;
+﻿using LIP.Application.DTOs.Response.Template;
+
+namespace LIP.Application.DTOs.Response.ExamAttempt;
 
 public class GetExamAttemptResponse : CommonResponse<GetExamAttemptResponseDTO>
 {
@@ -10,7 +12,7 @@ public class GetExamAttemptResponseDTO
 
     public int? ExamId { get; set; }
 
-    public int? UserId { get; set; }
+    public CreatedByDTO? User { get; set; }
 
     public DateTime? StartTime { get; set; }
 
@@ -23,4 +25,5 @@ public class GetExamAttemptResponseDTO
     public string? Feedback { get; set; }
 
     public DateTime? LastSavedAt { get; set; }
+    public List<ExamAnswerDTO> ExamAnswer { get; set; }
 }

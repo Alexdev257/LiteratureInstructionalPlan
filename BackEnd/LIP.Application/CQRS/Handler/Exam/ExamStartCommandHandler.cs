@@ -57,7 +57,7 @@ public class ExamStartCommandHandler : IRequestHandler<ExamStartCommand, ExamSta
             ExamId = request.ExamId,
             UserId = request.UserId,
             StartTime = DateTime.UtcNow,
-            EndTime = null,
+            EndTime = DateTime.UtcNow.AddMinutes(exam.DurationMinutes!.Value + 5),
             Status = "InProgress",
             Score = null,
             Feedback = null,

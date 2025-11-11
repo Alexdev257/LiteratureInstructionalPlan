@@ -10,6 +10,7 @@ public class PracticequestionGetAllQuery : IRequest<IEnumerable<PracticeQuestion
     public int? GradeLevelId { get; set; }
 
     //public int? SeriesId { get; set; }
+    public string? Search { get; set; }
     public int? CreatedBy { get; set; }
     public bool? IsAdmin { get; set; } = false!;
 }
