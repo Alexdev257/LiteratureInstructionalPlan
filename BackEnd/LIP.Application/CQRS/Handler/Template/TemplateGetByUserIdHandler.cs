@@ -63,16 +63,17 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 {
                     Email = user!.Email,
                     Id = user.UserId,
-                    UserName = user.FullName
+                    FullName = user.FullName
                 },
-                GradeLevelId = new GradeLevelDTO
+                GradeLevel = new GradeLevelDTO
                 {
-                    Id = x.GradeLevel!.GradeLevelId,
+                    GradeLevelId = x.GradeLevel!.GradeLevelId,
                     Name = x.GradeLevel.Name!
                 },
                 Price = x.Price,
                 TemplateId = x.TemplateId,
-                TotalDownload = saledCount
+                TotalDownload = saledCount,
+                IdDeleted = x.IsDeleted
             };
         });
 
@@ -90,16 +91,17 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 {
                     Email = user!.Email,
                     Id = user.UserId,
-                    UserName = user.FullName
+                    FullName = user.FullName
                 },
-                GradeLevelId = new GradeLevelDTO
+                GradeLevel = new GradeLevelDTO
                 {
-                    Id = x.GradeLevel!.GradeLevelId,
+                    GradeLevelId = x.GradeLevel!.GradeLevelId,
                     Name = x.GradeLevel.Name!
                 },
                 Price = x.Price,
                 TemplateId = x.TemplateId,
-                TotalDownload = saledCount
+                TotalDownload = saledCount,
+                IdDeleted = x.IsDeleted
             };
         });
         

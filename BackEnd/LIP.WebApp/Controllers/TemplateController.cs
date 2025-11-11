@@ -87,6 +87,46 @@ public class TemplateController : ControllerBase
         return StatusCode(StatusCodes.Status200OK, result);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromBody] FormData request)
+    {
+        var result = await _mediatoR.Send(new TemplateUpdateCommand
+        {
+            TemplateId = id,
+            Title =  request.Title,
+            GradeLevelId = request.GradeLevelId,
+            Price = request.Price,
+            CreatedBy = request.CreatedById
+        });
+
+        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
+            result);
+    }
+
+    [HttpPatch("delete/{id}")]
+    public async Task<IActionResult> DeleteTemplate([FromRoute] int id)
+    {
+        var result = await _mediatoR.Send(new TemplateDeleteCommand
+        {
+            TemplateId = id
+        });
+        
+        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
+            result);
+    }
+
+    [HttpPatch("restore/{id}")]
+    public async Task<IActionResult> RestoreTemplate([FromRoute] int id)
+    {
+        var result = await _mediatoR.Send(new TemplateRestoreCommand
+        {
+            TemplateId = id
+        });
+        
+        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
+            result);
+    }
+    
     public class FormData
     {
         public string Title { get; set; } = string.Empty;

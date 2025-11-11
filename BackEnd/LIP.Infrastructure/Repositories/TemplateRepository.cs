@@ -104,10 +104,20 @@ public class TemplateRepository : ITemplateRepository
         template.Title = command.Title;
         template.FilePath = command.FilePath;
         template.GradeLevelId = command.GradeLevelId;
-        //template.SeriesId = command.SeriesId;
-        template.CreatedBy = command.CreatedBy;
-        template.CreatedAt = command.CreatedAt;
+        template.ViewPath = command.ViewPath;
+        template.Price = (float)command.Price!;
+        
 
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    
+    public async Task<bool> RestoreAsync(TemplateRestoreCommand command)
+    {
+        var template = await _context.Templates.FindAsync(command.TemplateId);
+        if (template is not { IsDeleted: true }) return false;
+
+        template.IsDeleted = false;
         await _context.SaveChangesAsync();
         return true;
     }

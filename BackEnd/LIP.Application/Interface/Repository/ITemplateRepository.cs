@@ -14,4 +14,7 @@ public interface ITemplateRepository
     Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query);
 
     Task<List<Template>> GetByIdsAsync(List<int> templateIds);
+    Task<bool> UpdateAsync(TemplateUpdateCommand command);
+
+    Task<bool> RestoreAsync(TemplateRestoreCommand command);
 }

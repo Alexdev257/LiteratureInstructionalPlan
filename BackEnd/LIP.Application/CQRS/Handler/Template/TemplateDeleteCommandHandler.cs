@@ -9,13 +9,11 @@ namespace LIP.Application.CQRS.Handler.Template;
 
 public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
 {
-    private readonly ICloudinaryUpload _cloudinaryUpload;
     private readonly ITemplateRepository _templateRepository;
 
     public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
     {
         _templateRepository = templateRepository;
-        _cloudinaryUpload = cloudinaryUpload;
     }
 
     public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
@@ -25,13 +23,10 @@ public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteComman
             TemplateId = request.TemplateId
         });
 
-        var publicId = await _cloudinaryUpload.GetPublicId(result!.FilePath!);
-
         var isSuccess = await _templateRepository.DeleteAsync(request);
 
         if (isSuccess)
         {
-            await _cloudinaryUpload.DeleteFile(publicId);
             return new CommonResponse<bool>
             {
                 IsSuccess = true,
