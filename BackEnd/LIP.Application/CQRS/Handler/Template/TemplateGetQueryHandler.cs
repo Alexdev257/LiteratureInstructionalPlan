@@ -41,17 +41,18 @@ public class TemplateGetQueryHandler : IRequestHandler<TemplateGetQuery, Templat
                     CreatedBy = new CreatedByDTO
                     {
                         Email = user!.Email,
-                        Id = user.UserId,
-                        UserName = user.FullName
+                        UserId = user.UserId,
+                        FullName = user.FullName
                     },
-                    GradeLevelId = new GradeLevelDTO
+                    GradeLevel = new GradeLevelDTO
                     {
-                        Id = result.GradeLevel!.GradeLevelId,
+                        GradeLevelId = result.GradeLevel!.GradeLevelId,
                         Name = result.GradeLevel.Name!
                     },
                     Price = result.Price,
                     TemplateId = result.TemplateId,
-                    TotalDownload = saledCount
+                    TotalDownload = saledCount,
+                    IdDeleted = result.IsDeleted,
                 }
             };
         }

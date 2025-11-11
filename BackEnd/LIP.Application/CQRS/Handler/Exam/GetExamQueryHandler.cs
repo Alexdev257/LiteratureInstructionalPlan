@@ -38,7 +38,7 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
             //ExamTypeId = exam.ExamTypeId!.Value,
             GradeLevel = exam.GradeLevel != null ? new GradeLevelDTO
             {
-                Id = exam.GradeLevel.GradeLevelId,
+                GradeLevelId = exam.GradeLevel.GradeLevelId,
                 Name = exam.GradeLevel.Name
             } : null!,
             ExamType = exam.ExamType != null ? new ExamTypeDTO
@@ -50,8 +50,8 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
             //CreateByUserId = exam.CreatedByNavigationUserId!.Value,
             CreatedBy = exam.CreatedByNavigation != null ? new CreatedByDTO
             {
-                Id = exam.CreatedByNavigation.UserId,
-                UserName = exam.CreatedByNavigation.UserName,
+                UserId = exam.CreatedByNavigation.UserId,
+                FullName = exam.CreatedByNavigation.UserName,
                 Email = exam.CreatedByNavigation.Email,
             } : null!,
             CreatedAt = exam.CreatedAt!.Value,

@@ -30,19 +30,17 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonResponse<s
     {
         try
         {
-            // Biến đếm cho mỗi bảng
             var rolesAddedCount = 0;
             var gradeLevelsAddedCount = 0;
             var examTypesAddedCount = 0;
-
-            // 1. Seed dữ liệu cho Roles
+            
             if (!((await _roleRepository.GetAllAsync(new RoleGetAllQuery())).Count()! > 0))
             {
                 var roles = new List<Domain.Entities.Role>
                 {
-                    new() { RoleName = "Admin" },
+                    new() { RoleName = "Student" },
                     new() { RoleName = "Teacher" },
-                    new() { RoleName = "Student" }
+                    new() { RoleName = "Admin" }
                 };
                 rolesAddedCount = roles.Count;
                 foreach (var role in roles)

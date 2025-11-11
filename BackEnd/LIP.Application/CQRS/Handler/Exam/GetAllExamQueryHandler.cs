@@ -42,7 +42,7 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             //ExamTypeId = e.ExamTypeId!.Value,
             GradeLevel = e.GradeLevel != null ? new GradeLevelDTO
             {
-                Id = e.GradeLevel.GradeLevelId,
+                GradeLevelId = e.GradeLevel.GradeLevelId,
                 Name = e.GradeLevel.Name
             } : null!,
             ExamType = e.ExamType != null ? new ExamTypeDTO
@@ -54,8 +54,8 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             //CreateByUserId = e.CreatedByNavigationUserId!.Value,
             CreatedBy = e.CreatedByNavigation != null ? new CreatedByDTO
             {
-                Id = e.CreatedByNavigation.UserId,
-                UserName = e.CreatedByNavigation.UserName,
+                UserId = e.CreatedByNavigation.UserId,
+                FullName = e.CreatedByNavigation.UserName,
                 Email = e.CreatedByNavigation.Email,
             } : null!,
             CreatedAt = e.CreatedAt!.Value,

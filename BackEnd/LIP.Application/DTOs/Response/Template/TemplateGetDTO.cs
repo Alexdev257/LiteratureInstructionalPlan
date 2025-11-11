@@ -9,7 +9,7 @@ public class TemplateGetDTO
 
     public string ViewPath { get; set; } = string.Empty;
 
-    public GradeLevelDTO? GradeLevelId { get; set; }
+    public GradeLevelDTO? GradeLevel { get; set; }
 
     public float Price { get; set; }
 
@@ -18,18 +18,22 @@ public class TemplateGetDTO
     public DateTime? CreatedAt { get; set; }
 
     public int TotalDownload { get; set; }
+    
+    public bool IdDeleted { get; set; }
 }
 
 public class GradeLevelDTO
 {
-    public int Id { get; set; }
+    public int GradeLevelId { get; set; }
     public string Name { get; set; } = string.Empty;
+    
+
 }
 
 public class CreatedByDTO
 {
-    public int Id { get; set; }
-    public string UserName { get; set; } = string.Empty;
+    public int UserId { get; set; }
+    public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
 
