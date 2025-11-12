@@ -1,35 +1,47 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { QuestionNavigator } from "./QuestionNavigator";
-import type { ExamAttempt, ExamData, Question } from "@/utils/type";
+import type { ExamData, Question } from "@/utils/type";
 import { ExamStatsSidebar } from "./ExamStatsSidebar";
 import { useExam } from "@/hooks/useExam";
 import type { SubmitAttemptInput } from "@/schema/examSchema";
+import { toast } from "sonner";
 
 interface Props {
   exam: ExamData;
   attemptId: number;
-  attempt: ExamAttempt;
 }
 
 type AnswerMap = Record<number, string[]>;
 type EssayMap = Record<number, string>;
 
-export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
-  const { useSubmitAttempt: submitAttemptMutation } = useExam();
-  const { mutateAsync: submitAttempt, isPending: isSubmitting } = submitAttemptMutation;
+export const ExamTaking = ({ exam, attemptId }: Props) => {
+  const { useSubmitExam: submitExamMutation } = useExam();
+  const { mutateAsync: submitExam, isPending: isSubmitting } = submitExamMutation;
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [essayContents, setEssayContents] = useState<EssayMap>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  // Dùng ref để lưu thời gian còn lại (không re-render)
-  const remainingSecondsRef = useRef<number>(0);
-  const [displaySeconds, setDisplaySeconds] = useState<number>(0);
+  // ===============================
+  // EndTime với localStorage
+  // ===============================
+  const endTime = useMemo(() => {
+    const key = `exam-end-${attemptId}`;
+    const saved = localStorage.getItem(key);
+    if (saved) return new Date(saved);
 
-  // Lấy endTime từ attempt (đã có sẵn)
-  const endTime = useMemo(() => new Date(attempt.endTime!), [attempt.endTime]);
+    const t = new Date(Date.now() + exam.durationMinutes * 60 * 1000);
+    localStorage.setItem(key, t.toISOString());
+    return t;
+  }, [exam.durationMinutes, attemptId]);
+
+  // Ref giữ giây còn lại, state dùng để render
+  const remainingSecondsRef = useRef<number>(
+    Math.max(0, Math.floor((endTime.getTime() - Date.now()) / 1000))
+  );
+  const [displaySeconds, setDisplaySeconds] = useState(remainingSecondsRef.current);
 
   const total = exam.questions.length;
   const currentQ = exam.questions[currentIdx];
@@ -39,26 +51,67 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
     Object.values(essayContents).filter(v => v.trim().length > 0).length;
   const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
 
-  // Cảnh báo: đỏ khi còn ≤ 5 phút (300s)
-  const timeVariant = useMemo(() => {
-    return displaySeconds <= 300 ? "danger" : "normal";
-  }, [displaySeconds]);
-
+  // Cảnh báo: đỏ khi còn ≤ 5 phút
+  const timeVariant = useMemo(() => (displaySeconds <= 300 ? "danger" : "normal"), [displaySeconds]);
   const timeLabel = useMemo(() => formatTime(displaySeconds), [displaySeconds]);
 
-  // Khởi tạo thời gian ban đầu
-  useEffect(() => {
-    const now = Date.now();
-    const end = endTime.getTime();
-    const initial = Math.max(0, Math.floor((end - now) / 1000));
+  // ===============================
+  // Build payload 1 câu
+  // ===============================
+  const buildEntryForQuestion = useCallback(
+    (question: Question, answerLabels: string[] = [], essayContent = "") => {
+      if (!question) return null;
 
-    remainingSecondsRef.current = initial;
-    setDisplaySeconds(initial);
-  }, [endTime]);
+      if (question.questionType === "3") {
+        const trimmed = essayContent.trim();
+        if (!trimmed) return null;
+        return {
+          questionId: question.questionId,
+          answerContent: [{ label: "essay", text: trimmed }],
+        };
+      }
 
-  // Đếm ngược chính xác bằng requestAnimationFrame
+      const options = question.answer ?? [];
+      const selected = options
+        .map((opt, idx) => {
+          const label = normaliseLabel(opt.label, idx);
+          return { label, text: opt.text ?? "", selected: answerLabels.includes(label) };
+        })
+        .filter(o => o.selected)
+        .map(({ label, text }) => ({ label, text }));
+
+      if (!selected.length) return null;
+      return { questionId: question.questionId, answerContent: selected };
+    },
+    []
+  );
+
+  // ===============================
+  // Nộp bài
+  // ===============================
+  const handleSubmitExam = useCallback(async () => {
+    if (hasSubmitted) return;
+
+    const entries = exam.questions
+      .map((q, i) => buildEntryForQuestion(q, answers[i], essayContents[i]))
+      .filter(Boolean) as SubmitAttemptInput["answers"];
+
+    const payload: SubmitAttemptInput = { attemptId, answers: entries };
+
+    try {
+      await submitExam(payload);
+      setHasSubmitted(true);
+      localStorage.removeItem(`exam-end-${attemptId}`);
+    } catch {
+      // TODO: toast
+    }
+  }, [answers, attemptId, buildEntryForQuestion, essayContents, exam.questions, hasSubmitted, submitExam]);
+
+  // ===============================
+  // Countdown realtime
+  // ===============================
   useEffect(() => {
-    if (hasSubmitted || !attempt.endTime) return;
+    if (hasSubmitted) return;
 
     let lastUpdate = Date.now();
     let frameId: number;
@@ -82,9 +135,11 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [hasSubmitted, attempt.endTime]);
+  }, [hasSubmitted, handleSubmitExam]);
 
-  // Xử lý chọn đáp án
+  // ===============================
+  // Xử lý chọn đáp án / essay
+  // ===============================
   const handleSelect = (selected: string[]) => {
     setAnswers(prev => ({ ...prev, [currentIdx]: selected }));
   };
@@ -93,41 +148,11 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
     setEssayContents(prev => ({ ...prev, [currentIdx]: content }));
   };
 
-  // Xây dựng payload cho 1 câu
-  const buildEntryForQuestion = useCallback(
-    (question: Question, answerLabels: string[] = [], essayContent = "") => {
-      if (!question) return null;
-
-      if (question.questionType === "3") {
-        const trimmed = essayContent.trim();
-        if (!trimmed) return null;
-        return {
-          questionId: question.questionId,
-          answerContent: [{ label: "essay", text: trimmed }],
-        };
-      }
-
-      const options = question.answer ?? [];
-      const selected = options
-        .map((opt, idx) => {
-          const label = normaliseLabel(opt.label, idx);
-          return {
-            label,
-            text: opt.text ?? "",
-            selected: answerLabels.includes(label),
-          };
-        })
-        .filter(o => o.selected)
-        .map(({ label, text }) => ({ label, text }));
-
-      if (!selected.length) return null;
-      return { questionId: question.questionId, answerContent: selected };
-    },
-    []
-  );
-
+  // ===============================
   // Lưu câu hiện tại
+  // ===============================
   const saveCurrentQuestion = useCallback(async () => {
+     if (hasSubmitted || isSubmitting) return;
     const question = exam.questions[currentIdx];
     if (!question) return;
 
@@ -136,31 +161,17 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
 
     const payload: SubmitAttemptInput = { attemptId, answers: [entry] };
     try {
-      await submitAttempt(payload);
-    } catch {
-      // ignore
+      await submitExam(payload);
+    } catch (error){
+         console.error("Lỗi khi lưu câu hỏi:", error);
+         toast.error("Đã xảy ra lỗi khi lưu câu hỏi. Vui lòng thử lại.");
     }
-  }, [answers, attemptId, buildEntryForQuestion, currentIdx, essayContents, exam.questions, submitAttempt]);
 
-  // Nộp bài
-  const handleSubmitExam = useCallback(async () => {
-    if (hasSubmitted) return;
+  }, [answers, attemptId, buildEntryForQuestion, currentIdx, essayContents, exam.questions, submitExam , hasSubmitted, isSubmitting]);
 
-    const entries = exam.questions
-      .map((q, i) => buildEntryForQuestion(q, answers[i], essayContents[i]))
-      .filter(Boolean) as SubmitAttemptInput["answers"];
-
-    const payload: SubmitAttemptInput = { attemptId, answers: entries };
-
-    try {
-      await submitAttempt(payload);
-      setHasSubmitted(true);
-    } catch {
-      // TODO: toast
-    }
-  }, [answers, attemptId, buildEntryForQuestion, essayContents, exam.questions, hasSubmitted, submitAttempt]);
-
+  // ===============================
   // Điều hướng
+  // ===============================
   const goTo = useCallback((idx: number) => {
     if (idx === currentIdx) return;
     void saveCurrentQuestion().finally(() => setCurrentIdx(idx));
@@ -178,14 +189,19 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
     void saveCurrentQuestion().finally(() => setCurrentIdx(prev));
   }, [currentIdx, saveCurrentQuestion]);
 
-  const handleFinishExam = useCallback(() => {
-    // void handleSubmitExam();
-  }, [handleSubmitExam]);
+const handleFinishExam = useCallback(() => {
+  if (hasSubmitted || isSubmitting) return;
+  void saveCurrentQuestion().finally(() => {
+    void handleSubmitExam();
+  });
+}, [saveCurrentQuestion, handleSubmitExam, hasSubmitted, isSubmitting]);
 
+  // ===============================
+  // Render
+  // ===============================
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
-        {/* Main */}
         <div className="lg:col-span-2 space-y-6">
           <QuestionCard
             question={currentQ}
@@ -198,14 +214,13 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
             onNext={handleNext}
             isFirst={currentIdx === 0}
             isLast={currentIdx === total - 1}
-            onSubmit={handleFinishExam}
+             onSubmit={handleFinishExam} 
             timeRemainingLabel={timeLabel}
             timeVariant={timeVariant}
             isSubmitting={isSubmitting || hasSubmitted}
           />
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           <QuestionNavigator
             questions={exam.questions}
@@ -229,7 +244,9 @@ export const ExamTaking = ({ exam, attemptId, attempt }: Props) => {
   );
 };
 
+// ===============================
 // Helpers
+// ===============================
 function formatTime(totalSeconds: number) {
   const s = Math.max(0, totalSeconds);
   const h = Math.floor(s / 3600);

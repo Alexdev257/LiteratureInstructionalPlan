@@ -93,10 +93,10 @@ export const useExam = () => {
             return await examApi.startExam(data);
         },
     });
-    const useSubmitAttempt = useMutation({
+    const useSubmitExam = useMutation({
         mutationFn: async (data: SubmitAttemptInput) => {
             return await examApi.submitAttempt(data);
         },
     });
-    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useSubmitAttempt,useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
+    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useSubmitExam,useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
 };
