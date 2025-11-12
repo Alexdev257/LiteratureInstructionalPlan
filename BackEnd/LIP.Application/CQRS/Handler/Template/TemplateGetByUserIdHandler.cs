@@ -1,6 +1,7 @@
 using LIP.Application.CQRS.Query.Template;
 using LIP.Application.CQRS.Query.Templatebooking;
 using LIP.Application.CQRS.Query.User;
+using LIP.Application.DTOs.Response;
 using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -12,6 +13,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
     private readonly ITemplatebookingRepository _templatebookingRepository;
     private readonly ITemplateRepository _templateRepository;
     private readonly IUserRepository _userRepository;
+
     public TemplateGetByUserIdHandler(ITemplateRepository templateRepository,
         ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)
     {
@@ -28,7 +30,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
         {
             UserId = request.UserId
         });
-        
+
         var user = await _userRepository.GetAsync(new UserGetQuery
         {
             UserId = request.UserId
@@ -46,7 +48,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
 
         var response = new TemplateGetResponse
         {
-            Data = new DTOs.Response.PaginationResponse<TemplateGetDTO>()
+            Data = new PaginationResponse<TemplateGetDTO>()
         };
 
         var tasks = bookedTemplates.Select(async x =>
@@ -104,7 +106,7 @@ public class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, T
                 IsDeleted = x.IsDeleted
             };
         });
-        
+
         response.Data.Items = (await Task.WhenAll(tasks)).ToList();
         response.Data.Items.AddRange((await Task.WhenAll(tasks2)).ToList());
 

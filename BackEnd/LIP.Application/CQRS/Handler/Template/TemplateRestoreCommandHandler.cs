@@ -16,17 +16,15 @@ public class TemplateRestoreCommandHandler : IRequestHandler<TemplateRestoreComm
 
     public async Task<CommonResponse<bool>> Handle(TemplateRestoreCommand request, CancellationToken cancellationToken)
     {
-        var result =  await _templateRepository.RestoreAsync(request);
+        var result = await _templateRepository.RestoreAsync(request);
 
         if (result)
-        {
             return new CommonResponse<bool>
             {
                 Data = result,
                 IsSuccess = true,
                 Message = "Restore template success"
             };
-        }
         return new CommonResponse<bool>
         {
             Data = result,

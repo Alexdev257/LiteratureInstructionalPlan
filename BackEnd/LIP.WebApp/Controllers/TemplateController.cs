@@ -54,7 +54,8 @@ public class TemplateController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllTemplates([FromQuery] TemplateGetAllRequest request)
     {
-        var result = await _mediatoR.Send(new TemplateGetAllQuery{ Search = request.Search ,PageSize = request.PageSize, PageNumber = request.PageNumber });
+        var result = await _mediatoR.Send(new TemplateGetAllQuery
+            { Search = request.Search, PageSize = request.PageSize, PageNumber = request.PageNumber });
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
@@ -88,35 +89,25 @@ public class TemplateController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromForm] FormData form)
+    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromBody] FormUpdateData form)
     {
-        await using var stream = form.File!.OpenReadStream();
-
-        var request = new TemplateUpdateCommand
-        {
-            Title = form.Title,
-            GradeLevelId = form.GradeLevelId,
-            Price = form.Price,
-            CreatedBy = form.CreatedById,
-
-            FileName = form.File.FileName,
-            FileStream = stream
-        };
-        
         var result = await _mediatoR.Send(new TemplateUpdateCommand
         {
             TemplateId = id,
-            Title =  request.Title,
-            GradeLevelId = request.GradeLevelId,
-            Price = request.Price,
-            CreatedBy = request.CreatedBy,
-            
-            FileName = request.FileName,
-            FileStream = request.FileStream
+            Title = form.Title,
+            GradeLevelId = form.GradeLevelId,
+            Price = form.Price,
         });
 
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             result);
+    }
+    
+    public class FormUpdateData
+    {
+        public string Title { get; set; } = string.Empty;
+        public int GradeLevelId { get; set; }
+        public decimal Price { get; set; }
     }
 
     [HttpPatch("delete/{id}")]
@@ -126,7 +117,7 @@ public class TemplateController : ControllerBase
         {
             TemplateId = id
         });
-        
+
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             result);
     }
@@ -138,11 +129,11 @@ public class TemplateController : ControllerBase
         {
             TemplateId = id
         });
-        
+
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             result);
     }
-    
+
     public class FormData
     {
         public string Title { get; set; } = string.Empty;

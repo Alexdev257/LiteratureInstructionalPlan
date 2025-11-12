@@ -1,5 +1,5 @@
 ﻿using LIP.Application.CQRS.Command.ExamMatrix;
-using LIP.Application.CQRS.Query.User;
+using LIP.Application.CQRS.Query.ExamMatrix;
 using LIP.Application.DTOs.Response.ExamMatrix;
 using LIP.Application.Interface.Repository;
 using MediatR;
@@ -24,15 +24,16 @@ public class ExamMatrixCreateCommandHandler : IRequestHandler<ExamMatrixCreateCo
         var rs = await _examMatrixRepository.CreateAsync(request);
         if (rs)
         {
-            var curMatrixList = await _examMatrixRepository.GetAllAsync(new Query.ExamMatrix.ExamMatrixGetAllQuery { });
+            var curMatrixList = await _examMatrixRepository.GetAllAsync(new ExamMatrixGetAllQuery());
             var curMatrix = curMatrixList.OrderByDescending(u => u.MatrixId).FirstOrDefault();
-            int totalQuestions = 0;
+            var totalQuestions = 0;
             decimal totalPoint = 0;
-            foreach(var detail in curMatrix.Exammatrixdetails)
+            foreach (var detail in curMatrix.Exammatrixdetails)
             {
                 totalQuestions += detail.Quantity!.Value;
-                totalPoint += detail.ScorePerQuestion!.Value * (decimal)detail.Quantity!.Value;
+                totalPoint += detail.ScorePerQuestion!.Value * detail.Quantity!.Value;
             }
+
             var dto = new ExamMatrixCreateResponseDTO
             {
                 MatrixId = curMatrix.MatrixId,
@@ -52,8 +53,8 @@ public class ExamMatrixCreateCommandHandler : IRequestHandler<ExamMatrixCreateCo
                     QuestionType = d.QuestionType,
                     Difficulty = d.Difficulty,
                     Quantity = d.Quantity,
-                    ScorePerQuestion = d.ScorePerQuestion,
-                }).ToList(),
+                    ScorePerQuestion = d.ScorePerQuestion
+                }).ToList()
             };
             return new ExamMatrixCreateResponse
             {
@@ -62,13 +63,11 @@ public class ExamMatrixCreateCommandHandler : IRequestHandler<ExamMatrixCreateCo
                 Message = "Create Exam Matrix successfully!"
             };
         }
-        else
+
+        return new ExamMatrixCreateResponse
         {
-            return new ExamMatrixCreateResponse
-            {
-                IsSuccess = false,
-                Message = "Create Exam Matrix failed!"
-            };
-        }        
+            IsSuccess = false,
+            Message = "Create Exam Matrix failed!"
+        };
     }
 }

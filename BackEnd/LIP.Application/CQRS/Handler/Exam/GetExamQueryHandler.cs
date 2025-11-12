@@ -4,6 +4,7 @@ using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.Exam;
 using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
+using LIP.Domain.Entities;
 using MediatR;
 
 namespace LIP.Application.CQRS.Handler.Exam;
@@ -28,20 +29,19 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
                 Message = "Exam is not found!"
             };
 
-        var examAttempt = new Domain.Entities.ExamAttempt();
+        var examAttempt = new ExamAttempt();
         if (!string.IsNullOrEmpty(request.AttemptId.ToString()))
         {
-            examAttempt = exam.Examattempts.FirstOrDefault(a => a.ExamId == request.ExamId  && a.AttemptId == request.AttemptId);
+            examAttempt =
+                exam.Examattempts.FirstOrDefault(a => a.ExamId == request.ExamId && a.AttemptId == request.AttemptId);
             if (examAttempt == null)
-            {
                 return new GetExamResponse
                 {
                     IsSuccess = false,
                     Message = "Attempt for this Exam is not found!"
                 };
-            }
         }
-        
+
 
         var examDTO = new GetExamResponseDTO
         {
@@ -51,24 +51,30 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
             DurationMinutes = exam.DurationMinutes!.Value,
             //GradeLevelId = exam.GradeLevelId!.Value,
             //ExamTypeId = exam.ExamTypeId!.Value,
-            GradeLevel = exam.GradeLevel != null ? new GradeLevelDTO
-            {
-                GradeLevelId = exam.GradeLevel.GradeLevelId,
-                Name = exam.GradeLevel.Name
-            } : null!,
-            ExamType = exam.ExamType != null ? new ExamTypeDTO
-            {
-                ExamTypeId = exam.ExamType.ExamTypeId,
-                Name = exam.ExamType.Name,
-            } : null!,
+            GradeLevel = exam.GradeLevel != null
+                ? new GradeLevelDTO
+                {
+                    GradeLevelId = exam.GradeLevel.GradeLevelId,
+                    Name = exam.GradeLevel.Name
+                }
+                : null!,
+            ExamType = exam.ExamType != null
+                ? new ExamTypeDTO
+                {
+                    ExamTypeId = exam.ExamType.ExamTypeId,
+                    Name = exam.ExamType.Name
+                }
+                : null!,
             MatrixId = exam.MatrixId!.Value,
             //CreateByUserId = exam.CreatedByNavigationUserId!.Value,
-            CreatedBy = exam.CreatedByNavigation != null ? new CreatedByDTO
-            {
-                UserId = exam.CreatedByNavigation.UserId,
-                FullName = exam.CreatedByNavigation.FullName,
-                Email = exam.CreatedByNavigation.Email,
-            } : null!,
+            CreatedBy = exam.CreatedByNavigation != null
+                ? new CreatedByDTO
+                {
+                    UserId = exam.CreatedByNavigation.UserId,
+                    FullName = exam.CreatedByNavigation.FullName,
+                    Email = exam.CreatedByNavigation.Email
+                }
+                : null!,
             CreatedAt = exam.CreatedAt!.Value,
             Questions = exam.Questions.Select(q => new QuestionDTO
             {
@@ -88,11 +94,11 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
                         ? new List<AnswerOption>()
                         : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer),
                 StudentAnswer = examAttempt.Examanswers == null
-                                ? new List<AnswerOption>()
-                                : JsonSerializer.Deserialize<List<AnswerOption>>(
-                                    examAttempt.Examanswers
-                                        .FirstOrDefault(a => a.QuestionId == q.QuestionId)?.AnswerContent ?? "[]"
-                                ),
+                    ? new List<AnswerOption>()
+                    : JsonSerializer.Deserialize<List<AnswerOption>>(
+                        examAttempt.Examanswers
+                            .FirstOrDefault(a => a.QuestionId == q.QuestionId)?.AnswerContent ?? "[]"
+                    )
             }).ToList()
         };
 

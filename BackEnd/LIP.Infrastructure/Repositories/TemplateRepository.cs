@@ -37,9 +37,7 @@ public class TemplateRepository : ITemplateRepository
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(query.Search))
-        {
             templates = templates.Where(t => t.Title.ToLower().Contains(query.Search.ToLower()));
-        }
 
         return await templates.ToListAsync();
     }
@@ -96,22 +94,20 @@ public class TemplateRepository : ITemplateRepository
             .ToListAsync();
     }
 
-    public async Task<bool> UpdateAsync(TemplateUpdateCommand command)
+    public async Task<Template?> UpdateAsync(TemplateUpdateCommand command)
     {
         var template = await _context.Templates.FindAsync(command.TemplateId);
-        if (template == null || template.IsDeleted) return false;
+        if (template == null || template.IsDeleted) return null;
 
         template.Title = command.Title;
-        template.FilePath = command.FilePath;
         template.GradeLevelId = command.GradeLevelId;
-        template.ViewPath = command.ViewPath;
         template.Price = (float)command.Price!;
-        
+
 
         await _context.SaveChangesAsync();
-        return true;
+        return template;
     }
-    
+
     public async Task<bool> RestoreAsync(TemplateRestoreCommand command)
     {
         var template = await _context.Templates.FindAsync(command.TemplateId);

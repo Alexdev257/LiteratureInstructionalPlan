@@ -26,7 +26,7 @@ public class RefreshCommand : IRequest<RefreshResponse>, IValidatable<RefreshRes
                 Field = "Id",
                 Detail = "Id is null or empty"
             });
-        if (!int.TryParse(Id.ToString(), out var _))
+        if (!int.TryParse(Id.ToString(), out _))
             response.ListErrors.Add(new Errors
             {
                 Field = "Id",

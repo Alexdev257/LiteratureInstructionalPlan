@@ -18,7 +18,7 @@ public class TemplateGetDTO
     public DateTime? CreatedAt { get; set; }
 
     public int TotalDownload { get; set; }
-    
+
     public bool IsDeleted { get; set; }
 }
 
@@ -26,8 +26,6 @@ public class GradeLevelDTO
 {
     public int GradeLevelId { get; set; }
     public string Name { get; set; } = string.Empty;
-    
-
 }
 
 public class CreatedByDTO

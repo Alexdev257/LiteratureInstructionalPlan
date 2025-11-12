@@ -4,7 +4,9 @@ public class ExamCreateManualFromMatrixRequest
 {
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
     public int DurationMinutes { get; set; }
+
     //public int GradeLevelId { get; set; }
     public int ExamTypeId { get; set; }
 

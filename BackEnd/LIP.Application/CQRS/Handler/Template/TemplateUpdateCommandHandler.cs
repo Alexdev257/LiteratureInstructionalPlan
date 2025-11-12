@@ -26,54 +26,34 @@ public class TemplateUpdateCommandHandler : IRequestHandler<TemplateUpdateComman
         });
 
         if (template == null)
-        {
             return new TemplateUpdateResponse
             {
                 IsSuccess = false,
                 Message = "Template not found"
             };
-        }
-        
-        var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
-        if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
-        {
-            request.ViewPath = result.ViewUrl;
-            request.FilePath = result.Url;
 
-            var isSuccess = await _templateRepository.UpdateAsync(request);
-            if (isSuccess)
-            {
-                return new TemplateUpdateResponse
-                {
-                    IsSuccess = true,
-                    Message = "Update template success",
-                    Data = new TemplateCreateResponseDTO
-                    {
-                        CreatedBy = request.CreatedBy,
-                        FilePath = result.Url,
-                        ViewPath = result.ViewUrl,
-                        Title = request.Title,
-                        GradeLevelId = request.GradeLevelId,
-                        Price = request.Price
-                    }
-                };
-            }
-            else
-            {
-                return new TemplateUpdateResponse
-                {
-                    IsSuccess = false,
-                    Message = "some errors occurred while update"
-                };
-            }
-        }
-        else
-        {
+
+        var templateUpdated = await _templateRepository.UpdateAsync(request);
+        if (templateUpdated is not null)
             return new TemplateUpdateResponse
             {
-                IsSuccess = false,
-                Message = "Error uploading file"
+                IsSuccess = true,
+                Message = "Update template success",
+                Data = new TemplateCreateResponseDTO
+                {
+                    FilePath = templateUpdated.FilePath,
+                    ViewPath =  templateUpdated.ViewPath,
+                    Title = request.Title,
+                    GradeLevelId = request.GradeLevelId,
+                    Price = request.Price,
+                    CreatedBy = templateUpdated.CreatedBy
+                }
             };
-        }
+
+        return new TemplateUpdateResponse
+        {
+            IsSuccess = false,
+            Message = "some errors occurred while update"
+        };
     }
 }

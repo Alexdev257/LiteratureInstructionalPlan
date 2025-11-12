@@ -2,6 +2,7 @@
 using LIP.Application.CQRS.Command.Examanswer;
 using LIP.Application.CQRS.Command.Examattempt;
 using LIP.Application.CQRS.Query.Exam;
+using LIP.Application.CQRS.Query.Examanswer;
 using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.DTOs.Response.Exam;
 using LIP.Application.Interface.Repository;
@@ -115,9 +116,8 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
         //};
 
 
-
         var attempt = await _examattemptRepository.GetAsync(new ExamattemptGetQuery
-        { AttemptId = request.AttemptId, IsAdmin = true });
+            { AttemptId = request.AttemptId, IsAdmin = true });
         if (attempt == null)
             return new ExamSubmitResponse
             {
@@ -159,7 +159,8 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
         var isAllAnswerSaved = true;
         foreach (var examAnswer in request.Answers)
         {
-            var existingAnswers = await _examanswerRepository.GetAllAsync(new Query.Examanswer.ExamanswerGetAllQuery { AttemptId = request.AttemptId, QuestionId = examAnswer.QuestionId });
+            var existingAnswers = await _examanswerRepository.GetAllAsync(new ExamanswerGetAllQuery
+                { AttemptId = request.AttemptId, QuestionId = examAnswer.QuestionId });
             if (existingAnswers.Any())
             {
                 var existingAnswer = existingAnswers.First();
@@ -167,7 +168,6 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
                 var newContent = examAnswer.AnswerContent?.Trim() ?? string.Empty;
                 if (oldContent == newContent)
                 {
-                    continue;
                 }
                 else
                 {
@@ -176,7 +176,7 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
                         AnswerId = existingAnswer.AnswerId,
                         AttemptId = existingAnswer.AttemptId,
                         QuestionId = existingAnswer.QuestionId,
-                        AnswerContent = examAnswer.AnswerContent,
+                        AnswerContent = examAnswer.AnswerContent
                     });
                     if (!updatedResult)
                     {
@@ -218,7 +218,7 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
             Status = attempt.Status,
             Score = attempt.Score,
             Feedback = attempt.Feedback,
-            LastSavedAt = DateTime.UtcNow,
+            LastSavedAt = DateTime.UtcNow
         });
 
         if (rs)
@@ -227,7 +227,7 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
                 IsSuccess = true,
                 Data = new ExamSubmitResponseDTO
                 {
-                    AttemptId = request.AttemptId,
+                    AttemptId = request.AttemptId
                 },
                 Message = "Submit Exam successfully!"
             };

@@ -1,9 +1,10 @@
+using System.Text.Json;
 using LIP.Application.CQRS.Command.Practicequestion;
+using LIP.Application.CQRS.Query.Practicequestion;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.PracticeQuestion;
 using LIP.Application.Interface.Repository;
 using MediatR;
-using System.Text.Json;
 
 namespace LIP.Application.CQRS.Handler.Practicequestion;
 
@@ -31,7 +32,7 @@ public class
         var rs = await _practicequestionRepository.CreateAsync(request);
         if (rs)
         {
-            var curQuestionList = await _practicequestionRepository.GetAllAsync(new Query.Practicequestion.PracticequestionGetAllQuery { });
+            var curQuestionList = await _practicequestionRepository.GetAllAsync(new PracticequestionGetAllQuery());
             var curQuestion = curQuestionList.OrderByDescending(q => q.QuestionId).FirstOrDefault();
             var dto = new PracticeQuestionCreateResponseDTO
             {
@@ -40,14 +41,14 @@ public class
                 QuestionType = curQuestion.QuestionType,
                 Difficulty = curQuestion.Difficulty,
                 Answer = string.IsNullOrEmpty(curQuestion.Answer)
-                            ? new List<AnswerOption>()
-                            : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.Answer),
+                    ? new List<AnswerOption>()
+                    : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.Answer),
                 CorrectAnswer = string.IsNullOrEmpty(curQuestion.CorrectAnswer)
-                                    ? new List<AnswerOption>()
-                                    : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.CorrectAnswer),
+                    ? new List<AnswerOption>()
+                    : JsonSerializer.Deserialize<List<AnswerOption>>(curQuestion.CorrectAnswer),
                 GradeLevelId = curQuestion.GradeLevelId,
                 CreatedByNavigationUserId = curQuestion.CreatedByNavigationUserId,
-                CreatedAt = curQuestion.CreatedAt,
+                CreatedAt = curQuestion.CreatedAt
             };
             return new PracticeQuestionCreateResponse
             {
@@ -56,13 +57,11 @@ public class
                 Message = "Create Practice Question successfully!"
             };
         }
-        else
+
+        return new PracticeQuestionCreateResponse
         {
-            return new PracticeQuestionCreateResponse
-            {
-                IsSuccess = false,
-                Message = "Create Practice Question failed"
-            };
-        }
+            IsSuccess = false,
+            Message = "Create Practice Question failed"
+        };
     }
 }

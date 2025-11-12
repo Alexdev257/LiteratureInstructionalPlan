@@ -1,6 +1,7 @@
 ﻿using LIP.Application.CQRS.Command.Exam;
 using LIP.Application.CQRS.Command.Examattempt;
 using LIP.Application.CQRS.Query.Exam;
+using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.CQRS.Query.User;
 using LIP.Application.DTOs.Response.Exam;
 using LIP.Application.Interface.Repository;
@@ -67,30 +68,26 @@ public class ExamStartCommandHandler : IRequestHandler<ExamStartCommand, ExamSta
         var rs = await _examattemptRepository.CreateAsync(attempt);
         if (rs)
         {
-            var attemptList = await _examattemptRepository.GetAllAsync(new Query.Examattempt.ExamattemptGetAllQuery { ExamId = request.ExamId, UserId = request.UserId });
+            var attemptList = await _examattemptRepository.GetAllAsync(new ExamattemptGetAllQuery
+                { ExamId = request.ExamId, UserId = request.UserId });
             var attemptId = attemptList.OrderByDescending(a => a.AttemptId).Select(a => a.AttemptId).FirstOrDefault();
             return new ExamStartResponse
             {
                 IsSuccess = true,
                 Data = new ExamStartResponseDTO
                 {
-                    AttemptId = attemptId,
+                    AttemptId = attemptId
                 },
                 Message =
                     $"Create Exam Attempt for User: {request.UserId.ToString()} - Exam: {request.ExamId.ToString()} successfully!"
             };
         }
-        else
-        {
-            return new ExamStartResponse
-            {
-                IsSuccess = false,
-                Message =
-                $"Create Exam Attempt for User: {request.UserId.ToString()} - Exam: {request.ExamId.ToString()} failed!"
-            };
-        }
-            
 
-        
+        return new ExamStartResponse
+        {
+            IsSuccess = false,
+            Message =
+                $"Create Exam Attempt for User: {request.UserId.ToString()} - Exam: {request.ExamId.ToString()} failed!"
+        };
     }
 }

@@ -9,8 +9,8 @@ namespace LIP.Application.CQRS.Handler.User;
 
 public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserCreateResponse>
 {
-    private readonly IUserRepository _userRepository;
     private readonly IBcryptHelper _bcryptHelper;
+    private readonly IUserRepository _userRepository;
 
     public UserCreateCommandHandler(IUserRepository userRepository, IBcryptHelper bcryptHelper)
     {
@@ -35,7 +35,7 @@ public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserC
         var rs = await _userRepository.CreateAsync(request);
         if (rs)
         {
-            var curUserList = await _userRepository.GetAllAsync(new UserGetAllQuery { });
+            var curUserList = await _userRepository.GetAllAsync(new UserGetAllQuery());
             var curUser = curUserList.OrderByDescending(u => u.UserId).FirstOrDefault();
             var dto = new UserCreateResponseDTO
             {
@@ -44,7 +44,7 @@ public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserC
                 FullName = curUser.FullName,
                 Email = curUser.Email,
                 RoleId = curUser.RoleId,
-                CreatedAt = curUser.CreatedAt,
+                CreatedAt = curUser.CreatedAt
             };
             return new UserCreateResponse
             {
@@ -53,13 +53,11 @@ public class UserCreateCommandHandler : IRequestHandler<UserCreateCommand, UserC
                 Message = "Create User successfully!"
             };
         }
-        else
+
+        return new UserCreateResponse
         {
-            return new UserCreateResponse
-            {
-                IsSuccess = false,
-                Message = "Create User failed"
-            };
-        }
+            IsSuccess = false,
+            Message = "Create User failed"
+        };
     }
 }

@@ -10,7 +10,9 @@ public class ExamCreateManualFromMatrixCommand : IRequest<ExamCreateManualFromMa
 {
     public string? Title { get; set; }
     public string? Description { get; set; }
+
     public int DurationMinutes { get; set; }
+
     //public int GradeLevelId { get; set; }
     public int ExamTypeId { get; set; }
 

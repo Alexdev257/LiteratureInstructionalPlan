@@ -22,14 +22,16 @@ public class ExamMatrixUpdateCommandHandler : IRequestHandler<ExamMatrixUpdateCo
         var rs = await _examMatrixRepository.UpdateAsync(request);
         if (rs)
         {
-            var curMatrix = await _examMatrixRepository.GetAsync(new Query.ExamMatrix.ExamMatrixGetQuery { MatrixId = request.MatrixId});
-            int totalQuestions = 0;
+            var curMatrix =
+                await _examMatrixRepository.GetAsync(new ExamMatrixGetQuery { MatrixId = request.MatrixId });
+            var totalQuestions = 0;
             decimal totalPoint = 0;
             foreach (var detail in curMatrix.Exammatrixdetails)
             {
                 totalQuestions += detail.Quantity!.Value;
-                totalPoint += detail.ScorePerQuestion!.Value * (decimal)detail.Quantity!.Value;
+                totalPoint += detail.ScorePerQuestion!.Value * detail.Quantity!.Value;
             }
+
             var dto = new ExamMatrixUpdateResponseDTO
             {
                 MatrixId = curMatrix.MatrixId,
@@ -49,8 +51,8 @@ public class ExamMatrixUpdateCommandHandler : IRequestHandler<ExamMatrixUpdateCo
                     QuestionType = d.QuestionType,
                     Difficulty = d.Difficulty,
                     Quantity = d.Quantity,
-                    ScorePerQuestion = d.ScorePerQuestion,
-                }).ToList(),
+                    ScorePerQuestion = d.ScorePerQuestion
+                }).ToList()
             };
 
             return new ExamMatrixUpdateResponse
@@ -60,13 +62,11 @@ public class ExamMatrixUpdateCommandHandler : IRequestHandler<ExamMatrixUpdateCo
                 Message = "Update Exam Matrix successfully!"
             };
         }
-        else
+
+        return new ExamMatrixUpdateResponse
         {
-            return new ExamMatrixUpdateResponse
-            {
-                IsSuccess = false,
-                Message = "Update Exam Matrix failed!"
-            };
-        }
+            IsSuccess = false,
+            Message = "Update Exam Matrix failed!"
+        };
     }
 }

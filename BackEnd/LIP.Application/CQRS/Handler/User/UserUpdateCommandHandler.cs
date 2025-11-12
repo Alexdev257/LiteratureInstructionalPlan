@@ -54,7 +54,7 @@ public class UserUpdateCommandHandler : IRequestHandler<UserUpdateCommand, UserU
                 FullName = curUser.FullName,
                 Email = curUser.Email,
                 RoleId = curUser.RoleId,
-                CreatedAt = curUser.CreatedAt,
+                CreatedAt = curUser.CreatedAt
             };
             return new UserUpdateResponse
             {
@@ -63,13 +63,11 @@ public class UserUpdateCommandHandler : IRequestHandler<UserUpdateCommand, UserU
                 Message = "Update User successfully!"
             };
         }
-        else
+
+        return new UserUpdateResponse
         {
-            return new UserUpdateResponse
-            {
-                IsSuccess = false,
-                Message = "Update User failed!"
-            };
-        }
+            IsSuccess = false,
+            Message = "Update User failed!"
+        };
     }
 }
