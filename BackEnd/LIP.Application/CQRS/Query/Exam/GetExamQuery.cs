@@ -8,6 +8,7 @@ namespace LIP.Application.CQRS.Query.Exam;
 public class GetExamQuery : IRequest<GetExamResponse>, IValidatable<GetExamResponse>
 {
     public int ExamId { get; set; }
+    public int? AttemptId { get; set; }
     public bool? IsAdmin { get; set; } = false!;
     public bool? IsShowCorrectAnswer { get; set; } = false!;
 

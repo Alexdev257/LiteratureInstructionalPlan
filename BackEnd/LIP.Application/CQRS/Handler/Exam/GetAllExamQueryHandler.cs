@@ -75,7 +75,7 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
                     ? new List<AnswerOption>()
                     : string.IsNullOrWhiteSpace(q.CorrectAnswer)
                         ? new List<AnswerOption>()
-                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer)
+                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer),
             }).ToList()
         }).ToList();
 

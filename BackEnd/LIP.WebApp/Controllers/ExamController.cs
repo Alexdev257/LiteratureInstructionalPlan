@@ -42,6 +42,7 @@ public class ExamController : ControllerBase
         var result = await _mediator.Send(new GetExamQuery
         {
             ExamId = id,
+            AttemptId = request.AttemptId,
             IsAdmin = request.IsAdmin,
             IsShowCorrectAnswer = request.IsShowCorrectAnswer
         });

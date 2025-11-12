@@ -10,5 +10,7 @@ namespace LIP.Application.DTOs.Response.Exam
 
     public class ExamLastSubmitResponseDTO
     {
+        public decimal? Score { get; set; }
+        public string? FeedBack { get; set; }
     }
 }

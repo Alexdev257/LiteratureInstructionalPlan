@@ -28,6 +28,21 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
                 Message = "Exam is not found!"
             };
 
+        var examAttempt = new Domain.Entities.ExamAttempt();
+        if (!string.IsNullOrEmpty(request.AttemptId.ToString()))
+        {
+            examAttempt = exam.Examattempts.FirstOrDefault(a => a.ExamId == request.ExamId  && a.AttemptId == request.AttemptId);
+            if (examAttempt == null)
+            {
+                return new GetExamResponse
+                {
+                    IsSuccess = false,
+                    Message = "Attempt for this Exam is not found!"
+                };
+            }
+        }
+        
+
         var examDTO = new GetExamResponseDTO
         {
             ExamId = exam.ExamId,
@@ -71,7 +86,13 @@ public class GetExamQueryHandler : IRequestHandler<GetExamQuery, GetExamResponse
                     ? new List<AnswerOption>()
                     : string.IsNullOrWhiteSpace(q.CorrectAnswer)
                         ? new List<AnswerOption>()
-                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer)
+                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer),
+                StudentAnswer = examAttempt.Examanswers == null
+                                ? new List<AnswerOption>()
+                                : JsonSerializer.Deserialize<List<AnswerOption>>(
+                                    examAttempt.Examanswers
+                                        .FirstOrDefault(a => a.QuestionId == q.QuestionId)?.AnswerContent ?? "[]"
+                                ),
             }).ToList()
         };
 
