@@ -34,7 +34,6 @@ export default function Header() {
 
   const handleNavigate = (path: string) => {
     setIsMobileMenuOpen(false);
-    // Try client router first, fallback to full page load
     try {
       router?.navigate?.({ to: path });
     } catch {
@@ -69,7 +68,6 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/"
@@ -83,35 +81,27 @@ export default function Header() {
             >
               Đề thi
             </Link>
-            <Link
-              to="/templates"
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-            >
-              Giáo án
-            </Link>
 
-            {user ? (
-              Number(user.RoleId) !== 1 ? (
-                <Link
-                  to="/templates"
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-                >
-                  Giáo án
-                </Link>
-              ) : (
-                <Link
-                  to="/results"
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-                >
-                  Kết quả
-                </Link>
-              )
+            {(!user || Number(user.RoleId) !== 1) && (
+              <Link
+                to="/templates"
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+              >
+                Giáo án
+              </Link>
+            )}
+
+            {user && Number(user.RoleId) === 1 ? (
+              <Link
+                to="/results"
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+              >
+                Kết quả
+              </Link>
             ) : null}
           </nav>
 
-          {/* Right controls */}
           <div className="flex items-center gap-3">
-            {/* Shopping Cart - Only show when user is logged in */}
             {user && (
               <Button
                 variant="ghost"
@@ -131,12 +121,10 @@ export default function Header() {
               </Button>
             )}
 
-            {/* Mode toggle - hidden on mobile */}
             <div className="hidden sm:block">
               <ModeToggle />
             </div>
 
-            {/* User section */}
             {user && (user.FullName || user.Username) ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -156,13 +144,13 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
 
-                   <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem
-                   onClick={() => handleNavigate(`/userProfile/${user.UserId}`)} 
+                    onClick={() => handleNavigate(`/userProfile/${user.UserId}`)}
                     className="text-sm"
-                      >
+                  >
                     Hồ sơ cá nhân
-                   </DropdownMenuItem>
+                  </DropdownMenuItem>
 
                   <DropdownMenuItem
                     onClick={() => handleNavigate("/cart")}
@@ -205,36 +193,41 @@ export default function Header() {
               </div>
             )}
 
-            {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="sm"
               className="md:hidden p-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background">
-            <nav className="px-4 py-4 space-y-2">
-              <Link
-                to="/"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-              >
-                Trang chủ
-              </Link>
-              <Link
-                to="/exam"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-              >
-                Đề thi
-              </Link>
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-border bg-background">
+          <nav className="px-4 py-4 space-y-2">
+            <Link
+              to="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+            >
+              Trang chủ
+            </Link>
+            <Link
+              to="/exam"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+            >
+              Đề thi
+            </Link>
+
+            {(!user || Number(user.RoleId) !== 1) && (
               <Link
                 to="/templates"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -242,15 +235,26 @@ export default function Header() {
               >
                 Giáo án
               </Link>
-              <div className="pt-2 border-t border-border">
-                <div className="px-3 py-2">
-                  <ModeToggle />
-                </div>
+            )}
+
+            {user && Number(user.RoleId) === 1 ? (
+              <Link
+                to="/results"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+              >
+                Kết quả
+              </Link>
+            ) : null}
+
+            <div className="pt-2 border-t border-border">
+              <div className="px-3 py-2">
+                <ModeToggle />
               </div>
-            </nav>
-          </div>
-        )}
-      </div>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
