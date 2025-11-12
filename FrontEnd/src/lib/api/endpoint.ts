@@ -18,10 +18,47 @@ export const PUBLIC_ENDPOINT = {
 }
 
 export const ADMIN_ENDPOINT = {
-  GET_USERS: "admin/users",
-  CREATE_ADMIN: "admin/create-teacher",
-  GET_QUESTIONS: "admin/questions",
-  CREATE_QUESTION: "admin/questions"
+  // User
+  GET_USERS: "User/get-all", 
+  GET_USER_BY_ID: (id: number) => `User/get/${id}`, 
+  CREATE_USER: "User/create-user", 
+  UPDATE_USER: (id: number) => `User/update-user/${id}`, 
+  DELETE_USER: (id: number) => `User/delete-user/${id}`, 
+  RESTORE_USER: (id: number) => `User/restore-user/${id}`, 
+  // Question (PracticeQuestion)
+  GET_QUESTIONS: "PracticeQuestion/get-all", 
+  GET_QUESTION_BY_ID: (id: number) => `PracticeQuestion/get/${id}`, 
+  CREATE_QUESTION: "PracticeQuestion/create-question", 
+  UPDATE_QUESTION: (id: number) => `PracticeQuestion/update-question/${id}`, 
+  DELETE_QUESTION: (id: number) => `PracticeQuestion/delete-question/${id}`, 
+  RESTORE_QUESTION: (id: number) => `PracticeQuestion/restore-question/${id}`, 
+
+  // Exam
+  GET_EXAMS: "Exam/get-all", 
+  GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`, 
+  CREATE_EXAM: "Exam/create-exam-manual", 
+  UPDATE_EXAM: (id: number) => `Exam/update-exam/${id}`, 
+  DELETE_EXAM: (id: number) => `Exam/delete-exam/${id}`, 
+  RESTORE_EXAM: (id: number) => `Exam/restore-exam/${id}`, 
+
+  // Matrix
+  GET_MATRICES: "ExamMatrix/get-all", 
+  GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`, 
+  CREATE_MATRIX: "ExamMatrix/create-matrix",
+  UPDATE_MATRIX: (id: number) => `ExamMatrix/update-matrix/${id}`,
+  DELETE_MATRIX: (id: number) => `ExamMatrix/delete-matrix/${id}`, 
+  RESTORE_MATRIX: (id: number) => `ExamMatrix/restore-matrix/${id}`,
+  
+  // Template
+  GET_TEMPLATES: "Template", 
+  GET_TEMPLATE_BY_ID: (id: number) => `Template/${id}`, 
+  CREATE_TEMPLATE: "Template", 
+  // UPDATE_TEMPLATE: (id: number) => `Template/${id}`, // Backend thiếu
+  DELETE_TEMPLATE: (id: number) => `Template/${id}`, 
+
+  // Payment
+  GET_PAYMENTS: "Payment", 
+  GET_PAYMENT_BY_ID: (id: number) => `Payment/${id}`,
 };
 
 export const TEMPLATE_ENDPOINT = {
@@ -54,3 +91,8 @@ export const USER_ENDPOINT = {
     GET_USER_PROFILE: (id: number) => `User/get/${id}`,
     UPDATE_USER_PROFILE: (id: number) => `User/update-user/${id}`,
 }
+
+export const PAYMENT_ENDPOINT = {
+  GET_PAYMENTS: "Payment", // 
+  GET_PAYMENT_BY_ID: (id: number) => `Payment/${id}`, 
+};

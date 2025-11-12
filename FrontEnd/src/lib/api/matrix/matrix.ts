@@ -1,6 +1,6 @@
-import type { MatrixQuery, Matrix, ResponseData, PaginationResponse } from "@/utils/type";
+import type {  MatrixQuery, Matrix, ResponseData, PaginationResponse } from "@/utils/type";
 import { BaseApi } from "../baseFetch";
-import { MATRIX_ENDPOINT } from "../endpoint";
+import { MATRIX_ENDPOINT,} from "../endpoint";
 import type { MatrixInput } from "@/schema/matrixSchema";
 
 
@@ -18,7 +18,7 @@ class MatrixApi extends BaseApi {
     async createMatrix(data: MatrixInput): Promise<ResponseData<Matrix>> {
         const url = this.createUrl(MATRIX_ENDPOINT.CREATE_MATRIX);
         return this.postData<Matrix>(url, data);
-    }
-    
+    } 
+
 }
 export const matrixApi = new MatrixApi();

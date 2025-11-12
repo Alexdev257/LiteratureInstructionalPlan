@@ -15,8 +15,14 @@ import { Route as authLayoutRoute } from "./auth/_layout";
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
 import { Route as dashboardUsersRoute } from "./dashboard/users";
 import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
-import { Route as teacherLayoutRoute } from "./teacher/_layout";
+import { Route as dashboardExamsRoute } from "./dashboard/exams";
+import { Route as dashboardMatricesRoute } from "./dashboard/matrices"; 
+import { Route as dashboardTemplatesRoute } from "./dashboard/templates";
+import { Route as dashboardPaymentsRoute } from "./dashboard/payments";
+
 import { Route as templateRouteByTeacher } from "./teacher/template";
+
+import { Route as teacherLayoutRoute } from "./teacher/_layout";
 
 // Matrix routes
 import { Route as matrixLayoutRoute } from "./teacher/matrix/_layout";
@@ -64,6 +70,10 @@ const routeTree = rootRoute.addChildren([
     dashboardLayoutRoute.addChildren([
         dashboardUsersRoute,
         dashboardQuestionsRoute,
+        dashboardExamsRoute,
+        dashboardMatricesRoute,
+        dashboardTemplatesRoute,
+        dashboardPaymentsRoute,
     ]),
 ]);
 
