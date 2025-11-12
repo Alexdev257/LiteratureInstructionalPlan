@@ -66,18 +66,31 @@ public class ExamStartCommandHandler : IRequestHandler<ExamStartCommand, ExamSta
 
         var rs = await _examattemptRepository.CreateAsync(attempt);
         if (rs)
+        {
+            var attemptList = await _examattemptRepository.GetAllAsync(new Query.Examattempt.ExamattemptGetAllQuery { ExamId = request.ExamId, UserId = request.UserId });
+            var attemptId = attemptList.OrderByDescending(a => a.AttemptId).Select(a => a.AttemptId).FirstOrDefault();
             return new ExamStartResponse
             {
                 IsSuccess = true,
+                Data = new ExamStartResponseDTO
+                {
+                    AttemptId = attemptId,
+                },
                 Message =
                     $"Create Exam Attempt for User: {request.UserId.ToString()} - Exam: {request.ExamId.ToString()} successfully!"
             };
-
-        return new ExamStartResponse
+        }
+        else
         {
-            IsSuccess = false,
-            Message =
+            return new ExamStartResponse
+            {
+                IsSuccess = false,
+                Message =
                 $"Create Exam Attempt for User: {request.UserId.ToString()} - Exam: {request.ExamId.ToString()} failed!"
-        };
+            };
+        }
+            
+
+        
     }
 }
