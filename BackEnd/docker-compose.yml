@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  # The .NET Web App service
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=server=db;port=3306;database=swd392;user=root;password=12345
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lip-network
+
+  # The MySQL database service
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+      MYSQL_DATABASE: "swd392"
+    ports:
+      - "2301:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    networks:
+      - lip-network
+
+volumes:
+  mysql_data:
+
+networks:
+  lip-network:
+    driver: bridge

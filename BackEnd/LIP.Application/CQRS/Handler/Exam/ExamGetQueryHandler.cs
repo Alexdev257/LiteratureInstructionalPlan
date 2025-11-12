@@ -1,22 +1,20 @@
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.Interface.Repository;
-using LIP.Domain.Entities;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Exam
+namespace LIP.Application.CQRS.Handler.Exam;
+
+public class ExamGetQueryHandler : IRequestHandler<ExamGetQuery, Domain.Entities.Exam?>
 {
-    public class ExamGetQueryHandler : IRequestHandler<ExamGetQuery, LIP.Domain.Entities.Exam?>
+    private readonly IExamRepository _examRepository;
+
+    public ExamGetQueryHandler(IExamRepository examRepository)
     {
-        private readonly IExamRepository _examRepository;
+        _examRepository = examRepository;
+    }
 
-        public ExamGetQueryHandler(IExamRepository examRepository)
-        {
-            _examRepository = examRepository;
-        }
-
-        public async Task<LIP.Domain.Entities.Exam?> Handle(ExamGetQuery request, CancellationToken cancellationToken)
-        {
-            return await _examRepository.GetAsync(request);
-        }
+    public async Task<Domain.Entities.Exam?> Handle(ExamGetQuery request, CancellationToken cancellationToken)
+    {
+        return await _examRepository.GetAsync(request);
     }
 }

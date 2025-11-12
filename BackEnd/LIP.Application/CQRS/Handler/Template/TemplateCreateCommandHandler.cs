@@ -1,21 +1,55 @@
 using LIP.Application.CQRS.Command.Template;
+using LIP.Application.DTOs.Response.Template;
+using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Template
+namespace LIP.Application.CQRS.Handler.Template;
+
+public class TemplateCreateCommandHandler : IRequestHandler<TemplateCreateCommand, TemplateCreateResponse>
 {
-    public class TemplateCreateCommandHandler : IRequestHandler<TemplateCreateCommand, bool>
+    private readonly ICloudinaryUpload _cloudinaryUpload;
+    private readonly ITemplateRepository _templateRepository;
+
+    public TemplateCreateCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
     {
-        private readonly ITemplateRepository _templateRepository;
+        _templateRepository = templateRepository;
+        _cloudinaryUpload = cloudinaryUpload;
+    }
 
-        public TemplateCreateCommandHandler(ITemplateRepository templateRepository)
+    public async Task<TemplateCreateResponse> Handle(TemplateCreateCommand request, CancellationToken cancellationToken)
+    {
+        var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
+        var isSuccess = false;
+        if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
         {
-            _templateRepository = templateRepository;
+            request.FilePath = result.Url;
+            request.ViewPath = result.ViewUrl;
+            request.CreatedAt = DateTime.Now;
+
+            isSuccess = await _templateRepository.CreateAsync(request);
         }
 
-        public async Task<bool> Handle(TemplateCreateCommand request, CancellationToken cancellationToken)
+        if (isSuccess)
+            return new TemplateCreateResponse
+            {
+                IsSuccess = true,
+                Message = "Create template success",
+                Data = new TemplateCreateResponseDTO
+                {
+                    CreatedBy = request.CreatedBy,
+                    FilePath = result.Url,
+                    ViewPath = result.ViewUrl,
+                    Title = request.Title,
+                    GradeLevelId = request.GradeLevelId,
+                    Price = request.Price
+                }
+            };
+
+        return new TemplateCreateResponse
         {
-            return await _templateRepository.CreateAsync(request);
-        }
+            IsSuccess = false,
+            Message = "some errors occurred while update"
+        };
     }
 }

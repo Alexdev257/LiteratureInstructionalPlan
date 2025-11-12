@@ -1,8 +1,6 @@
-using System;
-
 namespace LIP.Application.Interface.Validation;
 
-public interface IValidatable
+public interface IValidatable<T>
 {
-    Task<bool> ValidateAsync();
+    Task<T> ValidateAsync();
 }

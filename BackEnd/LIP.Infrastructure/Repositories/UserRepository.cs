@@ -5,90 +5,112 @@ using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
 
-namespace LIP.Infrastructure.Repositories
+namespace LIP.Infrastructure.Repositories;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public UserRepository(ApplicationDbContext context)
+
+    public async Task<User?> GetAsync(UserGetQuery query)
+    {
+        var users = _context.Users
+            .AsNoTracking()
+            .Include(u => u.Role)
+            .Include(u => u.Examattempts)
+            .Include(u => u.Exams)
+            .Include(u => u.Practicequestions)
+            .Include(u => u.Templates).AsQueryable();
+        //.Where(u => !u.IsDeleted);
+
+        if (query.IsAdmin != true)
+            users = users.Where(u => !u.IsDeleted);
+
+        return await users.FirstOrDefaultAsync(u => u.UserId == query.UserId);
+    }
+
+    public async Task<IEnumerable<User>> GetAllAsync(UserGetAllQuery query)
+    {
+        var users = _context.Users
+            .AsNoTracking()
+            .Include(u => u.Role)
+            //.Where(u => !u.IsDeleted)
+            .AsQueryable();
+
+        if (query.IsAdmin != true)
+            users = users.Where(u => !u.IsDeleted);
+
+        if (query.RoleId.HasValue)
+            users = users.Where(u => u.RoleId == query.RoleId);
+
+        if (!string.IsNullOrEmpty(query.Email))
+            users = users.Where(u => u.Email == query.Email);
+
+
+        return await users.ToListAsync();
+    }
+
+    public async Task<bool> CreateAsync(UserCreateCommand command)
+    {
+        var user = new User
         {
-            _context = context;
-        }
+            UserName = command.UserName,
+            FullName = command.FullName,
+            Email = command.Email,
+            Password = command.Password,
+            RoleId = command.RoleId,
+            CreatedAt = command.CreatedAt
+        };
 
-        public async Task<User?> GetAsync(UserGetQuery query)
-        {
-            return await _context.Users
-                .AsNoTracking()
-                .Include(u => u.Role)
-                .Include(u => u.Examattempts)
-                .Include(u => u.Exams)
-                .Include(u => u.Practicequestions)
-                .Include(u => u.Submissions)
-                .Include(u => u.Templates)
-                .Where(u => !u.IsDeleted)
-                .FirstOrDefaultAsync(u => u.UserId == query.UserId);
-        }
+        _context.Users.Add(user);
+        return await _context.SaveChangesAsync() > 0;
+    }
 
-        public async Task<IEnumerable<User>> GetAllAsync(UserGetAllQuery query)
-        {
-            var users = _context.Users
-                .AsNoTracking()
-                .Include(u => u.Role)
-                .Where(u => !u.IsDeleted)
-                .AsQueryable();
+    public async Task<bool> UpdateAsync(UserUpdateCommand command)
+    {
+        var user = await _context.Users.FindAsync(command.UserId);
+        if (user == null || user.IsDeleted) return false;
 
-            if (query.RoleId.HasValue)
-                users = users.Where(u => u.RoleId == query.RoleId);
+        user.UserName = command.UserName;
+        user.FullName = command.FullName;
+        user.Email = command.Email;
+        user.Password = command.Password;
+        user.RoleId = command.RoleId;
+        user.CreatedAt = command.CreatedAt;
 
-            if (!string.IsNullOrEmpty(query.Email))
-                users = users.Where(u => u.Email == query.Email);
+        return await _context.SaveChangesAsync() > 0;
+    }
 
-            return await users.ToListAsync();
-        }
+    public async Task<bool> DeleteAsync(UserDeleteCommand command)
+    {
+        var user = await _context.Users.FindAsync(command.UserId);
+        if (user == null) return false;
 
-        public async Task<bool> CreateAsync(UserCreateCommand command)
-        {
-            var user = new User
-            {
-                UserName = command.UserName,
-                FullName = command.FullName,
-                Email = command.Email,
-                Password = command.Password,
-                RoleId = command.RoleId,
-                CreatedAt = command.CreatedAt
-            };
+        user.IsDeleted = true;
+        user.DeletedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+    public async Task<bool> RestoreAsync(UserRestoreCommand command)
+    {
+        var user = await _context.Users.FindAsync(command.UserId);
+        if (user == null) return false;
 
-        public async Task<bool> UpdateAsync(UserUpdateCommand command)
-        {
-            var user = await _context.Users.FindAsync(command.UserId);
-            if (user == null || user.IsDeleted) return false;
+        user.IsDeleted = false;
+        user.DeletedAt = DateTime.MinValue;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-            user.UserName = command.UserName;
-            user.FullName = command.FullName;
-            user.Email = command.Email;
-            user.Password = command.Password;
-            user.RoleId = command.RoleId;
-            user.CreatedAt = command.CreatedAt;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(UserDeleteCommand command)
-        {
-            var user = await _context.Users.FindAsync(command.UserId);
-            if (user == null) return false;
-
-            user.IsDeleted = true;
-            user.DeletedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-            return true;
-        }
+    public async Task<bool> RegisterAsync(User user)
+    {
+        _context.Users.Add(user);
+        return await _context.SaveChangesAsync() > 0;
     }
 }

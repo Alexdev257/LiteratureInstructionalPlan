@@ -1,12 +1,10 @@
+using LIP.Application.DTOs.Request;
+using LIP.Application.DTOs.Response.Template;
 using MediatR;
-using LIP.Domain.Entities;
 
-namespace LIP.Application.CQRS.Query.Template
+namespace LIP.Application.CQRS.Query.Template;
+
+public class TemplateGetAllQuery : PaginationRequest, IRequest<TemplateGetResponse>
 {
-    public class TemplateGetAllQuery : IRequest<IEnumerable<LIP.Domain.Entities.Template>>
-    {
-        public int? GradeLevelId { get; set; }
-        public int? SeriesId { get; set; }
-        public int? CreatedBy { get; set; }
-    }
+    public string? Search { get; set; }
 }

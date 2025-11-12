@@ -1,21 +1,43 @@
 using LIP.Application.CQRS.Command.Template;
+using LIP.Application.CQRS.Query.Template;
+using LIP.Application.DTOs.Response;
+using LIP.Application.Interface.Helpers;
 using LIP.Application.Interface.Repository;
 using MediatR;
 
-namespace LIP.Application.CQRS.Handler.Template
+namespace LIP.Application.CQRS.Handler.Template;
+
+public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
 {
-    public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, bool>
+    private readonly ITemplateRepository _templateRepository;
+
+    public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
     {
-        private readonly ITemplateRepository _templateRepository;
+        _templateRepository = templateRepository;
+    }
 
-        public TemplateDeleteCommandHandler(ITemplateRepository templateRepository)
+    public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+    {
+        var result = await _templateRepository.GetAsync(new TemplateGetQuery
         {
-            _templateRepository = templateRepository;
-        }
+            TemplateId = request.TemplateId
+        });
 
-        public async Task<bool> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+        var isSuccess = await _templateRepository.DeleteAsync(request);
+
+        if (isSuccess)
+            return new CommonResponse<bool>
+            {
+                IsSuccess = true,
+                Message = "Delete template success",
+                Data = true
+            };
+
+        return new CommonResponse<bool>
         {
-            return await _templateRepository.DeleteAsync(request);
-        }
+            IsSuccess = false,
+            Message = "some errors occurred while delete",
+            Data = false
+        };
     }
 }

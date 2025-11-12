@@ -1,10 +1,9 @@
-using MediatR;
 using LIP.Domain.Entities;
+using MediatR;
 
-namespace LIP.Application.CQRS.Query.Examanswer
+namespace LIP.Application.CQRS.Query.Examanswer;
+
+public class ExamanswerGetQuery : IRequest<ExamAnswer?>
 {
-    public class ExamanswerGetQuery : IRequest<LIP.Domain.Entities.Examanswer?>
-    {
-        public int AnswerId { get; set; }
-    }
+    public int AnswerId { get; set; }
 }

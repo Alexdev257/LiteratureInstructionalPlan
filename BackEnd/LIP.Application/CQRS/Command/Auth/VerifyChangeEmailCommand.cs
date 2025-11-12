@@ -1,0 +1,10 @@
+﻿using LIP.Application.DTOs.Response.Auth;
+using MediatR;
+
+namespace LIP.Application.CQRS.Command.Auth;
+
+public class VerifyChangeEmailCommand : IRequest<VerifyChangeEmailResponse>
+{
+    public string NewEmail { get; set; } = null!;
+    public string OTP { get; set; } = null!;
+}
