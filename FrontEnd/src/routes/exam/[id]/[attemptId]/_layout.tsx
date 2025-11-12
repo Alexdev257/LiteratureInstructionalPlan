@@ -18,6 +18,6 @@ const TakeExamLayoutComponent = () => {
 
 export const Route = createRoute({
   getParentRoute: () => examDetailLayoutRoute,
-  path: "/do-exam",
+  path: "/$attemptId",
   component: TakeExamLayoutComponent,
 });

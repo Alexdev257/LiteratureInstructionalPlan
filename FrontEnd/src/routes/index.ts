@@ -13,8 +13,8 @@ import { Route as examLayoutRoute } from "./exam/_layout";
 import { Route as examIndexRoute } from "./exam/index";
 import { Route as examDetailRoute } from "./exam/[id]/index";
 import { Route as examDetailLayoutRoute } from "./exam/[id]/_layout";
-import { Route as takeExamLayoutRoute } from "./exam/[id]/do-exam/_layout";
-import { Route as takeExamRoute } from "./exam/[id]/do-exam/index";
+import { Route as takeExamLayoutRoute } from "./exam/[id]/[attemptId]/_layout";
+import { Route as takeExamRoute } from "./exam/[id]/[attemptId]/index";
 
 // Dashboard
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";

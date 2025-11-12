@@ -1,3 +1,4 @@
+export type UTC7String = string;
 
 
 export type ResponseLogin = {
@@ -55,6 +56,14 @@ export type GetUserById = {
 
 }
 
+
+
+export type CreateByUser = {
+    userId: number;
+    fullName: string;
+    email: string;
+}
+
 export type BodyRefreshToken = {
     id: number;
     accessToken: string;
@@ -81,14 +90,7 @@ export type ExamData = {
     examType: ExamType;
     createdBy: CreateByUser;
     questions: Question[];
-    createdAt: Date
-}
-
-export type ExamAttemptQuery = BaseFilterPagination & {
-    ExamId?: number;
-    UserId?: string;
-    Status: string;
-    IsAdmin?: boolean;
+    createdAt: UTC7String;
 }
 
 
@@ -101,9 +103,9 @@ export type ExamAttempt = {
     status: string;
     score: number;
     feedback: string;
-    startedAt: Date;
-    endTime: Date
-    completedAt: Date;
+    startedAt: UTC7String;
+    endTime: UTC7String;
+    completedAt: UTC7String | null;
 }
 
 
@@ -270,6 +272,7 @@ export type ExamQuery = BaseFilterPagination & {
     GradeLevelId?: number;
     ExamTypeId?: number;
     IsShowCorrectAnswer?: boolean;
+    attemptId?:number;
     IsAdmin?: boolean;
 }
 
@@ -282,12 +285,13 @@ export type TemplateQuery = BaseFilterPagination & {
     GradeLevelId?: number;
     isDeleted?: boolean
 }
-
-export type CreateByUser = {
-    userId: number;
-    fullName: string;
-    email: string;
+export type ExamAttemptQuery = BaseFilterPagination & {
+    ExamId?: number;
+    UserId?: string;
+    Status: string;
+    IsAdmin?: boolean;
 }
+
 
 export type QuestionQuery = BaseFilterPagination & {
     QuestionType?: string  // "1" | "2" | "3"

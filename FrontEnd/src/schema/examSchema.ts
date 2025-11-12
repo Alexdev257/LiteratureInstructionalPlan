@@ -76,3 +76,23 @@ export const selectQuestionsSchema = z.object({
 });
 
 export type SelectQuestionsInput = z.infer<typeof selectQuestionsSchema>;
+
+
+
+// Schema for submitting an exam attempt
+export const submitAttemptSchema = z.object({
+  attemptId: z.number().min(0, "Attempt ID không hợp lệ"),
+  answers: z.array(
+    z.object({
+      questionId: z.number().min(0, "Question ID không hợp lệ"),
+      answerContent: z.array(
+        z.object({
+          label: z.string(), 
+          text: z.string().min(1, "Vui lòng nhập nội dung trả lời"), 
+        })
+      ),
+    })
+  ),
+});
+
+export type SubmitAttemptInput = z.infer<typeof submitAttemptSchema>;

@@ -18,6 +18,10 @@ interface Props {
   onNext: () => void;
   isFirst: boolean;
   isLast: boolean;
+  onSubmit: () => void;
+  timeRemainingLabel: string;
+  timeVariant: "normal" | "warning" | "danger";
+  isSubmitting: boolean;
 }
 
 export const QuestionCard = ({
@@ -31,6 +35,10 @@ export const QuestionCard = ({
   onNext,
   isFirst,
   isLast,
+  onSubmit,
+  timeRemainingLabel,
+  timeVariant,
+  isSubmitting,
 }: Props) => {
   const typeInfo = QuestionTypeMap[question.questionType];
   const diffInfo = DifficultyMap[question.difficulty];
@@ -58,9 +66,9 @@ export const QuestionCard = ({
   };
 
   const renderOption = (opt: { label: string; text: string }, i: number) => {
-    const letter = opt.label || String.fromCharCode(65 + i);
+    const letter = normaliseLabel(opt.label, i);
     const displayText = opt.text || opt.label || `Tùy chọn ${i + 1}`;
-    const value = `${letter}. ${displayText}`;
+    const value = letter;
     const isChecked = selectedAnswers.includes(value);
 
     return (
@@ -96,6 +104,13 @@ export const QuestionCard = ({
     );
   };
 
+  const timeClass =
+    timeVariant === "danger"
+      ? "text-red-600"
+      : timeVariant === "warning"
+        ? "text-yellow-500"
+        : "text-muted-foreground";
+
   return (
     <div className="p-6 border border-primary/10 rounded-xl bg-gradient-to-br from-background to-secondary/5 hover:shadow-lg transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
@@ -109,9 +124,9 @@ export const QuestionCard = ({
             {diffInfo.label}
           </Badge>
         </div>
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+        <div className={`flex items-center gap-1 text-sm font-semibold ${timeClass}`}>
           <Clock className="w-4 h-4 text-primary" />
-          1:23:45
+          {timeRemainingLabel}
         </div>
       </div>
 
@@ -150,17 +165,37 @@ export const QuestionCard = ({
           Câu trước
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-primary/20">
+          {/* <Button variant="outline" className="border-primary/20">
             <Target className="w-4 h-4 mr-2 text-primary" />
             Đánh dấu
-          </Button>
+          </Button> */}
           {isLast ? (
-            <Button className="bg-emerald-600 hover:bg-emerald-700">Nộp bài</Button>
+            null
+            // <Button
+            //   className="bg-emerald-600 hover:bg-emerald-700"
+            //   onClick={onSubmit}
+            //   disabled={isSubmitting}
+            // >
+            //   {isSubmitting ? "Đang nộp..." : "Nộp bài"}
+            // </Button>
           ) : (
-            <Button onClick={onNext} className="bg-primary hover:bg-primary/90">Câu tiếp theo</Button>
+            <Button
+              onClick={onNext}
+              className="bg-primary hover:bg-primary/90"
+              disabled={isSubmitting}
+            >
+              Câu tiếp theo
+            </Button>
           )}
         </div>
       </div>
     </div>
   );
 };
+
+function normaliseLabel(label: string | undefined, index: number) {
+  if (label && label.trim().length > 0) {
+    return label.trim();
+  }
+  return String.fromCharCode(65 + index);
+}

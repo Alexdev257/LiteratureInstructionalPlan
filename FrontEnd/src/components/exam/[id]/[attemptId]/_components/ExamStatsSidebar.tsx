@@ -2,24 +2,36 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import {  Clock, Save, Target } from "lucide-react";
+import { Clock, Target } from "lucide-react";
 
 interface Props {
   total: number;
   completed: number;
-  mcMulti: number;
-  mcSingle: number;
-  essay: number;
   progress: number;
+  timeRemainingLabel: string;
+  timeVariant: "normal" | "warning" | "danger";
+  onSubmit: () => void;
+  isSubmitting: boolean;
 }
 
 export const ExamStatsSidebar = ({
   total,
   completed,
   progress,
+  timeRemainingLabel,
+  timeVariant,
+  onSubmit,
+  isSubmitting,
 }: Props) => {
   const remaining = total - completed;
-  const timeUsed = "1:23:45"; // Placeholder for remaining time
+
+  const timeClass =
+    timeVariant === "danger"
+      ? "text-red-600"
+      : timeVariant === "warning"
+        ? "text-yellow-500"
+        : "text-muted-foreground";
+
   return (
     <Card className="border-primary/10 bg-gradient-to-br from-background to-secondary/5">
       <CardHeader>
@@ -53,19 +65,20 @@ export const ExamStatsSidebar = ({
             <Clock className="w-4 h-4" />
             Thời gian còn lại
           </span>
-          <span className="font-semibold">{timeUsed}</span>
+          <span className={`font-semibold ${timeClass}`}>
+            {timeRemainingLabel}
+          </span>
         </div>
 
-
-
-
-
         <div className="flex gap-3">
-          <Button size="lg" className="flex-1 bg-primary hover:bg-primary/90">
-            <Save className="w-4 h-4 mr-2" />
-            Lưu bài
+          <Button
+            size="lg"
+            className="flex-1 bg-primary hover:bg-primary/90"
+            onClick={onSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Đang nộp..." : "Nộp bài"}
           </Button>
-         
         </div>
       </CardContent>
     </Card>

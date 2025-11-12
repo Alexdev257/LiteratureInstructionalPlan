@@ -1,5 +1,5 @@
 import { examApi } from "@/lib/api/exam/exam";
-import type { CreateExamInput, UpdateExamInput } from "@/schema/examSchema";
+import type { CreateExamInput, SubmitAttemptInput, UpdateExamInput } from "@/schema/examSchema";
 import { QUERY_KEY } from "@/utils/constants";
 import type { ExamAttemptQuery, ExamQuery } from "@/utils/type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,10 +30,10 @@ export const useExam = () => {
             staleTime: 5 * 60 * 1000,
         });
     }
-    const useGetExamIdByStudent = (id: number) => {
+    const useGetExamIdByStudent = (id: number,attemptId:number) => {
         return useQuery({
             queryKey: [QUERY_KEY.getExamForStudentById(id)],
-            queryFn: () => examApi.getExamById(id),
+            queryFn: () => examApi.getExamById(id,{attemptId}),
             staleTime: 5 * 60 * 1000,
         });
     }
@@ -93,5 +93,10 @@ export const useExam = () => {
             return await examApi.startExam(data);
         },
     });
-    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
+    const useSubmitAttempt = useMutation({
+        mutationFn: async (data: SubmitAttemptInput) => {
+            return await examApi.submitAttempt(data);
+        },
+    });
+    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useSubmitAttempt,useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
 };

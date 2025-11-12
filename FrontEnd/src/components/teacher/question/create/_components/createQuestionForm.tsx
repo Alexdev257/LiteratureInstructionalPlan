@@ -49,8 +49,8 @@ const router = useRouter();
   const gradeLevels = gradeLevelsData?.data?.items || [];
 
   const [answers, setAnswers] = useState<AnswerItem[]>([
-    { label: "A", text: "" },
-    { label: "B", text: "" },
+    { label: "", text: "" },
+    { label: "", text: "" },
   ]);
   const [correctAnswerLabels, setCorrectAnswerLabels] = useState<string[]>([]);
   const [essayAnswer, setEssayAnswer] = useState("");
@@ -91,8 +91,7 @@ const router = useRouter();
   // Add answer
   const handleAddAnswer = () => {
     if (answers.length < 6) {
-      const newLabel = String.fromCharCode(65 + answers.length);
-      setAnswers([...answers, { label: newLabel, text: "" }]);
+      setAnswers([...answers, { label: "", text: "" }]);
     }
   };
 

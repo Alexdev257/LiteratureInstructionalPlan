@@ -21,6 +21,7 @@ import { useExam } from "@/hooks/useExam";
 import { useSessionStore } from "@/stores/sessionStore";
 import { toast } from "sonner";
 
+
 type Props = {
   exam: ExamData;
 };
@@ -66,15 +67,15 @@ export const ExamDetail = ({ exam }: Props) => {
   const handleStartExam = async () => {
     if (!user?.UserId) {
       toast.error("Bạn chưa đăng nhập!");
-      return;
+      return router.navigate({ to: `/auth/login` });
+
     }
     useStartExam.mutate({
        ExamId: exam.examId,
        UserId: Number(user?.UserId) ,
     }, {
-      onSuccess: () => {
-        toast.success("Bắt đầu làm bài thành công!");
-        router.navigate({ to: `/exam/${exam.examId}/do-exam` });
+      onSuccess: (data) => {
+        router.navigate({ to: `/exam/${exam.examId}/${data.data.attemptId}` });
       },
       onError: (error) => {
         toast.error(error.message || "Bắt đầu làm bài thất bại!");
