@@ -37,7 +37,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
             FullName = request.FullName,
             Email = request.Email,
             Password = hashedPassword,
-            RoleId = 3,
+            RoleId = 1,
             CreatedAt = DateTime.UtcNow
         };
         var otp = _otpHelper.GenerateOtpAsync(6);
