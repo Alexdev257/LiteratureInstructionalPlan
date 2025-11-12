@@ -218,13 +218,17 @@ public class ExamSubmitCommandHandler : IRequestHandler<ExamSubmitCommand, ExamS
             Status = attempt.Status,
             Score = attempt.Score,
             Feedback = attempt.Feedback,
-            LastSavedAt = DateTime.UtcNow
+            LastSavedAt = DateTime.UtcNow,
         });
 
         if (rs)
             return new ExamSubmitResponse
             {
                 IsSuccess = true,
+                Data = new ExamSubmitResponseDTO
+                {
+                    AttemptId = request.AttemptId,
+                },
                 Message = "Submit Exam successfully!"
             };
 
