@@ -3,7 +3,6 @@ using LIP.Application.CQRS.Command.Examanswer;
 using LIP.Application.CQRS.Command.Examattempt;
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.CQRS.Query.Examattempt;
-using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.Exam;
 using LIP.Application.Interface.Repository;
 using LIP.Domain.Enum;
@@ -11,9 +10,8 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using LIP.Application.Interface.Helpers;
 
 namespace LIP.Application.CQRS.Handler.Exam
 {
@@ -22,13 +20,15 @@ namespace LIP.Application.CQRS.Handler.Exam
         private readonly IExamanswerRepository _examanswerRepository;
         private readonly IExamattemptRepository _examattemptRepository;
         private readonly IExamRepository _examRepository;
+        private readonly IOpenAIService _openAIService;
 
         public ExamLastSubmitCommandHandler(IExamattemptRepository examattemptRepository,
-            IExamanswerRepository examanswerRepository, IExamRepository examRepository)
+            IExamanswerRepository examanswerRepository, IExamRepository examRepository, IOpenAIService openAiService)
         {
             _examattemptRepository = examattemptRepository;
             _examanswerRepository = examanswerRepository;
             _examRepository = examRepository;
+            _openAIService = openAiService;
         }
 
         public async Task<ExamLastSubmitResponse> Handle(ExamLastSubmitCommand request, CancellationToken cancellationToken)
@@ -168,16 +168,13 @@ namespace LIP.Application.CQRS.Handler.Exam
             foreach (var examAnswer in request.Answers)
             {
                 var existingAnswers = await _examanswerRepository.GetAllAsync(new Query.Examanswer.ExamanswerGetAllQuery { AttemptId = request.AttemptId, QuestionId = examAnswer.QuestionId });
-                if (existingAnswers.Any())
+                // materialize and use FirstOrDefault to avoid multiple enumeration
+                var existingAnswer = existingAnswers.FirstOrDefault();
+                if (existingAnswer != null)
                 {
-                    var existingAnswer = existingAnswers.First();
                     var oldContent = existingAnswer.AnswerContent?.Trim() ?? string.Empty;
                     var newContent = examAnswer.AnswerContent?.Trim() ?? string.Empty;
-                    if(oldContent == newContent)
-                    {
-                        continue;
-                    }
-                    else
+                    if (oldContent != newContent)
                     {
                         var updatedResult = await _examanswerRepository.UpdateAsync(new ExamanswerUpdateCommand
                         {
@@ -210,27 +207,34 @@ namespace LIP.Application.CQRS.Handler.Exam
             }
 
             if (!isAllAnswerSaved)
-            return new ExamLastSubmitResponse
-            {
-                IsSuccess = false,
-                Message = "Something went wrong while saving answer!"
-            };
+                return new ExamLastSubmitResponse
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong while saving answer!"
+                };
 
             decimal score = 0;
-            var feedback = "ok";
+            // initialize feedback from existing attempt if available
+            var feedback = attempt.Feedback ?? string.Empty;
             var studentResult = await _examRepository.GetExamResultsByAttemptAsync(request.AttemptId);
+            var examAIResult = new List<ExamAIHelper>();
             foreach(var result in studentResult)
             {
-                if (!result.StudentAnswer.Any())
+                if (result.StudentAnswer == null || !result.StudentAnswer.Any())
                 {
                     continue;
                 }
                 if(result.QuestionType == ((int)QuestionTypeEnum.Text).ToString())
                 {
+                    examAIResult.Add(new ExamAIHelper
+                    {
+                        CorrectAnswer = (result.CorrectAnswer == null) ? "" : result.CorrectAnswer.First().Text!,
+                        UserAnswer = result.StudentAnswer.First().Text!,
+                        QuestionContent = result.QuestionContent!,
+                        Score =(decimal)result.ScorePerQuestion!
+                    });
                     continue;
                 }
-                var check = QuestionTypeEnum.SingleChoice.ToString();
-                Console.WriteLine("check: " +check);
                 if (result.QuestionType == ((int)QuestionTypeEnum.SingleChoice).ToString())
                 {
                     var studentLabel = result.StudentAnswer?.First().Label?.Trim().ToLower();
@@ -246,30 +250,43 @@ namespace LIP.Application.CQRS.Handler.Exam
                 {
                     var studentLabels = result.StudentAnswer?
                         .Select(sa => sa.Label?.Trim().ToLower())
+                        .Where(x => x != null)
                         .ToHashSet();
 
                     var correctLabels = result.CorrectAnswer?
                         .Select(ca => ca.Label?.Trim().ToLower())
+                        .Where(x => x != null)
                         .ToHashSet();
 
-                    var totalCorrect = correctLabels?.Count();
-                    if(totalCorrect == 0)
-                    {
-                        continue;
-                    }
+                    if (studentLabels == null || correctLabels == null)
+                     {
+                         continue;
+                     }
 
-                    var correctAmount = studentLabels!.Intersect(correctLabels!).Count();
-                    decimal partialScore = (decimal)(correctAmount! / totalCorrect!) * result.ScorePerQuestion!.Value;
-                }
+                    var totalCorrectCount = correctLabels.Count;
+                    if (totalCorrectCount == 0) continue;
+
+                    var correctAmount = studentLabels.Intersect(correctLabels).Count();
+                    decimal partialScore = ((decimal)correctAmount / totalCorrectCount) * result.ScorePerQuestion!.Value;
+                     score += partialScore;
+                 }
+             }
+
+            // Call AI only when there are text answers to evaluate
+            if (examAIResult.Any())
+            {
+                var (aiScore, aiFeedback) = await _openAIService.EvaluateAnswerAsync(examAIResult);
+                score += aiScore;
+                feedback = aiFeedback;
             }
-
+            
             var rs = await _examattemptRepository.UpdateAsync(new ExamattemptUpdateCommand
             {
                 AttemptId = attempt.AttemptId,
                 ExamId = attempt.ExamId,
                 UserId = attempt.UserId,
                 StartTime = attempt.StartTime,
-                EndTime = attempt.EndTime,
+                EndTime = DateTime.UtcNow,
                 Status = "Submitted",
                 Score = score,
                 Feedback = feedback,
@@ -282,7 +299,7 @@ namespace LIP.Application.CQRS.Handler.Exam
                     IsSuccess = true,
                     Data = new ExamLastSubmitResponseDTO
                     {
-                        FeedBack = attempt.Feedback,
+                        FeedBack = feedback,
                         Score = score,
                     },
                     Message = "Submit Exam successfully!"

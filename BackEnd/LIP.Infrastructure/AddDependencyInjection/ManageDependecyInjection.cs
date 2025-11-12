@@ -48,6 +48,8 @@ public static class ManageDependecyInjection
         service.AddScoped<ITemplatebookingRepository, TemplatebookingRepository>();
         service.AddScoped<IExamMatrixRepository, ExamMatrixRepository>();
         service.AddScoped<IExamMatrixDetailRepository, ExamMatrixDetailRepository>();
+        // OpenAI service for grading free-text answers
+        service.AddScoped<IOpenAIService, OpenAIService>();
     }
 
     public static void AddMediatRInfrastructure(this IServiceCollection service, IConfiguration config)
@@ -87,8 +89,11 @@ public static class ManageDependecyInjection
         //    ConnectionMultiplexer.Connect(options));
 
         var redisConnection = configuration.GetConnectionString("UptashRedis");
-        service.AddSingleton<IConnectionMultiplexer>(sp =>
-            ConnectionMultiplexer.Connect(redisConnection));
+        if (!string.IsNullOrWhiteSpace(redisConnection))
+        {
+            service.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(redisConnection));
+        }
     }
 
     public static void AddCorsExtentions(this IServiceCollection service)
@@ -129,7 +134,7 @@ public static class ManageDependecyInjection
                     OnAuthenticationFailed = context =>
                     {
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                            context.Response.Headers.Add("Token-Expired", "true");
+                            context.Response.Headers["Token-Expired"] = "true";
                         return Task.CompletedTask;
                     }
                 };
