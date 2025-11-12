@@ -2,7 +2,6 @@ import { createRoute, Outlet, Link } from "@tanstack/react-router";
 import { Route as rootRoute } from "../_root";
 import {
   // Import icons for the new links
-  LayoutDashboard,
   Users,
   HelpCircle,      // Icon for Question
   ClipboardList,   // Icon for Exam
@@ -52,10 +51,10 @@ function AdminLayout() {
           </div>
 
           <nav className="flex-1 overflow-auto py-2 px-4 flex flex-col gap-1 text-sm font-medium"> {/* Giảm py, đổi grid thành flex, giảm gap */}
-            <NavLink to="/dashboard">
+            {/* <NavLink to="/dashboard">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
-            </NavLink>
+            </NavLink> */}
             <NavLink to="/dashboard/users">
               <Users className="h-4 w-4" />
               User
