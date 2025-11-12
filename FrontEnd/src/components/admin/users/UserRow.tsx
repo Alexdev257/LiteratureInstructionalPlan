@@ -1,54 +1,61 @@
-import type { AdminUser } from "@/utils/type";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; 
-import { Badge } from "@/components/ui/badge"; 
-import { Button } from "@/components/ui/button"; 
+// --- File: src/components/admin/users/UserRow.tsx ---
+"use client";
+import type { GetAllUserResponseDTO } from "@/utils/type"; // 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, AlertOctagon, Ban } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, ShieldCheck, ShieldAlert, Undo } from "lucide-react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
-// Helper để style Badge theo status
-// const getStatusBadgeVariant = (
-//   status: AdminUser["status"]
-// ): "default" | "secondary" | "destructive" => {
-//   switch (status) {
-//     case "Active":
-//       return "default"; // Màu xanh (cần custom)
-//     case "Suspended":
-//       return "secondary"; // Màu vàng (cần custom)
-//     case "Banned":
-//       return "destructive"; // Màu đỏ
-//     default:
-//       return "default";
-//   }
-// };
+interface UserRowProps {
+  user: GetAllUserResponseDTO; // Dùng DTO
+  onEdit: (user: GetAllUserResponseDTO) => void;
+  onDelete: (user: GetAllUserResponseDTO) => void;
+  onRestore: (user: GetAllUserResponseDTO) => void;
+}
 
-const getScoreColor = (score: number) => {
-  if (score >= 90) return "text-green-600";
-  if (score >= 70) return "text-blue-600";
-  if (score >= 50) return "text-yellow-600";
-  return "text-destructive";
+// Helper lấy màu và tên Role
+const getRoleProps = (roleId: number | null | undefined) => {
+  switch (roleId) {
+    case 1: // Admin
+      return { name: "Admin", className: "bg-destructive/10 text-destructive border-destructive/20" };
+    case 2: // Teacher
+      return { name: "Giáo viên", className: "bg-primary/10 text-primary border-primary/20" };
+    case 3: // Student
+      return { name: "Học sinh", className: "bg-green-100 text-green-800 border-green-200" };
+    default:
+      return { name: "Chưa rõ", className: "bg-gray-100 text-gray-800" };
+  }
 };
 
-export function UserRow({ user }: { user: AdminUser }) {
+export function UserRow({ user, onEdit, onDelete, onRestore }: UserRowProps) {
   
-  const statusStyles = {
-    Active: "bg-green-100 text-green-800 border-green-200",
-    Suspended: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    Banned: "bg-destructive/10 text-destructive border-destructive/20",
+  const roleProps = getRoleProps(user.roleId);
+  
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "N/A";
+    try {
+      return format(new Date(dateString), "dd/MM/yyyy", { locale: vi });
+    } catch (e) {
+      return dateString;
+    }
   };
   
   return (
-    <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
+    <div className="grid grid-cols-10 gap-4 px-6 py-4 items-center">
       {/* Người Dùng */}
       <div className="col-span-3 flex items-center gap-3">
         <Avatar className="h-9 w-9">
-          <AvatarImage src={user.avatarUrl} />
+          <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.fullName}`} />
           <AvatarFallback className="bg-primary/10 text-primary font-medium">
-            {user.fullName[0].toUpperCase()}
+            {user.fullName[0]?.toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div>
@@ -57,29 +64,31 @@ export function UserRow({ user }: { user: AdminUser }) {
         </div>
       </div>
 
-      {/* Trạng Thái */}
+      {/* Vai trò */}
       <div className="col-span-2">
-        <Badge
-          variant="outline"
-          className={statusStyles[user.status]}
-        >
-          {user.status}
+        <Badge variant="outline" className={roleProps.className}>
+          {roleProps.name}
         </Badge>
       </div>
 
-      {/* Bài Báo HC */}
-      <div className="col-span-2 text-sm font-medium">
-        {user.postCount}
+      {/* Trạng Thái */}
+      <div className="col-span-2">
+         {user.isDeleted ? (
+            <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
+              <ShieldAlert className="mr-1 h-3 w-3" />
+              Đã xóa (Banned)
+            </Badge>
+         ) : (
+            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+              <ShieldCheck className="mr-1 h-3 w-3" />
+              Hoạt động
+            </Badge>
+         )}
       </div>
 
-      {/* Điểm TB */}
-      <div className={`col-span-1 text-sm font-semibold ${getScoreColor(user.averageScore)}`}>
-        {user.averageScore.toFixed(1)}%
-      </div>
-
-      {/* Hoạt Động Cuối */}
-      <div className="col-span-3 text-sm text-muted-foreground">
-        {user.lastActivity}
+      {/* Ngày tạo */}
+      <div className="col-span-2 text-sm text-muted-foreground">
+        {formatDate(user.createdAt)}
       </div>
 
       {/* Hành Động */}
@@ -91,18 +100,22 @@ export function UserRow({ user }: { user: AdminUser }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(user)}>
               <Edit className="mr-2 h-4 w-4" />
               Sửa
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <AlertOctagon className="mr-2 h-4 w-4" />
-              Tạm ngưng
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              <Ban className="mr-2 h-4 w-4" />
-              Cấm
-            </DropdownMenuItem>
+            
+            {user.isDeleted ? (
+              <DropdownMenuItem onClick={() => onRestore(user)} className="text-green-600">
+                <Undo className="mr-2 h-4 w-4" />
+                Khôi phục
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive">
+                <Trash2 className="mr-2 h-4 w-4" />
+                Xóa (Ban)
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

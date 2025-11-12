@@ -1,10 +1,10 @@
+
 import { createRoute } from "@tanstack/react-router";
 import { Route as dashboardLayoutRoute } from "./_layout";
-// Sửa đường dẫn import ở dòng này:
-import UserManagementPage from "@/components/admin/users/page"; 
+import ExamManagementPage from "@/components/admin/exam/page"; // Trỏ đến file page.tsx
 
 export const Route = createRoute({
   getParentRoute: () => dashboardLayoutRoute,
-  path: "/users",
-  component: UserManagementPage, // Tên biến giữ nguyên
+  path: "/exams",
+  component: ExamManagementPage,
 });
