@@ -2,7 +2,7 @@ namespace LIP.Domain.Enum;
 
 public enum QuestionTypeEnum
 {
-    MultipleChoice = 1,
-    SingleChoice = 2,
+    MultipleChoice = 2,
+    SingleChoice = 1,
     Text = 3
 }

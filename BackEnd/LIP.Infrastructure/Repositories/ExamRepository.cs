@@ -27,6 +27,7 @@ public class ExamRepository : IExamRepository
             .Include(e => e.ExamType)
             .Include(e => e.GradeLevel)
             .Include(e => e.Examattempts)
+                .ThenInclude(e => e.Examanswers)
             .Include(e => e.Questions)
             .AsQueryable();
 

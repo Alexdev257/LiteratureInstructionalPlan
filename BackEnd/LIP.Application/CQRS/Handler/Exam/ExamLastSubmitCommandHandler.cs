@@ -6,6 +6,7 @@ using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.Exam;
 using LIP.Application.Interface.Repository;
+using LIP.Domain.Enum;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -209,11 +210,58 @@ namespace LIP.Application.CQRS.Handler.Exam
             }
 
             if (!isAllAnswerSaved)
-                return new ExamLastSubmitResponse
+            return new ExamLastSubmitResponse
+            {
+                IsSuccess = false,
+                Message = "Something went wrong while saving answer!"
+            };
+
+            decimal score = 0;
+            var feedback = "ok";
+            var studentResult = await _examRepository.GetExamResultsByAttemptAsync(request.AttemptId);
+            foreach(var result in studentResult)
+            {
+                if (!result.StudentAnswer.Any())
                 {
-                    IsSuccess = false,
-                    Message = "Something went wrong while saving answer!"
-                };
+                    continue;
+                }
+                if(result.QuestionType == ((int)QuestionTypeEnum.Text).ToString())
+                {
+                    continue;
+                }
+                var check = QuestionTypeEnum.SingleChoice.ToString();
+                Console.WriteLine("check: " +check);
+                if (result.QuestionType == ((int)QuestionTypeEnum.SingleChoice).ToString())
+                {
+                    var studentLabel = result.StudentAnswer?.First().Label?.Trim().ToLower();
+                    var correctLabel = result.CorrectAnswer?.First().Label?.Trim().ToLower();
+
+                    if(studentLabel == correctLabel)
+                    {
+                        score += result.ScorePerQuestion!.Value;
+                    }
+                }
+
+                if(result.QuestionType == ((int)QuestionTypeEnum.MultipleChoice).ToString())
+                {
+                    var studentLabels = result.StudentAnswer?
+                        .Select(sa => sa.Label?.Trim().ToLower())
+                        .ToHashSet();
+
+                    var correctLabels = result.CorrectAnswer?
+                        .Select(ca => ca.Label?.Trim().ToLower())
+                        .ToHashSet();
+
+                    var totalCorrect = correctLabels?.Count();
+                    if(totalCorrect == 0)
+                    {
+                        continue;
+                    }
+
+                    var correctAmount = studentLabels!.Intersect(correctLabels!).Count();
+                    decimal partialScore = (decimal)(correctAmount! / totalCorrect!) * result.ScorePerQuestion!.Value;
+                }
+            }
 
             var rs = await _examattemptRepository.UpdateAsync(new ExamattemptUpdateCommand
             {
@@ -223,8 +271,8 @@ namespace LIP.Application.CQRS.Handler.Exam
                 StartTime = attempt.StartTime,
                 EndTime = attempt.EndTime,
                 Status = "Submitted",
-                Score = attempt.Score,
-                Feedback = attempt.Feedback,
+                Score = score,
+                Feedback = feedback,
                 LastSavedAt = DateTime.UtcNow
             });
 
@@ -232,6 +280,11 @@ namespace LIP.Application.CQRS.Handler.Exam
                 return new ExamLastSubmitResponse
                 {
                     IsSuccess = true,
+                    Data = new ExamLastSubmitResponseDTO
+                    {
+                        FeedBack = attempt.Feedback,
+                        Score = score,
+                    },
                     Message = "Submit Exam successfully!"
                 };
 

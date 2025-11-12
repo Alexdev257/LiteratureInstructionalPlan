@@ -37,6 +37,7 @@ public class QuestionDTO
     public List<AnswerOption>? Answer { get; set; }
 
     public List<AnswerOption>? CorrectAnswer { get; set; }
+    public List<AnswerOption>? StudentAnswer { get; set; }
 
     public int? GradeLevelId { get; set; }
 
@@ -44,3 +45,4 @@ public class QuestionDTO
 
     public DateTime? CreatedAt { get; set; }
 }
+
