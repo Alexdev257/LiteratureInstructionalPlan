@@ -3,13 +3,14 @@ import type { MatrixInput } from "@/schema/matrixSchema";
 
 import { QUERY_KEY } from "@/utils/constants";
 import type { MatrixQuery } from "@/utils/type"
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 
 
 export const useMatrix = () => {
-    const useGetMatrices = (filters: MatrixQuery) => {
+    const queryClient = useQueryClient();
+    const useGetMatrices = (filters?: MatrixQuery) => {
         return useQuery({
             queryKey: [QUERY_KEY.matrix(filters)],
             queryFn: () => matrixApi.getMatrices(filters),
@@ -23,12 +24,51 @@ export const useMatrix = () => {
             staleTime: 5 * 60 * 1000,
         });
     }
-    const createMatrix = useMutation({
+    const usePostMatrix = useMutation({
         mutationFn: async (data: MatrixInput) => {
             return await matrixApi.createMatrix(data);
-        }
+        }, onSuccess: async () => {
+            const freshData = await matrixApi.getMatrices({ PageNumber: 1, PageSize: 10, Search: '',IsAdmin:false });
+            queryClient.setQueryData([QUERY_KEY.matrix({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false })], freshData);
+        },
+    });
+    const useDeleteMatrix = useMutation({
+        mutationFn: async (id: number) => {
+            return await matrixApi.deleteMatrix(id);
+        }, onSuccess: async () => {
+            const freshData = await matrixApi.getMatrices({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false });
+            queryClient.setQueryData([QUERY_KEY.matrix({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false })], freshData);
+        },
+    });
+    const useRestoreMatrix = useMutation({
+        mutationFn: async (id: number) => {
+            return await matrixApi.restoreMatrix(id);
+        }, onSuccess: async () => {
+            const freshData = await matrixApi.getMatrices({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false });
+            queryClient.setQueryData([QUERY_KEY.matrix({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false })], freshData);
+        },
+    });
+    const useUpdateMatrix = useMutation({
+        mutationFn: async ({ id, data }: { id: number; data: MatrixInput }) => {
+            return await matrixApi.updateMatrix(id, data);
+        }, onSuccess: async (_res, variables) => {
+            const { id } = variables;
+            const freshList = await matrixApi.getMatrices({
+                PageNumber: 1,
+                PageSize: 10,
+                Search: "",
+                IsAdmin: false
+            });
+            queryClient.setQueryData(
+                [QUERY_KEY.matrix({ PageNumber: 1, PageSize: 10, Search: "", IsAdmin: false })],
+                freshList
+            );
+
+            const freshDetail = await matrixApi.getMatrixById(id);
+            queryClient.setQueryData([QUERY_KEY.getMatrixById(id)], freshDetail);
+        },
     });
 
-    return { useGetMatrices, useGetMatrixById, createMatrix };
+    return { useGetMatrices, useGetMatrixById, usePostMatrix, useDeleteMatrix, useRestoreMatrix, useUpdateMatrix };
 
 }

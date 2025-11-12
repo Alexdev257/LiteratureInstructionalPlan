@@ -3,6 +3,6 @@ import { createRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRoute({
   getParentRoute: () => teacherLayoutRoute,
-  path: '/matrices',
+  path: '/matrix',
   component: () => <Outlet />,
 });

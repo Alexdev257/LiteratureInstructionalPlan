@@ -1,5 +1,5 @@
 import { BookOpen, Clock, CheckCircle, Trophy } from "lucide-react";
-import type { LeaderboardEntry, Features, GradeLevel, ExamType, ExamData, Template } from "./type";
+import type { LeaderboardEntry, Features, GradeLevel, ExamType,  Template } from "./type";
 
 
 
@@ -24,8 +24,126 @@ export const mockUsers = [
   }
 ];
 
+export const mockfeatures: Features[] = [
+  {
+    icon: BookOpen,
+    title: 'Ngân hàng đề thi phong phú',
+    description: 'Hơn 500 đề thi được phân loại theo lớp và chủ đề, cập nhật liên tục'
+  },
+  {
+    icon: Clock,
+    title: 'Luyện thi trực tuyến',
+    description: 'Môi trường thi thử với đồng hồ đếm ngược và tự động lưu bài'
+  },
+  {
+    icon: CheckCircle,
+    title: 'Chấm điểm tự động',
+    description: 'Nhận kết quả ngay lập tức với lời giải chi tiết'
+  },
+  {
+    icon: Trophy,
+    title: 'Xếp hạng cạnh tranh',
+    description: 'Theo dõi tiến độ và cạnh tranh với bạn bè trên bảng xếp hạng'
+  }
+];
 
-
+export const mockTemplates: Template[] = [
+  {
+    templateId: 1,
+    title: "Đề kiểm tra Toán lớp 10 - Chương 1",
+    filePath: "/uploads/templates/math10-chap1.docx",
+    viewPath: "/templates/preview/math10-chap1",
+    price: 15000,
+    gradeLevel: {
+      gradeLevelId: 10,
+      name: "Lớp 10",
+    },
+    createdBy: {
+      UserId: "1",
+      FullName: "Nguyễn Văn A",
+      Email: "nguyenvana@example.com",
+    },
+    totalDownload: 125,
+    isDeleted: false,
+    createdAt: new Date("2025-02-15T09:20:00Z"),
+  },
+  {
+    templateId: 2,
+    title: "Đề thi thử Đại học - Môn Văn",
+    filePath: "/uploads/templates/literature-exam.docx",
+    viewPath: "/templates/preview/literature-exam",
+    price: 20000,
+    gradeLevel: {
+      gradeLevelId: 12,
+      name: "Lớp 12",
+    },
+    createdBy: {
+      UserId: "u002",
+      FullName: "Trần Thị B",
+      Email: "tranthib@example.com",
+    },
+    totalDownload: 89,
+    isDeleted: true,
+    createdAt: new Date("2025-01-22T13:45:00Z"),
+  },
+  {
+    templateId: 3,
+    title: "Mẫu đề Tiếng Anh lớp 11 - Học kỳ 1",
+    filePath: "/uploads/templates/english11-hk1.pdf",
+    viewPath: "/templates/preview/english11-hk1",
+    price: 10000,
+    gradeLevel: {
+      gradeLevelId: 11,
+      name: "Lớp 11",
+    },
+    createdBy: {
+      UserId: "u003",
+      FullName: "Phạm Minh C",
+      Email: "phamminhc@example.com",
+    },
+    totalDownload: 56,
+    isDeleted: false,
+    createdAt: new Date("2025-03-05T10:00:00Z"),
+  },
+  {
+    templateId: 4,
+    title: "Đề ôn tập Hóa học lớp 10 - Phần Este",
+    filePath: "/uploads/templates/chemistry10-este.pdf",
+    viewPath: "/templates/preview/chemistry10-este",
+    price: 12000,
+    gradeLevel: {
+      gradeLevelId: 10,
+      name: "Lớp 10",
+    },
+    createdBy: {
+      UserId: "u004",
+      FullName: "Đỗ Thị D",
+      Email: "dothid@example.com",
+    },
+    totalDownload: 74,
+    isDeleted: false,
+    createdAt: new Date("2025-05-10T08:30:00Z"),
+  },
+  {
+    templateId: 5,
+    title: "Đề kiểm tra Sinh học lớp 12 - ADN & Gen",
+    filePath: "/uploads/templates/biology12-adn-gen.docx",
+    viewPath: "/templates/preview/biology12-adn-gen",
+    price: 18000,
+    gradeLevel: {
+      gradeLevelId: 12,
+      name: "Lớp 12",
+    },
+    createdBy: {
+      UserId: "u005",
+      FullName: "Lê Văn E",
+      Email: "levane@example.com",
+    },
+    totalDownload: 210,
+    isDeleted: true,
+    createdAt: new Date("2025-04-01T15:15:00Z"),
+  },
+];
 
 
 
@@ -343,96 +461,7 @@ export const mockExamData: ExamData[] = [
 
 
 
-export const mockfeatures: Features[] = [
-  {
-    icon: BookOpen,
-    title: 'Ngân hàng đề thi phong phú',
-    description: 'Hơn 500 đề thi được phân loại theo lớp và chủ đề, cập nhật liên tục'
-  },
-  {
-    icon: Clock,
-    title: 'Luyện thi trực tuyến',
-    description: 'Môi trường thi thử với đồng hồ đếm ngược và tự động lưu bài'
-  },
-  {
-    icon: CheckCircle,
-    title: 'Chấm điểm tự động',
-    description: 'Nhận kết quả ngay lập tức với lời giải chi tiết'
-  },
-  {
-    icon: Trophy,
-    title: 'Xếp hạng cạnh tranh',
-    description: 'Theo dõi tiến độ và cạnh tranh với bạn bè trên bảng xếp hạng'
-  }
-];
 
-export const mockAPiTemplate: Template[] = [
-    {
-        id: "4E84C61D0BA8445B!s7a9e82c85b81449289655eab0c8ee643",
-        title: "2- first-component.docx",
-        description: "Tài liệu hướng dẫn sử dụng component đầu tiên",
-        price: 0,
-        urlView: "https://1drv.ms/w/c/95a65105efd833f9/EfC_BT7oI1VIsz2sKzLLp0ABj4YiG5pVGX4a6mNWxd6AfA?e=Jg89wR",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=7a9e82c8-5b81-4492-8965-5eab0c8ee643&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.Kc0svwPcGNehs1b5qSZLs_ZF_WQYauHu20OyDUm-tXrRjDThdx7gvX6bPdFvqGBmkmc7GkrrFZZtnIdx-OkIwyiLiyHw6dUucMs-JnzhSD_PF18ADLQCdDrxOdDtPsXY6Pzk9E3siNtPgOigPykQFEVib-xbq42l1fmF15Z9V9hRq5c2oVCuRtCsH1xZ9_Ssah9DeSXL-J35DBZvuw3SQA5jNKp5aJvhOS2jIAM8WzkZL2Bl1JMvB4eY2wAxBpXegP7YaMjrvp1sjHkS9on8GTTJeyPGBkLOJycx-Beu5KwYLD3QH7CaM445b-CQX6SNuvMBHHc8y22kWII8GCn81RvLhsxmwuRG6TzBDoNA_aE1dkqOyNvu0wlDIG_i70PRTdOKtS10AXpCzyHyjxb0d2CPwRZDctBBNpwIWKljIZFMAssNfq1_6kStRXEd3FFV.J-m1yit4qXkMPscafY06N0DtC_IzDmHXBfbCOUXyW7k&ApiVersion=2.0",
-        grade: { gradeLevelId: 1, name: "Lớp 1" },
-        createdBy: { userId: "user123", username: "teacherA" }
-    },
-    {
-        id: "4E84C61D0BA8445B!s685e4714cd6b4d8787d15c9b6f5e5256",
-        title: "3-Explore the View and Text Components.docx",
-        description: "Hướng dẫn khám phá các component View và Text trong React Native",
-        price: 15000,
-        urlView: "https://1drv.ms/w/c/4e84c61d0ba8445b/ERRHXmhrzYdNh9Fcm29eUlYBEM4YqRBrD-SZe63G-Kbfew?e=hLtyMy",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=685e4714-cd6b-4d87-87d1-5c9b6f5e5256&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.rTOMCtBTXHsfQzumeGmBUSXwGR7DoM6UBYbckvOwBAZxYv7ccEjlr_xqiN99Od6lgpq7_zqgJmVSPMhlhyvIRy14Flvh9KhxpoeXKT0g-53GiSz_2bWemQUoa4ABBRB-YwaHrzC2n9IUpnBxK9Fqe1beMSqGj0nGd1CruWPtn1sjyBcYIJIjNxINPCBZfum8Bh8m2sjkrj85AwZxcHJn019WGIWckbWzomYg4annK40qzwKsKa0e1H3VaymLrFODdGgZ1MIp59VKkz2rvDtDtjrTLB09MJLDGTa0Bc3NhMBT_ovfFb8_rg1HZoCUyNmG6ulzWf2sM8m_vg3ZkIScgK1K8HxYvvXa1ilsCjhMxBtEbk71GHaLi1j41MZUPAmqo-2Xsf3JEhpSxDiUgkh_Kxbs_7QSNm1t3Ar3Q9kWJNJ5sWHGx0F1Q4sKLzowCSw-.ng1SL3vGQVZd52eTT2hATbnoXYdCEZ4IFh_nhAOzDXY&ApiVersion=2.0",
-        grade: { gradeLevelId: 2, name: "Lớp 2" },
-        createdBy: { userId: "user124", username: "teacherB" }
-    },
-    {
-        id: "4E84C61D0BA8445B!s6e48146565564587a4f1acd496cd867b",
-        title: "4-Exercise- Build a React Native screen.docx",
-        description: "Bài tập xây dựng một màn hình React Native hoàn chỉnh",
-        price: 20000,
-        urlView: "https://1drv.ms/w/c/4e84c61d0ba8445b/EWUUSG5WZYdFpPGs1JbNhnsB_nWUM88zQtEKbxVhLEHmWg?e=wfklOo",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=6e481465-6556-4587-a4f1-acd496cd867b&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.R038VAo8HxCFZTG9iNW8CX_Lek3hupEw7KOyUlkk0ZxW9rP5FTZ0O7nC0IY1eb-0im_850atJi4e10_nP-8spbLyEzIW9MkwAbkyXJB86w5n86-2SjRfBnPfynuCuN2KfSind2Z6eEZjMvuiYJr3JVl9Pfncci3vqTFQ2Ikt3SX8qIpJ5S7xM0oclGiQl-8m4ijnZMnvPbEIVm5A-d25lIbSXezALaXnHONC3lgcrDJRutSSMyghPCddvQO0QFKr0hIY_F-RjghEO5loLI7T7uUCgKk7tk9UoIF0CMC5lVkEoH3a7fjuOCLSL_u7NVVL7jYA6VINtGOLr_p2t87g4yXXvscM34y9KKHYKjUOGZ5kvXOmFIkzYMFAvt_-K04uFjSp8vdiK9VMvC8MR0vN-O2O5fiPKuTN_9ay-btvb3FGFRtNWePJ7TZEXx-1C3Rq.b3LQkKibGfU4VI52CRyyYYE7E2lo7XnxRPA7uOH1P5w&ApiVersion=2.0",
-        grade: { gradeLevelId: 3, name: "Lớp 3" },
-        createdBy: { userId: "user125", username: "teacherC" }
-    },
-    {
-        id: "4E84C61D0BA8445B!s3c1a230423724d4bbbcdc116b2c9b31a",
-        title: "8-Render a large list using FlatList.docx",
-        price: 20000,
-        description: "Hướng dẫn sử dụng FlatList để render danh sách lớn trong React Native",
-        urlView: "https://1drv.ms/w/c/4e84c61d0ba8445b/EQQjGjxyI0tNu83BFrLJsxoB-qPC6GAqxH7_XBavQ5WfNg?e=HYNuxk",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=3c1a2304-2372-4d4b-bbcd-c116b2c9b31a&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.kmKpfTv3XrwlUQIXbw6ELfxNpiWFtkc70vDysWnZuE620yEEVNIh_h-QQGMLbrQuAdLvnNVEHFtGADjyyr_EsMxXiEai9qdIc2ix6L8kYDEMGQ4vxKNPywNHBmmEOpdV-yvRyHQ2SSR6WejIreqZA4mgmYsk_XUWXagEqE9CJU1izXbLfnke7a80ylKc56Dc8EiBmLz2vdR3pkXIRPrEbehvgS_1taHPkoRrq6UyKfSRPOb7kr492NWBiwT5E5OZ4YnBQRkFjcLRzB4psk4_msIkAs7s7IzBfb5SoRXBn39Q67JQp37PbUg33xIDartvk4hRUx7ypEJV7S3H2XRKw8v_shQYFjmeor_wPoDG4GiGmGw31uOZARmOxhuGCpO2LY947h0rJkfcy0R9eOUTSCJahzs3L0uWr_EphfvYkd-JMX701DJWK-r28gwgqBH5.s76OY-EuJfv3kC5aT9DmAjoZz1n-WWEWAQsE3kqEZqk&ApiVersion=2.0",
-        grade: { gradeLevelId: 4, name: "Lớp 4" },
-        createdBy: { userId: "user126", username: "teacherD" }
-    },
-    {
-        id: "4E84C61D0BA8445B!s26dd09c02cd94f4ba70c99454feca168",
-        title: "9--Render a large list using SectionList.docx",
-        price: 25000,
-        description: "Hướng dẫn sử dụng SectionList để render danh sách phân đoạn trong React Native",
-        urlView: "https://1drv.ms/w/c/4e84c61d0ba8445b/EcAJ3SbZLEtPpwyZRU_soWgB_rBSY0SdTH8wXoaXB-z9Rg?e=Kf7CZA",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=26dd09c0-2cd9-4f4b-a70c-99454feca168&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.ZmJTmlNdF05kcOjeCV3qdsNupozMUeTatDYWE91wsi2H1CQru0fviionOr8sQZykej3OslLsQQ4p7zO4R9_swnzk598xSHRv5Jo-qtpoPN4jOT7iJ1VY-GdV-muawD8reA56LoSSWhdSngSzrOVGwZC1P0jRN5mok7WVx0N5W6yw_Ek6Sk_be8E0J5WfvobQu95P9nX_Zl_CS1Rv29M5CJOSOG7Mvti6_sbqVuVIXDJ4TeABSB8kDWEQMSHXPFQzXou9hnpSqc5-hcGJnYIcUlDaYhDaooc6vgRY-mj7v9NTYGal-jBbS4MrXzuowE2hEt5GQlS6Ug65U3gPLy8aA79IqXMmngpFeCQhdZH9tNhAiMkaENOJoouJFpi43j-Tes_-idycL76lWJtfXdMcVwnK4EIcgsCTKCyvJCh-ENZUBl9-D3Pi9AjWS0c_YbPD.k7NM9YVvIAzmBCiYZ-bv6g8oPYeVvwaFwREIvPK2v_E&ApiVersion=2.0",
-        grade: { gradeLevelId: 5, name: "Lớp 5" },
-        createdBy: { userId: "user127", username: "teacherE" }
-    },
-    {
-        id: "4E84C61D0BA8445B!s6cfc344c01b445a1be1ff5d44ecd4c0a",
-        title: "Exercise 17_React Form.docx",
-        description: "Bài tập về biểu mẫu (form) trong React Native",
-        price: 30000,
-        urlView: "https://1drv.ms/w/c/4e84c61d0ba8445b/EUw0_Gy0AaFFvh_11E7NTAoBMJdRiowxBTEbY8gtjuLX4A?e=at6dsO",
-        urlEdit: "https://1drv.ms/w/c/4e84c61d0ba8445b/Eamv8uQZ9eZJr_qxB8_aRBYBJx3Vzi5ACrIDqpsMALxZ2Q?e=Ef5vHd",
-        urlDownload: "https://my.microsoftpersonalcontent.com/personal/4e84c61d0ba8445b/_layouts/15/download.aspx?UniqueId=6cfc344c-01b4-45a1-be1f-f5d44ecd4c0a&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiIwMzE1ZGRhYy05NzMxLTRhOGMtOTZhZS01ZjFlNTYxMjg1NDAiLCJhcHBfZGlzcGxheW5hbWUiOiJTV0QiLCJhcHBpZCI6IjVhN2U4ZDQ0LWRkMzMtNGI2Zi05MGNhLTZiM2JlZmU3MmFlMCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NjE0NDMwNDUifQ.tOqXvU3UAVued3CwHTydznz_io6Btdc3L5t-n4w4tpGpj2vzwNBu3p3Tb5-DLRUbAZDZp83iwlxE9sQmwPb_grnReDm-ABF2AB8nP_Ywe6M7IHrf8pdOJNY1lhqB5XudC_cRyAVEa8J3tnEXZkoWLv4IH4TBaFnfuUC2PVdjqEEGeFQhBs5qXgKpadzo5gtMXA1g6nV822_Tm-pnPRm0OxHzqqXeBW1UQS-zt9mLeHEtDTnf4rQFususFg2ph4WlB1jgQr-75DaGHr9L0yBzIUGN1f3RAVkBOJh4utYJCS_SnajDjlB1OYLc73KI8B_rX9RcWMcR00XTcx0lp0DhvxgX6tdIWdbl_eVUv7xCYUB9SPxp5dKuLb5sf4irQYMrHEAMD1khIuzgn3BPnL7n7a9aCwlqz5cKkPa793c-shMWCENCPy3O6qCwhJMbZ8eu.7asWfHs8f-6dSt1V7anIQJN_1WAq6JEfKd_wDgYoEaM&ApiVersion=2.0",
-        grade: { gradeLevelId: 6, name: "Lớp 6" },
-        createdBy: { userId: "user128", username: "teacherF" }
-    }
-]
+
 
 

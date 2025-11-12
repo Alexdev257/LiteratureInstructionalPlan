@@ -48,7 +48,7 @@ export class BaseApi {
   ): Promise<ResponseData<T>> {
     // Check if body is FormData
     const isFormData = body instanceof FormData;
-    
+      
     const res = await fetch(url, {
       method,
       headers: this.getHeaders(isFormData),
