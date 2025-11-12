@@ -11,7 +11,6 @@ public class GetAllExamRequest : PaginationRequest
     public bool? IsShowCorrectAnswer { get; set; } = false!;
 }
 
-
 public class ExamResultDTO
 {
     public int QuestionId { get; set; }
@@ -19,6 +18,7 @@ public class ExamResultDTO
     public List<AnswerOption>? StudentAnswer { get; set; }
     public List<AnswerOption>? CorrectAnswer { get; set; }
     public decimal? ScorePerQuestion { get; set; }
+
     public string QuestionType { get; set; }
     //public bool IsCorrect = false;
     //=> string.Equals(StudentAnswer?.Trim(), CorrectAnswer?.Trim(), StringComparison.OrdinalIgnoreCase);

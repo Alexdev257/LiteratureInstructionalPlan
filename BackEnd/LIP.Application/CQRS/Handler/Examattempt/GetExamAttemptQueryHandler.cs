@@ -1,9 +1,10 @@
-﻿using LIP.Application.CQRS.Query.Examattempt;
+﻿using System.Text.Json;
+using LIP.Application.CQRS.Query.Examattempt;
 using LIP.Application.DTOs.Request.PracticeQuestion;
 using LIP.Application.DTOs.Response.ExamAttempt;
+using LIP.Application.DTOs.Response.Template;
 using LIP.Application.Interface.Repository;
 using MediatR;
-using System.Text.Json;
 
 namespace LIP.Application.CQRS.Handler.Examattempt;
 
@@ -31,11 +32,11 @@ public class GetExamAttemptQueryHandler : IRequestHandler<GetExamAttemptQuery, G
         {
             AttemptId = attempt.AttemptId,
             ExamId = attempt.ExamId,
-            User = new DTOs.Response.Template.CreatedByDTO
+            User = new CreatedByDTO
             {
                 UserId = attempt.User.UserId,
                 Email = attempt.User.Email,
-                FullName = attempt.User.FullName,
+                FullName = attempt.User.FullName
             },
             StartTime = attempt.StartTime,
             EndTime = attempt.EndTime,
@@ -47,9 +48,9 @@ public class GetExamAttemptQueryHandler : IRequestHandler<GetExamAttemptQuery, G
             {
                 QuestionId = ass.QuestionId,
                 AnswerContent = string.IsNullOrEmpty(ass.AnswerContent)
-                        ? new List<DTOs.Request.PracticeQuestion.AnswerOption>()
-                        : JsonSerializer.Deserialize<List<AnswerOption>>(ass.AnswerContent),
-            }).ToList(),
+                    ? new List<AnswerOption>()
+                    : JsonSerializer.Deserialize<List<AnswerOption>>(ass.AnswerContent)
+            }).ToList()
         };
         return new GetExamAttemptResponse
         {

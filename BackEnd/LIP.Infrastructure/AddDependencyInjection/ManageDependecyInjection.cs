@@ -90,10 +90,8 @@ public static class ManageDependecyInjection
 
         var redisConnection = configuration.GetConnectionString("UptashRedis");
         if (!string.IsNullOrWhiteSpace(redisConnection))
-        {
             service.AddSingleton<IConnectionMultiplexer>(sp =>
                 ConnectionMultiplexer.Connect(redisConnection));
-        }
     }
 
     public static void AddCorsExtentions(this IServiceCollection service)

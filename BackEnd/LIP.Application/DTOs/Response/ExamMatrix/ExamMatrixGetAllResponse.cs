@@ -10,7 +10,9 @@ public class ExamMatrixGetAllResponseDTO
 {
     public int MatrixId { get; set; }
     public string? Title { get; set; }
+
     public string? Description { get; set; }
+
     //public int? GradeLevelId { get; set; }
     //public int? CreatedByUserId { get; set; }
     public GradeLevelDTO GradeLevel { get; set; }

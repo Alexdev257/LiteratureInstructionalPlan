@@ -26,14 +26,12 @@ public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteComman
         var isSuccess = await _templateRepository.DeleteAsync(request);
 
         if (isSuccess)
-        {
             return new CommonResponse<bool>
             {
                 IsSuccess = true,
                 Message = "Delete template success",
                 Data = true
             };
-        }
 
         return new CommonResponse<bool>
         {

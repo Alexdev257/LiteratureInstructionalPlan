@@ -40,24 +40,30 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
             DurationMinutes = e.DurationMinutes!.Value,
             //GradeLevelId = e.GradeLevelId!.Value,
             //ExamTypeId = e.ExamTypeId!.Value,
-            GradeLevel = e.GradeLevel != null ? new GradeLevelDTO
-            {
-                GradeLevelId = e.GradeLevel.GradeLevelId,
-                Name = e.GradeLevel.Name
-            } : null!,
-            ExamType = e.ExamType != null ? new ExamTypeDTO
-            {
-                ExamTypeId = e.ExamType.ExamTypeId,
-                Name = e.ExamType.Name,
-            } : null!,
+            GradeLevel = e.GradeLevel != null
+                ? new GradeLevelDTO
+                {
+                    GradeLevelId = e.GradeLevel.GradeLevelId,
+                    Name = e.GradeLevel.Name
+                }
+                : null!,
+            ExamType = e.ExamType != null
+                ? new ExamTypeDTO
+                {
+                    ExamTypeId = e.ExamType.ExamTypeId,
+                    Name = e.ExamType.Name
+                }
+                : null!,
             MatrixId = e.MatrixId!.Value,
             //CreateByUserId = e.CreatedByNavigationUserId!.Value,
-            CreatedBy = e.CreatedByNavigation != null ? new CreatedByDTO
-            {
-                UserId = e.CreatedByNavigation.UserId,
-                FullName = e.CreatedByNavigation.FullName,
-                Email = e.CreatedByNavigation.Email,
-            } : null!,
+            CreatedBy = e.CreatedByNavigation != null
+                ? new CreatedByDTO
+                {
+                    UserId = e.CreatedByNavigation.UserId,
+                    FullName = e.CreatedByNavigation.FullName,
+                    Email = e.CreatedByNavigation.Email
+                }
+                : null!,
             CreatedAt = e.CreatedAt!.Value,
             Questions = e.Questions.Select(q => new QuestionDTO
             {
@@ -75,7 +81,7 @@ public class GetAllExamQueryHandler : IRequestHandler<GetAllExamQuery, GetAllExa
                     ? new List<AnswerOption>()
                     : string.IsNullOrWhiteSpace(q.CorrectAnswer)
                         ? new List<AnswerOption>()
-                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer),
+                        : JsonSerializer.Deserialize<List<AnswerOption>>(q.CorrectAnswer)
             }).ToList()
         }).ToList();
 

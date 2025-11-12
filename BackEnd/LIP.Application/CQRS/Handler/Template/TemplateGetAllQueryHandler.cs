@@ -72,5 +72,4 @@ public class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, T
             Data = paged
         };
     }
-
 }

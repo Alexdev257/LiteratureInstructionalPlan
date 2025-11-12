@@ -24,12 +24,12 @@ public class ExamMatrixGetQueryHandler : IRequestHandler<ExamMatrixGetQuery, Exa
                 IsSuccess = false,
                 Message = "Exam Matrix is not found"
             };
-        int totalQuestions = 0;
+        var totalQuestions = 0;
         decimal totalPoint = 0;
         foreach (var detail in rs.Exammatrixdetails)
         {
             totalQuestions += detail.Quantity!.Value;
-            totalPoint += detail.ScorePerQuestion!.Value * (decimal)detail.Quantity!.Value;
+            totalPoint += detail.ScorePerQuestion!.Value * detail.Quantity!.Value;
         }
 
         var matrixDTO = new ExamMatrixGetResponseDTO
@@ -37,17 +37,21 @@ public class ExamMatrixGetQueryHandler : IRequestHandler<ExamMatrixGetQuery, Exa
             MatrixId = rs.MatrixId,
             Title = rs.Title,
             Description = rs.Description,
-            GradeLevel = rs.GradeLevel != null ? new GradeLevelDTO
-            {
-                GradeLevelId = rs.GradeLevel.GradeLevelId,
-                Name = rs.GradeLevel.Name
-            } : null!,
-            CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
-            {
-                UserId = rs.CreatedByNavigation.UserId,
-                FullName = rs.CreatedByNavigation.FullName,
-                Email = rs.CreatedByNavigation.Email
-            } : null!,
+            GradeLevel = rs.GradeLevel != null
+                ? new GradeLevelDTO
+                {
+                    GradeLevelId = rs.GradeLevel.GradeLevelId,
+                    Name = rs.GradeLevel.Name
+                }
+                : null!,
+            CreatedBy = rs.CreatedByNavigation != null
+                ? new CreatedByDTO
+                {
+                    UserId = rs.CreatedByNavigation.UserId,
+                    FullName = rs.CreatedByNavigation.FullName,
+                    Email = rs.CreatedByNavigation.Email
+                }
+                : null!,
             CreatedAt = rs.CreatedAt,
             Status = rs.Status,
             Notes = rs.Notes,

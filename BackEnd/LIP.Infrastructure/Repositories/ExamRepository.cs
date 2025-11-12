@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LIP.Application.CQRS.Command.Exam;
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs.Request.Exam;
@@ -6,7 +7,6 @@ using LIP.Application.Interface.Repository;
 using LIP.Domain.Entities;
 using LIP.Infrastructure.Persistency;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace LIP.Infrastructure.Repositories;
 
@@ -27,7 +27,7 @@ public class ExamRepository : IExamRepository
             .Include(e => e.ExamType)
             .Include(e => e.GradeLevel)
             .Include(e => e.Examattempts)
-                .ThenInclude(e => e.Examanswers)
+            .ThenInclude(e => e.Examanswers)
             .Include(e => e.Questions)
             .AsQueryable();
 
@@ -247,10 +247,10 @@ public class ExamRepository : IExamRepository
     //}
 
     public async Task<List<ExamResultDTO>> GetExamResultsAsync(
-    int examId,
-    int userId,
-    int attemptId,
-    string questionType)
+        int examId,
+        int userId,
+        int attemptId,
+        string questionType)
     {
         var query =
             from ea in _context.ExamAnswers
@@ -267,10 +267,10 @@ public class ExamRepository : IExamRepository
                   && !ea.IsDeleted
                   && !att.IsDeleted
                   && (
-                         string.IsNullOrEmpty(questionType)
-                         || pq.QuestionType == questionType       // nếu QuestionType nằm ở PracticeQuestions
-                         || emd.QuestionType == questionType      // nếu nằm ở ExamMatrixDetails
-                     )
+                      string.IsNullOrEmpty(questionType)
+                      || pq.QuestionType == questionType // nếu QuestionType nằm ở PracticeQuestions
+                      || emd.QuestionType == questionType // nếu nằm ở ExamMatrixDetails
+                  )
             select new
             {
                 pq.QuestionId,
@@ -287,11 +287,11 @@ public class ExamRepository : IExamRepository
             QuestionId = r.QuestionId,
             QuestionContent = r.Content,
             StudentAnswer = string.IsNullOrWhiteSpace(r.AnswerContent)
-                                ? new List<AnswerOption>()
-                                : JsonSerializer.Deserialize<List<AnswerOption>>(r.AnswerContent!),
+                ? new List<AnswerOption>()
+                : JsonSerializer.Deserialize<List<AnswerOption>>(r.AnswerContent!),
             CorrectAnswer = string.IsNullOrEmpty(r.CorrectAnswer)
-                                ? new List<AnswerOption>()
-                                : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer),
+                ? new List<AnswerOption>()
+                : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer),
             ScorePerQuestion = r.ScorePerQuestion
         }).ToList();
 
@@ -341,14 +341,14 @@ public class ExamRepository : IExamRepository
 
 
         var attempt = await _context.ExamAttempts
-        .AsNoTracking()
-        .Include(a => a.Exam)
+            .AsNoTracking()
+            .Include(a => a.Exam)
             .ThenInclude(e => e.Matrix)
-                .ThenInclude(m => m.Exammatrixdetails)
-        .Include(a => a.Exam)
+            .ThenInclude(m => m.Exammatrixdetails)
+            .Include(a => a.Exam)
             .ThenInclude(e => e.Questions)
-        .Include(a => a.Examanswers)
-        .FirstOrDefaultAsync(a => a.AttemptId == attemptId && !a.IsDeleted);
+            .Include(a => a.Examanswers)
+            .FirstOrDefaultAsync(a => a.AttemptId == attemptId && !a.IsDeleted);
 
         if (attempt == null || attempt.Exam == null)
             return new List<ExamResultDTO>();
@@ -371,8 +371,8 @@ public class ExamRepository : IExamRepository
                     scorePerQuestion = emd.ScorePerQuestion;
             }
 
-            List<AnswerOption> correct = new List<AnswerOption>();
-            List<AnswerOption> student = new List<AnswerOption>();
+            var correct = new List<AnswerOption>();
+            var student = new List<AnswerOption>();
 
             try
             {
@@ -405,14 +405,10 @@ public class ExamRepository : IExamRepository
                 CorrectAnswer = correct,
                 StudentAnswer = student,
                 ScorePerQuestion = scorePerQuestion,
-                QuestionType = q.QuestionType,
-
+                QuestionType = q.QuestionType
             });
         }
 
         return results;
     }
-
-
-
 }

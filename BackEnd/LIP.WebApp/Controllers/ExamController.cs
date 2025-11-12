@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using LIP.Application.CQRS.Command.Exam;
+﻿using LIP.Application.CQRS.Command.Exam;
 using LIP.Application.CQRS.Query.Exam;
 using LIP.Application.DTOs.Request.Exam;
 using MediatR;
@@ -110,6 +109,4 @@ public class ExamController : ControllerBase
         if (result.IsSuccess) return StatusCode(StatusCodes.Status200OK, result);
         return StatusCode(StatusCodes.Status400BadRequest, result);
     }
-
-    
 }

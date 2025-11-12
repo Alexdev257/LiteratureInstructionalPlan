@@ -33,7 +33,7 @@ public class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonResponse<s
             var rolesAddedCount = 0;
             var gradeLevelsAddedCount = 0;
             var examTypesAddedCount = 0;
-            
+
             if (!((await _roleRepository.GetAllAsync(new RoleGetAllQuery())).Count()! > 0))
             {
                 var roles = new List<Domain.Entities.Role>

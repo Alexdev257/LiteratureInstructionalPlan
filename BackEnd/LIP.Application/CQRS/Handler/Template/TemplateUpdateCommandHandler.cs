@@ -26,14 +26,12 @@ public class TemplateUpdateCommandHandler : IRequestHandler<TemplateUpdateComman
         });
 
         if (template == null)
-        {
             return new TemplateUpdateResponse
             {
                 IsSuccess = false,
                 Message = "Template not found"
             };
-        }
-        
+
         var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
         if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
         {
@@ -42,7 +40,6 @@ public class TemplateUpdateCommandHandler : IRequestHandler<TemplateUpdateComman
 
             var isSuccess = await _templateRepository.UpdateAsync(request);
             if (isSuccess)
-            {
                 return new TemplateUpdateResponse
                 {
                     IsSuccess = true,
@@ -57,23 +54,18 @@ public class TemplateUpdateCommandHandler : IRequestHandler<TemplateUpdateComman
                         Price = request.Price
                     }
                 };
-            }
-            else
-            {
-                return new TemplateUpdateResponse
-                {
-                    IsSuccess = false,
-                    Message = "some errors occurred while update"
-                };
-            }
-        }
-        else
-        {
+
             return new TemplateUpdateResponse
             {
                 IsSuccess = false,
-                Message = "Error uploading file"
+                Message = "some errors occurred while update"
             };
         }
+
+        return new TemplateUpdateResponse
+        {
+            IsSuccess = false,
+            Message = "Error uploading file"
+        };
     }
 }

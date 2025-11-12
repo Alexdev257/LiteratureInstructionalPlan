@@ -46,17 +46,21 @@ public class GetPracticequestionQueryHandler : IRequestHandler<GetPracticequesti
                 : string.IsNullOrEmpty(rs.CorrectAnswer)
                     ? new List<AnswerOption>()
                     : JsonSerializer.Deserialize<List<AnswerOption>>(rs.CorrectAnswer),
-            GradeLevel = rs.GradeLevel != null ? new GradeLevelDTO
-            {
-                GradeLevelId = rs.GradeLevel.GradeLevelId,
-                Name = rs.GradeLevel.Name
-            } : null!,
-            CreatedBy = rs.CreatedByNavigation != null ? new CreatedByDTO
-            {
-                UserId = rs.CreatedByNavigation.UserId,
-                FullName = rs.CreatedByNavigation.FullName,
-                Email = rs.CreatedByNavigation.Email
-            } : null!,
+            GradeLevel = rs.GradeLevel != null
+                ? new GradeLevelDTO
+                {
+                    GradeLevelId = rs.GradeLevel.GradeLevelId,
+                    Name = rs.GradeLevel.Name
+                }
+                : null!,
+            CreatedBy = rs.CreatedByNavigation != null
+                ? new CreatedByDTO
+                {
+                    UserId = rs.CreatedByNavigation.UserId,
+                    FullName = rs.CreatedByNavigation.FullName,
+                    Email = rs.CreatedByNavigation.Email
+                }
+                : null!,
             CreatedAt = rs.CreatedAt
         };
         return new GetPracticequestionResponse

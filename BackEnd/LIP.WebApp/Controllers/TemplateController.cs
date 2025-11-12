@@ -54,7 +54,8 @@ public class TemplateController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllTemplates([FromQuery] TemplateGetAllRequest request)
     {
-        var result = await _mediatoR.Send(new TemplateGetAllQuery{ Search = request.Search ,PageSize = request.PageSize, PageNumber = request.PageNumber });
+        var result = await _mediatoR.Send(new TemplateGetAllQuery
+            { Search = request.Search, PageSize = request.PageSize, PageNumber = request.PageNumber });
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
@@ -102,15 +103,15 @@ public class TemplateController : ControllerBase
             FileName = form.File.FileName,
             FileStream = stream
         };
-        
+
         var result = await _mediatoR.Send(new TemplateUpdateCommand
         {
             TemplateId = id,
-            Title =  request.Title,
+            Title = request.Title,
             GradeLevelId = request.GradeLevelId,
             Price = request.Price,
             CreatedBy = request.CreatedBy,
-            
+
             FileName = request.FileName,
             FileStream = request.FileStream
         });
@@ -126,7 +127,7 @@ public class TemplateController : ControllerBase
         {
             TemplateId = id
         });
-        
+
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             result);
     }
@@ -138,11 +139,11 @@ public class TemplateController : ControllerBase
         {
             TemplateId = id
         });
-        
+
         return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             result);
     }
-    
+
     public class FormData
     {
         public string Title { get; set; } = string.Empty;

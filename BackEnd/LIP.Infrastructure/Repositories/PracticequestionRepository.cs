@@ -47,13 +47,9 @@ public class PracticequestionRepository : IPracticequestionRepository
         if (query.IsAdmin != true)
             questions = questions.Where(u => !u.IsDeleted);
         if (!string.IsNullOrEmpty(query.Search))
-        {
             questions = questions.Where(em => em.Content.ToLower().Contains(query.Search.ToLower()));
-        }
         if (!string.IsNullOrEmpty(query.Difficulty))
-        {
             questions = questions.Where(em => em.Difficulty.ToLower().Contains(query.Difficulty.ToLower()));
-        }
 
         if (!string.IsNullOrEmpty(query.QuestionType))
             questions = questions.Where(p => p.QuestionType == query.QuestionType);

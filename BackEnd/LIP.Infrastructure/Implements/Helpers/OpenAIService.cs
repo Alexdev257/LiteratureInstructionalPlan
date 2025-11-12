@@ -1,4 +1,5 @@
 // filepath: /home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Infrastructure/Implements/Helpers/OpenAIService.cs
+
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -44,7 +45,7 @@ public class OpenAIService : IOpenAIService
         // Build the content for the model
         var sb = new StringBuilder();
         sb.AppendLine("Here are the questions and answers:");
-        for (int i = 0; i < request.Count; i++)
+        for (var i = 0; i < request.Count; i++)
         {
             var q = request[i];
             sb.AppendLine($"QuestionIndex: {i}");
@@ -61,7 +62,8 @@ public class OpenAIService : IOpenAIService
         var chatRequest = new
         {
             model,
-            messages = new[] {
+            messages = new[]
+            {
                 new { role = "system", content = systemPrompt },
                 new { role = "user", content = userPrompt }
             },
@@ -78,9 +80,8 @@ public class OpenAIService : IOpenAIService
             var resp = await _httpClient.SendAsync(requestMessage);
             var respText = await resp.Content.ReadAsStringAsync();
             if (!resp.IsSuccessStatusCode)
-            {
-                return (0, JsonSerializer.Serialize(new { error = "OpenAI returned non-success status", details = respText }));
-            }
+                return (0,
+                    JsonSerializer.Serialize(new { error = "OpenAI returned non-success status", details = respText }));
 
             using var doc = JsonDocument.Parse(respText);
             // Try to extract the assistant message
@@ -99,8 +100,8 @@ public class OpenAIService : IOpenAIService
                 using var parsed = JsonDocument.Parse(assistantMsg);
                 var totalScore = 0m;
                 var questions = new List<ExamAIQuestionFeedback>();
-                if (parsed.RootElement.TryGetProperty("questions", out var questionsEl) && questionsEl.ValueKind == JsonValueKind.Array)
-                {
+                if (parsed.RootElement.TryGetProperty("questions", out var questionsEl) &&
+                    questionsEl.ValueKind == JsonValueKind.Array)
                     foreach (var item in questionsEl.EnumerateArray())
                     {
                         var idx = item.GetProperty("questionIndex").GetInt32();
@@ -116,7 +117,6 @@ public class OpenAIService : IOpenAIService
                             Feedback = fb
                         });
                     }
-                }
 
                 var feedbackJson = JsonSerializer.Serialize(new { questions, totalScore });
                 return (totalScore, feedbackJson);
@@ -124,7 +124,8 @@ public class OpenAIService : IOpenAIService
             catch (JsonException)
             {
                 // assistant didn't return strict JSON; return raw content inside feedback
-                return (0, JsonSerializer.Serialize(new { error = "Assistant response not JSON", content = assistantMsg }));
+                return (0,
+                    JsonSerializer.Serialize(new { error = "Assistant response not JSON", content = assistantMsg }));
             }
         }
         catch (Exception ex)

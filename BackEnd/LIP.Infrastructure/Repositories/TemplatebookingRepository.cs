@@ -70,7 +70,7 @@ public class TemplatebookingRepository : ITemplatebookingRepository
         return await _context.TemplateOrders
             .Include(o => o.User)
             .Include(h => h.Template)
-                .ThenInclude(hi => hi!.GradeLevel)
+            .ThenInclude(hi => hi!.GradeLevel)
             .Where(x => x.TemplateId == templateId && x.Status == nameof(TemplateBookingEnum.Success)).ToListAsync();
     }
 }

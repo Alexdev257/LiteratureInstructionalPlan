@@ -38,8 +38,8 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
         //}
 
         var dataList = rs.Select(m =>
-        { 
-            int totalquestion = 0;
+        {
+            var totalquestion = 0;
             decimal totalpoint = 0;
 
             foreach (var detail in m.Exammatrixdetails)
@@ -55,17 +55,21 @@ public class ExamMatrixGetAllQueryHandler : IRequestHandler<ExamMatrixGetAllQuer
                 Description = m.Description,
                 //GradeLevelId = m.GradeLevelId,
                 //CreatedByUserId = m.CreatedByNavigationUserId,
-                GradeLevel = m.GradeLevel != null ? new GradeLevelDTO
-                {
-                    GradeLevelId = m.GradeLevel.GradeLevelId,
-                    Name = m.GradeLevel.Name
-                } : null!,
-                CreatedBy = m.CreatedByNavigation != null ? new CreatedByDTO
-                {
-                    UserId = m.CreatedByNavigation.UserId,
-                    FullName = m.CreatedByNavigation.FullName,
-                    Email = m.CreatedByNavigation.Email
-                } : null!,
+                GradeLevel = m.GradeLevel != null
+                    ? new GradeLevelDTO
+                    {
+                        GradeLevelId = m.GradeLevel.GradeLevelId,
+                        Name = m.GradeLevel.Name
+                    }
+                    : null!,
+                CreatedBy = m.CreatedByNavigation != null
+                    ? new CreatedByDTO
+                    {
+                        UserId = m.CreatedByNavigation.UserId,
+                        FullName = m.CreatedByNavigation.FullName,
+                        Email = m.CreatedByNavigation.Email
+                    }
+                    : null!,
                 CreatedAt = m.CreatedAt,
                 Status = m.Status,
                 Notes = m.Notes,

@@ -26,7 +26,7 @@ public class
         {
             QuestionType = request.QuestionType, GradeLevelId = request.GradeLevelId,
             CreatedBy = request.CreatedByUserId, IsAdmin = request.IsAdmin,
-            Search = request.Search, Difficulty = request.Difficulty,
+            Search = request.Search, Difficulty = request.Difficulty
         });
         //if (rs == null)
         //    return new GetAllPracticeQuestionResponse
@@ -51,17 +51,21 @@ public class
                 : string.IsNullOrWhiteSpace(r.CorrectAnswer)
                     ? new List<AnswerOption>()
                     : JsonSerializer.Deserialize<List<AnswerOption>>(r.CorrectAnswer!),
-            GradeLevel = r.GradeLevel != null ? new GradeLevelDTO
-            {
-                GradeLevelId = r.GradeLevel.GradeLevelId,
-                Name = r.GradeLevel.Name
-            } : null!,
-            CreatedBy = r.CreatedByNavigation != null ? new CreatedByDTO
-            {
-                UserId = r.CreatedByNavigation.UserId,
-                FullName = r.CreatedByNavigation.FullName,
-                Email = r.CreatedByNavigation.Email
-            } : null!,
+            GradeLevel = r.GradeLevel != null
+                ? new GradeLevelDTO
+                {
+                    GradeLevelId = r.GradeLevel.GradeLevelId,
+                    Name = r.GradeLevel.Name
+                }
+                : null!,
+            CreatedBy = r.CreatedByNavigation != null
+                ? new CreatedByDTO
+                {
+                    UserId = r.CreatedByNavigation.UserId,
+                    FullName = r.CreatedByNavigation.FullName,
+                    Email = r.CreatedByNavigation.Email
+                }
+                : null!,
             CreatedAt = r.CreatedAt
         }).ToList();
 
