@@ -1,23 +1,61 @@
 import { BaseHeader } from "@/components/layout/base/header";
-import StatsSection from "./_components/StatsSection";
-import SearchFilter from "./_components/SearchFilter";
-import type { TemplateQuery } from "@/utils/type";
-import { useState } from "react";
-import TemplateListSection from "./_components/TemplateListSection";
+import { StatsSection } from "./_components/StatsSection";
+import { TemplateListSection } from "./_components/TemplateListSection";
 
 
 
-const DEFAULT_FILTERS : TemplateQuery = {
-  PageNumber: 1,
-  PageSize: 10,
-  Search: '',
-  GradeLevelId: undefined,
-  isDeleted: undefined,
+interface Template {
+  id: number;
+  stt: number;
+  title: string;
+  price: number;
+  gradeLevel: string;
+  created_at: string;
+  luongMua: number;
+  status: 'active' | 'draft' | 'archived';
 }
 
 
+const mockTemplates: Template[] = [
+  {
+    id: 1,
+    stt: 1,
+    title: 'Giáo án - Văn học hiện đại',
+    price: 50000,
+    gradeLevel: 'Lớp 10',
+    created_at: '2025-01-15',
+    luongMua: 145,
+    status: 'active' as const,
+  },
+  {
+    id: 2,
+    stt: 2,
+    title: 'Giáo án - Văn học cổ điển',
+    price: 75000,
+    gradeLevel: 'Lớp 11',
+    created_at: '2025-02-20',
+    luongMua: 289,
+    status: 'active' as const,
+  },
+  {
+    id: 3,
+    stt: 3,
+    title: 'Giáo án - Thơ ca đương đại',
+    price: 30000,
+    gradeLevel: 'Lớp 12',
+    created_at: '2025-03-10',
+    luongMua: 78,
+    status: 'draft' as const,
+  },
+];
+
 export default function TemplateManagementPage() {
-  const [filters, setFilters] = useState<TemplateQuery>(DEFAULT_FILTERS);
+
+  const templates = mockTemplates;
+
+  const totalPurchases = templates.reduce((sum, t) => sum + t.luongMua, 0);
+  const activeTemplates = templates.filter(t => t.status === 'active').length;
+
   return (
     <div className="space-y-6 p-3">
       <BaseHeader
@@ -25,16 +63,13 @@ export default function TemplateManagementPage() {
         description="Quản lý và tạo mẫu đề thi cho học sinh"
       />
 
-      <StatsSection />
-      <SearchFilter
-        queryParams={filters}
-        onParamsChange={setFilters}
+      <StatsSection
+        totalTemplates={templates.length}
+        totalPurchases={totalPurchases}
+        activeTemplates={activeTemplates}
       />
 
-      <TemplateListSection
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
+      <TemplateListSection templates={templates} />
     </div>
   );
 }

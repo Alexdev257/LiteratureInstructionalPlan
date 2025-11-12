@@ -5,5 +5,5 @@ import { Route as rootRoute } from "./_root";
 export const Route = createRoute({
     getParentRoute: () => rootRoute,
     path: "/templates",
-    component: TemplatePage
+    component: () => <TemplatePage />,
 })
