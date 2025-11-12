@@ -79,12 +79,12 @@ export default function MatrixPageContent({
         <BaseHeader
           title="Quản lý Ma trận Đề thi"
           description="Quản lý tất cả ma trận đề thi trên hệ thống"
-          action={
-            <Button className="gap-2" onClick={handleCreateNew}>
-              <Plus className="w-4 h-4" />
-              Tạo Ma Trận Mới
-            </Button>
-          }
+          // action={
+          //   <Button className="gap-2" onClick={handleCreateNew}>
+          //     <Plus className="w-4 h-4" />
+          //     Tạo Ma Trận Mới
+          //   </Button>
+          // }
         />
 
         <StatsSection {...stats} />

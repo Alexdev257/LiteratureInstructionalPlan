@@ -72,12 +72,12 @@ export default function TemplatePageContent({
         <BaseHeader
           title="Quản lý Giáo án"
           description="Quản lý, tạo mới và chỉnh sửa giáo án trên hệ thống"
-           action={
-            <Button className="gap-2" onClick={() => setIsCreateOpen(true)}>
-              <Plus className="w-4 h-4" />
-              Tạo Giáo Án Mới
-            </Button>
-          }
+          //  action={
+          //   <Button className="gap-2" onClick={() => setIsCreateOpen(true)}>
+          //     <Plus className="w-4 h-4" />
+          //     Tạo Giáo Án Mới
+          //   </Button>
+          // }
         />
         
         {/* [TODO: Bạn cần tạo StatsSection.tsx] */}

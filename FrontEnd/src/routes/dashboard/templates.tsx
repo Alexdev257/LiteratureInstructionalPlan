@@ -1,4 +1,3 @@
-// --- File: src/routes/dashboard/templates.tsx ---
 import { createRoute } from "@tanstack/react-router";
 import { Route as dashboardLayoutRoute } from "./_layout";
 // Import component page MỚI của admin

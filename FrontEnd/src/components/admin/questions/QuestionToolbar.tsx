@@ -3,29 +3,29 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { QuestionFilters, QuestionStatus, GradeLevel, GetAllPracticequestionQuery } from "@/utils/type";
+import type { QuestionFilters, QuestionStatus, GradeLevel } from "@/utils/type"; 
 import type { Dispatch, SetStateAction } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 
 type QuestionToolbarProps = {
-  filters: QuestionFilters; // Dùng type UI
-  setFilters: Dispatch<SetStateAction<QuestionFilters>>;
-  gradeLevels: GradeLevel[];
+  filters: QuestionFilters; // Sửa type
+  setFilters: Dispatch<SetStateAction<QuestionFilters>>; // Sửa type
+  gradeLevels: GradeLevel[]; 
 };
 
 type StatusTab = QuestionStatus | "All";
 
-// Data cho dropdowns
-const questionTypes = [
+const mockExamTypes = [
   { value: "All", label: "Tất cả Loại" },
-  { value: "1", label: "Nhiều đáp án" }, 
-  { value: "2", label: "Một đáp án" }, 
-  { value: "3", label: "Tự luận" }, 
+  { value: "1", label: "Nhiều đáp án" },
+  { value: "2", label: "Một đáp án" },
+  { value: "3", label: "Tự luận" },
 ];
-const difficulties = [
+const mockDifficulties = [
   { value: "All", label: "Tất cả Độ khó" },
-  { value: "1", label: "Dễ" }, 
-  { value: "2", label: "Trung bình" }, 
+  { value: "1", label: "Dễ" },
+  { value: "2", label: "Trung bình" },
+  { value: "3", label: "Khó" },
   { value: "4", label: "Rất khó" },
 ];
 
@@ -33,17 +33,19 @@ export function QuestionToolbar({ filters, setFilters, gradeLevels }: QuestionTo
 
   // Handler chung cho các filter
   const handleFilterChange = (key: keyof QuestionFilters, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value, PageNumber: 1 }));
+    // Sửa lỗi 'prev' any
+    setFilters((prev: QuestionFilters) => ({ ...prev, [key]: value, PageNumber: 1 }));
   };
   
-  // Handler cho search
   const debouncedSearch = useDebouncedCallback((value: string) => {
-     setFilters(prev => ({ ...prev, search: value, PageNumber: 1 }));
+    // Sửa lỗi 'prev' any
+     setFilters((prev: QuestionFilters) => ({ ...prev, search: value, PageNumber: 1 }));
   }, 500);
 
   // Handler cho tabs
   const handleStatusChange = (status: StatusTab) => {
-    setFilters(prev => ({ ...prev, status, PageNumber: 1 }));
+    // Sửa lỗi 'prev' any
+    setFilters((prev: QuestionFilters) => ({ ...prev, status, PageNumber: 1 }));
   };
 
   const tabs: { label: string; value: StatusTab }[] = [
@@ -66,7 +68,7 @@ export function QuestionToolbar({ filters, setFilters, gradeLevels }: QuestionTo
             onChange={(e) => debouncedSearch(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
+        {/* <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
           {tabs.map(tab => (
             <Button
               key={tab.value}
@@ -82,13 +84,13 @@ export function QuestionToolbar({ filters, setFilters, gradeLevels }: QuestionTo
               {tab.label}
             </Button>
           ))}
-        </div>
+        </div> */}
       </div>
 
        {/* Hàng 2: Dropdown Filters */}
-       <div className="flex flex-wrap items-center gap-4">
+       {/* <div className="flex flex-wrap items-center gap-4">
             <Select
-                value={filters.grade}
+                value={filters.grade} // Dùng 'grade' từ state UI
                 onValueChange={(value) => handleFilterChange("grade", value)}
             >
                 <SelectTrigger className="w-auto min-w-[120px]">
@@ -112,7 +114,7 @@ export function QuestionToolbar({ filters, setFilters, gradeLevels }: QuestionTo
                     <SelectValue placeholder="Loại câu hỏi" />
                 </SelectTrigger>
                 <SelectContent>
-                    {questionTypes.map(type => (
+                    {mockExamTypes.map(type => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -128,14 +130,14 @@ export function QuestionToolbar({ filters, setFilters, gradeLevels }: QuestionTo
                     <SelectValue placeholder="Độ khó" />
                 </SelectTrigger>
                 <SelectContent>
-                    {difficulties.map(level => (
+                    {mockDifficulties.map(level => (
                         <SelectItem key={level.value} value={level.value}>
                           {level.label}
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
-       </div>
+       </div> */}
     </div>
   );
 }

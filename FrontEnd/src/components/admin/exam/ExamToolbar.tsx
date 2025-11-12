@@ -76,7 +76,7 @@ export function ExamToolbar({ filters, setFilters, gradeLevels, examTypes }: Exa
       </div>
 
       {/* Hàng 2: Dropdown Filters */}
-      <div className="flex flex-wrap items-center gap-4">
+      {/* <div className="flex flex-wrap items-center gap-4">
         <Select value={filters.grade} onValueChange={(v) => handleFilterChange("grade", v)}>
           <SelectTrigger className="w-auto min-w-[120px]"><SelectValue placeholder="Lớp" /></SelectTrigger>
           <SelectContent>
@@ -97,7 +97,7 @@ export function ExamToolbar({ filters, setFilters, gradeLevels, examTypes }: Exa
             {mockDifficulties.map(d => <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>)}
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
     </div>
   );
 }

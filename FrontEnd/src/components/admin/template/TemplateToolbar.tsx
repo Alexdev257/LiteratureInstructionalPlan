@@ -75,7 +75,7 @@ export function TemplateToolbar({ filters, setFilters, gradeLevels }: TemplateTo
       </div>
 
       {/* Hàng 2: Dropdown Filters */}
-      <div className="flex flex-wrap items-center gap-4">
+      {/* <div className="flex flex-wrap items-center gap-4">
         <Select 
           value={filters.gradeLevel ?? "all"} 
           onValueChange={(v) => handleFilterChange("gradeLevel", v)}
@@ -96,7 +96,7 @@ export function TemplateToolbar({ filters, setFilters, gradeLevels }: TemplateTo
             {priceRanges.map(r => <SelectItem key={r.id} value={r.id}>{r.label}</SelectItem>)}
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
     </div>
   );
 }

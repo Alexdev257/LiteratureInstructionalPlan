@@ -1,6 +1,5 @@
-// --- File: src/components/admin/users/UserRow.tsx ---
 "use client";
-import type { GetAllUserResponseDTO } from "@/utils/type"; // 
+import type { GetAllUserResponseDTO } from "@/utils/type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 interface UserRowProps {
-  user: GetAllUserResponseDTO; // Dùng DTO
+  user: GetAllUserResponseDTO;
   onEdit: (user: GetAllUserResponseDTO) => void;
   onDelete: (user: GetAllUserResponseDTO) => void;
   onRestore: (user: GetAllUserResponseDTO) => void;
@@ -100,10 +99,12 @@ export function UserRow({ user, onEdit, onDelete, onRestore }: UserRowProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {/* --- ĐÃ XÓA NÚT SỬA (EDIT) ---
             <DropdownMenuItem onClick={() => onEdit(user)}>
               <Edit className="mr-2 h-4 w-4" />
               Sửa
             </DropdownMenuItem>
+            */}
             
             {user.isDeleted ? (
               <DropdownMenuItem onClick={() => onRestore(user)} className="text-green-600">
