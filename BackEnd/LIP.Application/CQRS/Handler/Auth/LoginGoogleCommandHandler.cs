@@ -53,7 +53,7 @@ public class LoginGoogleCommandHandler : IRequestHandler<LoginGoogleCommand, Log
                 UserName = validatedResult.Email,
                 CreatedAt = DateTime.UtcNow,
                 Email = validatedResult.Email,
-                RoleId = 3,
+                RoleId = 1,
                 Password = _bcryptHelper.HashPassword("123") // random password
             };
 
