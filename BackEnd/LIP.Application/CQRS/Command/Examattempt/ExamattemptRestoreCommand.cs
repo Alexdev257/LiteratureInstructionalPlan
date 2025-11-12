@@ -1,0 +1,26 @@
+﻿using LIP.Application.DTOs.Response;
+using LIP.Application.DTOs.Response.ExamAttempt;
+using LIP.Application.Interface.Validation;
+using MediatR;
+
+namespace LIP.Application.CQRS.Command.Examattempt;
+
+public class ExamattemptRestoreCommand : IRequest<ExamAttemptRestoreResponse>, IValidatable<ExamAttemptRestoreResponse>
+{
+    public int AttemptId { get; set; }
+
+    public Task<ExamAttemptRestoreResponse> ValidateAsync()
+    {
+        var response = new ExamAttemptRestoreResponse();
+        if (AttemptId.ToString() != null)
+            if (AttemptId <= 0)
+                response.ListErrors.Add(new Errors
+                {
+                    Field = "ExamId",
+                    Detail = "ExamId must be larger than 0"
+                });
+
+        if (response.ListErrors.Count > 0) response.IsSuccess = false;
+        return Task.FromResult(response);
+    }
+}

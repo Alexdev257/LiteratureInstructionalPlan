@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.8"
+services:
+  webapp:
+    build:
+      context: "/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd"
+      dockerfile: "Dockerfile"
+      target: "build"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/LIP.WebApp.dll"
+    environment: {}
+    image: "lip.webapp:dev"
+    ports: []
+    volumes:
+    - "/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.WebApp:/app:rw"
+    - "/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd:/src:rw"
+    - "/home/tiehung/.nuget/packages:/root/.nuget/packages"
+    working_dir: "/app"
