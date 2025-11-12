@@ -28,13 +28,17 @@ import { Route as matrixCreateIndexRoute } from "./teacher/matrix/create/index";
 import { Route as userProfileLayoutRoute } from "./userProfile/_layout";
 import { Route as userProfileRoute } from "./userProfile/[id]/index";
 
-// === THÊM IMPORT CHO /templates ===
 import { Route as templateRoute } from "./template";
+
+// === THÊM IMPORT CHO /cart ===
+import { Route as cartRoute } from "./cart";
 
 
 const routeTree = rootRoute.addChildren([
     homeRoute,
-    templateRoute, // <-- THÊM ROUTE NÀY VÀO ĐÂY
+    templateRoute,
+    cartRoute, // <-- THÊM ROUTE GIỎ HÀNG VÀO ĐÂY
+    
     examLayoutRoute.addChildren([
         examIndexRoute,
         examDetailRoute.addChildren([
