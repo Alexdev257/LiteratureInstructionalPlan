@@ -1,0 +1,6 @@
+@LIP.WebApp_HostAddress = http://localhost:5161
+
+GET {{LIP.WebApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
