@@ -1,39 +1,26 @@
-// --- File: src/components/admin/users/UserToolbar.tsx ---
-"use client";
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import type { UserFilterState } from "@/utils/type"; // Dùng UserFilterState của UI
+import { Input } from "@/components/ui/input"; 
+import { Button } from "@/components/ui/button"; 
+import type { UserFilters } from "@/utils/type";
 import type { Dispatch, SetStateAction } from "react";
-import { useDebouncedCallback } from 'use-debounce';
 
 type UserToolbarProps = {
-  filters: UserFilterState;
-  setFilters: Dispatch<SetStateAction<UserFilterState>>;
+  filters: UserFilters;
+  setFilters: Dispatch<SetStateAction<UserFilters>>;
 };
 
-type StatusTab = "All" | "Active" | "Banned";
+type StatusTab = "All" | "Active" |  "Banned";
 
 export function UserToolbar({ filters, setFilters }: UserToolbarProps) {
-
+  
   const handleStatusChange = (status: StatusTab) => {
-    // Sửa lỗi TS(7006): Thêm kiểu (prev: UserFilterState)
-    setFilters((prev: UserFilterState) => ({ 
-      ...prev, 
-      status: status,
-      PageNumber: 1,
-    }));
+    setFilters(prev => ({ ...prev, status, page: 1 }));
   };
 
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    // Sửa lỗi TS(7006): Thêm kiểu (prev: UserFilterState)
-    setFilters((prev: UserFilterState) => ({ 
-      ...prev, 
-      search: value, 
-      PageNumber: 1 
-    }));
-  }, 500);
-
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters(prev => ({ ...prev, search: e.target.value, page: 1 }));
+  };
+  
   const tabs: { label: string; value: StatusTab }[] = [
     { label: "All", value: "All" },
     { label: "Active", value: "Active" },
@@ -46,10 +33,10 @@ export function UserToolbar({ filters, setFilters }: UserToolbarProps) {
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Tìm kiếm theo email..."
+          placeholder="Tìm kiếm theo tên, email..."
           className="pl-10"
-          defaultValue={filters.search}
-          onChange={(e) => debouncedSearch(e.target.value)}
+          value={filters.search}
+          onChange={handleSearchChange}
         />
       </div>
 
@@ -68,6 +55,7 @@ export function UserToolbar({ filters, setFilters }: UserToolbarProps) {
             }`}
           >
             {tab.label}
+            {/* Thêm count ở đây, ví dụ: (3) */}
           </Button>
         ))}
       </div>

@@ -1,130 +1,299 @@
-export const AUTH_ENDPOINT = {
-  REGISTER: "Auth/register",
-  LOGIN: "Auth/login",
-  VERIFY_CODE: "Auth/verify-otp",
-  RESET_PASSWORD: "Auth/forgot-password",
-  VERIFY_FORGOT_PASSWORD: "Auth/verify-forgot-password",
-  REFRESH_TOKEN: "Auth/refresh-token",
-  CHANGE_PASSWORD: "Auth/change-password",
-  LOGIN_GOOGLE: "Auth/login-google",
+
+
+export type ResponseLogin = {
+    accessToken: string;
+    refreshToken: string;
+}
+export type ResponseNull = {
+    data: null;
+    isSuccess: boolean;
+    message: string;
+    listErrors: [];
+}
+
+export type ResponseData<T> = {
+    data: T;
+    isSuccess: boolean;
+    message: string;
+
+}
+type ApiError = {
+    field: string;
+    detail: string;
 };
 
-export const PUBLIC_ENDPOINT = {
-  LOGIN: "Auth/login",
-  LOGIN_GOOGLE: "Auth/login-google",
+export type ErrorEntity = {
+    data: null;
+    listErrors: ApiError[];
+    isSuccess: boolean;
+    message: string;
+}
+
+export type User = {
+    Email: string;
+    FullName: string;
+    RoleId: number;
+    UserId: string;
+    Username: string;
+    aud: string;
+    exp: number;
+    iat: number;
+    iss: string;
+    jti: string;
+    nbf: number;
+}
+
+export type GetUserById = {
+    userId: number;
+    userName: string;
+    fullName: string;
+    email: string;
+    roleId: number;
+    createdAt: string;
+    isDeleted: boolean;
+    deletedAt: string;
+
+}
+
+export type BodyRefreshToken = {
+    id: number;
+    accessToken: string;
+    refreshToken: string;
+}
+
+export type GradeLevel = {
+    gradeLevelId: number;
+    name: string;
+}
+
+export type ExamType = {
+    examTypeId: number;
+    name: string;
+}
+
+export type ExamData = {
+    examId: number;
+    title: string;
+    description: string;
+    durationMinutes: number;
+    matrixId: number;
+    gradeLevel: GradeLevel;
+    examType: ExamType;
+    createdBy: CreateByUser;
+    questions: Question[];
+    createdAt: Date
+}
+
+export type ExamAttemptQuery = BaseFilterPagination & {
+    ExamId?: number;
+    UserId?: string;
+    Status: string;
+    IsAdmin?: boolean;
+}
+
+
+
+
+export type ExamAttempt = {
+    examAttemptId: number;
+    examId: number;
+    userId: string;
+    status: string;
+    score: number;
+    feedback: string;
+    startedAt: Date;
+    endTime: Date
+    completedAt: Date;
+}
+
+
+export type Matrix = {
+    matrixId: number;
+    title: string;
+    description: string;
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
+    createdAt: string;
+    status: string;
+    notes?: string;
+    totalQuestions: number;
+    totalPoint: number;
+    details: MatrixDetail[];
+}
+export type MatrixDetail = {
+    examMatrixDetailId: number;
+    lessonName: string;
+    questionType: "1" | "2" | "3";
+    difficulty: "1" | "2" | "3" | "4";
+    quantity: number;
+    scorePerQuestion: number;
+}
+
+export type Answer = {
+    label: string;
+    text: string;
+}
+
+export type Question = {
+    questionId: number;
+    content: string;
+    questionType: "1" | "2" | "3";
+    difficulty: "1" | "2" | "3" | "4";
+    answer: Answer[];
+    correctAnswer?: Answer[];
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
+    createdAt: Date;
+
+}
+
+export type Template = {
+    templateId: number;
+    title: string;
+    filePath: string;
+    viewPath: string;
+    price: number;
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
+    totalDownload: number;
+    isDeleted: boolean;
+    createdAt: Date;
+}
+
+export type ExamFilters = {
+    gradeLevel?: number;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    examType?: number;
+    search?: string;
+}
+
+export type TemplateFilters = {
+    gradeLevel?: number;
+    priceRange?: string;
+}
+
+
+export type LeaderboardEntry = {
+    userId: string;
+    userName: string;
+    totalScore: number;
+    totalExams: number;
+    averageScore: number;
+    rank: number;
+}
+
+export type Features = {
+    title: string;
+    description: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+}
+
+export type AdminUser = {
+    id: string;
+    fullName: string;
+    email: string;
+    avatarUrl?: string;
+    status: "Active" | "Suspended" | "Banned";
+    postCount: number;
+    averageScore: number;
+    lastActivity: string;
 };
 
-// 🧩 Giữ cả 2 phần ADMIN_ENDPOINT: dev_fe + dev_fe_management
-export const ADMIN_ENDPOINT = {
-  // --- Dev_FE (ngắn gọn, prefix admin) ---
-  GET_USERS: "admin/users",
-  CREATE_ADMIN: "admin/create-teacher",
-  GET_QUESTIONS: "admin/questions",
-  CREATE_QUESTION: "admin/questions",
-
-  // --- Dev_FE_Management (chi tiết CRUD) ---
-  // User
-  GET_ALL_USERS: "User/get-all",
-  GET_USER_BY_ID: (id: number) => `User/get/${id}`,
-  CREATE_USER: "User/create-user",
-  UPDATE_USER: (id: number) => `User/update-user/${id}`,
-  DELETE_USER: (id: number) => `User/delete-user/${id}`,
-  RESTORE_USER: (id: number) => `User/restore-user/${id}`,
-
-  // Question (PracticeQuestion)
-  GET_ALL_QUESTIONS: "PracticeQuestion/get-all",
-  GET_QUESTION_DETAIL: (id: number) => `PracticeQuestion/get/${id}`,
-  CREATE_QUESTION_DETAIL: "PracticeQuestion/create-question",
-  UPDATE_QUESTION_DETAIL: (id: number) => `PracticeQuestion/update-question/${id}`,
-  DELETE_QUESTION_DETAIL: (id: number) => `PracticeQuestion/delete-question/${id}`,
-  RESTORE_QUESTION_DETAIL: (id: number) => `PracticeQuestion/restore-question/${id}`,
-
-  // Exam
-  GET_ALL_EXAMS: "Exam/get-all",
-  GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`,
-  CREATE_EXAM_MANUAL: "Exam/create-exam-manual",
-  UPDATE_EXAM_DETAIL: (id: number) => `Exam/update-exam/${id}`,
-  DELETE_EXAM_DETAIL: (id: number) => `Exam/delete-exam/${id}`,
-  RESTORE_EXAM_DETAIL: (id: number) => `Exam/restore-exam/${id}`,
-
-  // Matrix
-  GET_ALL_MATRICES: "ExamMatrix/get-all",
-  GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`,
-  CREATE_MATRIX_DETAIL: "ExamMatrix/create-matrix",
-  UPDATE_MATRIX_DETAIL: (id: number) => `ExamMatrix/update-matrix/${id}`,
-  DELETE_MATRIX_DETAIL: (id: number) => `ExamMatrix/delete-matrix/${id}`,
-  RESTORE_MATRIX_DETAIL: (id: number) => `ExamMatrix/restore-matrix/${id}`,
-
-  // Template
-  GET_ALL_TEMPLATES: "Template",
-  GET_TEMPLATE_BY_ID: (id: number) => `Template/${id}`,
-  CREATE_TEMPLATE_DETAIL: "Template",
-  DELETE_TEMPLATE_DETAIL: (id: number) => `Template/${id}`,
-
-  // Payment
-  GET_ALL_PAYMENTS: "Payment",
-  GET_PAYMENT_BY_ID: (id: number) => `Payment/${id}`,
+export type UserFilters = {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: "Active" | "Suspended" | "Banned" | "All";
 };
 
-export const TEMPLATE_ENDPOINT = {
-  GET_TEMPLATES: "Template",
-  GET_TEMPLATE_BY_ID: (id: number) => `Template/${id}`,
-  RESTORE_TEMPLATE: (id: number) => `Template/restore/${id}`,
-  DELETE_TEMPLATE: (id: number) => `Template/delete/${id}`,
+export type CreateAdminInput = {
+    fullName: string;
+    email: string;
 };
 
-export const EXAM_TYPE_ENDPOINT = {
-  GET_EXAM_TYPES: "ExamType/get-all",
-  GET_EXAM_TYPE_BY_ID: (id: number) => `ExamType/get/${id}`,
+export type QuestionStatus = "Pending" | "Active" | "Rejected";
+
+export type AdminQuestion = {
+    id: string;
+    questionText: string;
+    grade: string;
+    lesson: string;
+    difficulty: "Easy" | "Medium" | "Hard";
+    status: QuestionStatus;
+    creatorName: string;
+    createdAt: string;
+    updatedAt: string;
 };
 
-export const GRADE_LEVEL_ENDPOINT = {
-  GET_GRADE_LEVELS: "GradeLevel/get-all",
-  GET_GRADE_LEVEL_BY_ID: (id: number) => `GradeLevel/get/${id}`,
+export type QuestionFilters = {
+    page?: number;
+    limit?: number;
+    search?: string;
+    grade?: string;
+    lesson?: string;
+    difficulty?: "Easy" | "Medium" | "Hard" | "All";
+    status?: QuestionStatus | "All";
+    creator?: string;
 };
 
-export const EXAM_ENDPOINT = {
-  GET_EXAMS: "Exam/get-all",
-  GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`,
-  CREATE_EXAM: "Exam/create-exam-manual",
-  UPDATE_EXAM: (id: number) => `Exam/update-exam/${id}`,
-  DELETE_EXAM: (id: number) => `Exam/delete-exam/${id}`,
-  RESTORE_EXAM: (id: number) => `Exam/restore-exam/${id}`,
 
-  START_EXAM: "ExamInteraction/start-exam",
-  SUBMIT_EXAM: "ExamInteraction/submit-exam",
-  SUBMIT_FINAL_EXAM: "ExamInteraction/last-submit-exam",
+export type CreateQuestionInput = {
+    questionText: string;
+    grade: string;
+    lesson: string;
+    difficulty: "Easy" | "Medium" | "Hard";
 };
 
-export const MATRIX_ENDPOINT = {
-  GET_MATRICES: "ExamMatrix/get-all",
-  GET_MATRIX_BY_ID: (id: number) => `ExamMatrix/get/${id}`,
-  CREATE_MATRIX: "ExamMatrix/create-matrix",
-  DELETE_MATRIX: (id: number) => `ExamMatrix/delete-matrix/${id}`,
-  UPDATE_MATRIX: (id: number) => `ExamMatrix/update-matrix/${id}`,
-  RESTORE_MATRIX: (id: number) => `ExamMatrix/restore-matrix/${id}`,
-};
 
-export const USER_ENDPOINT = {
-  GET_USER_PROFILE: (id: number) => `User/get/${id}`,
-  UPDATE_USER_PROFILE: (id: number) => `User/update-user/${id}`,
-};
 
-export const QUESTION_ENDPOINT = {
-  GET_QUESTIONS: "PracticeQuestion/get-all",
-  GET_QUESTION_BY_ID: (id: number) => `PracticeQuestion/get/${id}`,
-  CREATE_QUESTION: "PracticeQuestion/create-question",
-  UPDATE_QUESTION: (id: number) => `PracticeQuestion/update-question/${id}`,
-  DELETE_QUESTION: (id: number) => `PracticeQuestion/delete-question/${id}`,
-  RESTORE_QUESTION: (id: number) => `PracticeQuestion/restore-question/${id}`,
-};
+export type PaginationResponse<T> = {
+    items: T[];
+    totalItems: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
+export type BaseFilterPagination = {
+    PageNumber?: number;
+    PageSize?: number;
+    Search?: string
+}
+export type ExamTypeQuery = BaseFilterPagination & {
+    Name?: string;
+}
+export type GradeLevelQuery = BaseFilterPagination & {
+    Name?: string;
+}
+export type ExamQuery = BaseFilterPagination & {
+    GradeLevelId?: number;
+    ExamTypeId?: number;
+    IsShowCorrectAnswer?: boolean;
+    IsAdmin?: boolean;
+}
 
-export const EXAM_ATTEMPT_ENDPOINT = {
-  GET_EXAM_ATTEMPTS: "ExamAttempt/get-all",
-  GET_EXAM_ATTEMPT_BY_ID: (id: number) => `ExamAttempt/get/${id}`,
-};
+export type MatrixQuery = BaseFilterPagination & {
+    GradeLevelId?: number;
+    IsAdmin?: boolean;
+}
 
-export const PAYMENT_ENDPOINT = {
-  GET_PAYMENTS: "Payment",
-  GET_PAYMENT_BY_ID: (id: number) => `Payment/${id}`,
-};
+export type TemplateQuery = BaseFilterPagination & {
+    GradeLevelId?: number;
+    isDeleted?: boolean
+}
+
+export type CreateByUser = {
+    userId: number;
+    fullName: string;
+    email: string;
+}
+
+export type QuestionQuery = BaseFilterPagination & {
+    QuestionType?: string  // "1" | "2" | "3"
+    Difficulty?: string  // "1" | "2" | "3" | "4"   
+    GradeLevelId?: number;
+    IsShowAnswer?: boolean;
+    IsShowCorrectAnswer?: boolean;
+    IsAdmin?: boolean;
+}
