@@ -9,7 +9,7 @@ function RootComponent() {
   const isAuthRoute = location.pathname.startsWith('/auth');
   const isTeacherRoute = location.pathname.startsWith('/teacher');
   const isUserProfileRoute = location.pathname.startsWith('/userProfile');
-  const isExamAttemptRoute = /^\/exam\/[^\/]+\/[^\/]+/.test(location.pathname); // Matching /exam/[id]/[attemptId]
+  const isExamAttemptRoute = /^\/exam\/[^\/]+\/[^\/]+(?!\/result)/.test(location.pathname);
   const isAdminRoute = location.pathname.startsWith('/dashboard');
   // Nếu là route có layout riêng, chỉ render Outlet
   if (isAuthRoute || isTeacherRoute || isExamAttemptRoute || isAdminRoute || isUserProfileRoute) {

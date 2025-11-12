@@ -1,4 +1,4 @@
-export type UTC7String = string;
+
 
 
 export type ResponseLogin = {
@@ -90,7 +90,7 @@ export type ExamData = {
     examType: ExamType;
     createdBy: CreateByUser;
     questions: Question[];
-    createdAt: UTC7String;
+    createdAt: Date;
 }
 
 
@@ -103,9 +103,9 @@ export type ExamAttempt = {
     status: string;
     score: number;
     feedback: string;
-    startedAt: UTC7String;
-    endTime: UTC7String;
-    completedAt: UTC7String | null;
+    startedAt: Date;
+    endTime: Date;
+    completedAt: Date 
 }
 
 
@@ -143,6 +143,7 @@ export type Question = {
     difficulty: "1" | "2" | "3" | "4";
     answer: Answer[];
     correctAnswer?: Answer[];
+    studentAnswer?:Answer[];
     gradeLevel: GradeLevel;
     createdBy: CreateByUser;
     createdAt: Date;
@@ -272,7 +273,7 @@ export type ExamQuery = BaseFilterPagination & {
     GradeLevelId?: number;
     ExamTypeId?: number;
     IsShowCorrectAnswer?: boolean;
-    attemptId?:number;
+    AttemptId?:number;
     IsAdmin?: boolean;
 }
 

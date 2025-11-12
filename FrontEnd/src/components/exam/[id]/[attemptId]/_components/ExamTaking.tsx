@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { QuestionNavigator } from "./QuestionNavigator";
 import type { ExamData, Question } from "@/utils/type";
@@ -6,23 +6,56 @@ import { ExamStatsSidebar } from "./ExamStatsSidebar";
 import { useExam } from "@/hooks/useExam";
 import type { SubmitAttemptInput } from "@/schema/examSchema";
 import { toast } from "sonner";
+import { useRouter } from "@tanstack/react-router";
 
 interface Props {
   exam: ExamData;
   attemptId: number;
+  // onSuccess?: () => void; ← ĐÃ XÓA
 }
 
 type AnswerMap = Record<number, string[]>;
 type EssayMap = Record<number, string>;
 
 export const ExamTaking = ({ exam, attemptId }: Props) => {
-  const { useSubmitExam: submitExamMutation } = useExam();
+  const { useSubmitExam: submitExamMutation, useFinalSubmitExam } = useExam();
   const { mutateAsync: submitExam, isPending: isSubmitting } = submitExamMutation;
-
+  const finalSubmitMutation = useFinalSubmitExam(); // Gọi như hàm
+  const { mutateAsync: finalSubmitExam, isPending: isFinalSubmitting } = finalSubmitMutation;
+  const router = useRouter()
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<AnswerMap>({});
-  const [essayContents, setEssayContents] = useState<EssayMap>({});
+  const [draftAnswers, setDraftAnswers] = useState<AnswerMap>({});
+  const [draftEssayContents, setDraftEssayContents] = useState<EssayMap>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSavingCurrent, setIsSavingCurrent] = useState(false);
+
+  // ===============================
+  // 1. Lấy đáp án cũ từ API
+  // ===============================
+  const baseAnswers = useMemo(() => {
+    const map: AnswerMap = {};
+    exam.questions.forEach((q, i) => {
+      if (!q.studentAnswer?.length || q.questionType === "3") return;
+      const labels = q.studentAnswer
+        .map(a => a.label)
+        .filter((l): l is string => !!l && l.trim() !== "");
+      if (labels.length) map[i] = labels;
+    });
+    return map;
+  }, [exam.questions]);
+
+  const baseEssayContents = useMemo(() => {
+    const map: EssayMap = {};
+    exam.questions.forEach((q, i) => {
+      if (q.questionType !== "3" || !q.studentAnswer?.length) return;
+      const text = q.studentAnswer.find(a => a.label === "essay")?.text?.trim();
+      if (text) map[i] = text;
+    });
+    return map;
+  }, [exam.questions]);
+
+  const answers = { ...baseAnswers, ...draftAnswers };
+  const essayContents = { ...baseEssayContents, ...draftEssayContents };
 
   // ===============================
   // EndTime với localStorage
@@ -37,7 +70,6 @@ export const ExamTaking = ({ exam, attemptId }: Props) => {
     return t;
   }, [exam.durationMinutes, attemptId]);
 
-  // Ref giữ giây còn lại, state dùng để render
   const remainingSecondsRef = useRef<number>(
     Math.max(0, Math.floor((endTime.getTime() - Date.now()) / 1000))
   );
@@ -51,9 +83,10 @@ export const ExamTaking = ({ exam, attemptId }: Props) => {
     Object.values(essayContents).filter(v => v.trim().length > 0).length;
   const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
 
-  // Cảnh báo: đỏ khi còn ≤ 5 phút
   const timeVariant = useMemo(() => (displaySeconds <= 300 ? "danger" : "normal"), [displaySeconds]);
   const timeLabel = useMemo(() => formatTime(displaySeconds), [displaySeconds]);
+
+  const isAnySubmitting = isSubmitting || isFinalSubmitting || hasSubmitted || isSavingCurrent;
 
   // ===============================
   // Build payload 1 câu
@@ -87,28 +120,96 @@ export const ExamTaking = ({ exam, attemptId }: Props) => {
   );
 
   // ===============================
-  // Nộp bài
+  // Lưu câu hiện tại
   // ===============================
-  const handleSubmitExam = useCallback(async () => {
-    if (hasSubmitted) return;
+  const saveCurrentQuestion = useCallback(async () => {
+    if (hasSubmitted || isAnySubmitting || isSavingCurrent) return;
+    setIsSavingCurrent(true);
 
-    const entries = exam.questions
-      .map((q, i) => buildEntryForQuestion(q, answers[i], essayContents[i]))
-      .filter(Boolean) as SubmitAttemptInput["answers"];
+    const question = exam.questions[currentIdx];
+    if (!question) {
+      setIsSavingCurrent(false);
+      return;
+    }
 
-    const payload: SubmitAttemptInput = { attemptId, answers: entries };
+    const entry = buildEntryForQuestion(question, answers[currentIdx], essayContents[currentIdx]);
+    if (!entry) {
+      setIsSavingCurrent(false);
+      return;
+    }
 
+    const payload: SubmitAttemptInput = { attemptId, answers: [entry] };
     try {
       await submitExam(payload);
-      setHasSubmitted(true);
-      localStorage.removeItem(`exam-end-${attemptId}`);
-    } catch {
-      // TODO: toast
+    } catch (error) {
+      console.error("Lỗi khi lưu câu hỏi:", error);
+      toast.error("Đã xảy ra lỗi khi lưu câu hỏi. Vui lòng thử lại.");
+    } finally {
+      setIsSavingCurrent(false);
     }
-  }, [answers, attemptId, buildEntryForQuestion, essayContents, exam.questions, hasSubmitted, submitExam]);
+  }, [
+    answers,
+    attemptId,
+    buildEntryForQuestion,
+    currentIdx,
+    essayContents,
+    exam.questions,
+    hasSubmitted,
+    isAnySubmitting,
+    isSavingCurrent,
+    submitExam,
+  ]);
 
   // ===============================
-  // Countdown realtime
+  // Nộp bài cuối → await + onSuccess trong hook
+  // ===============================
+  const handleFinishExam = useCallback(async () => {
+    if (hasSubmitted || isAnySubmitting) return;
+
+    setIsSavingCurrent(true);
+
+    try {
+      await saveCurrentQuestion().catch(() => { });
+
+      const entries = exam.questions
+        .map((q, i) => buildEntryForQuestion(q, answers[i], essayContents[i]))
+        .filter(Boolean) as SubmitAttemptInput["answers"];
+
+      const payload: SubmitAttemptInput = { attemptId, answers: entries };
+
+      // onSuccess sẽ tự redirect trong useFinalSubmitExam
+      await finalSubmitExam(payload);
+
+      setHasSubmitted(true);
+      localStorage.removeItem(`exam-end-${attemptId}`);
+      // toast.success("Nộp bài thành công!");
+      router.navigate({
+        to: "/exam/$examId/$attemptId/result",
+        params: { examId: exam.examId.toString(), attemptId: attemptId.toString() }
+      });
+    } catch (error) {
+      console.error("Lỗi nộp bài cuối:", error);
+      toast.error("Nộp bài thất bại. Vui lòng thử lại.");
+    } finally {
+      setIsSavingCurrent(false);
+    }
+  }, [
+    hasSubmitted,
+    isAnySubmitting,
+    saveCurrentQuestion,
+    exam.questions,
+    exam.examId,
+    answers,
+    essayContents,
+    attemptId,
+    buildEntryForQuestion,
+    finalSubmitExam,
+    router,
+    // onSuccess ← ĐÃ XÓA
+  ]);
+
+  // ===============================
+  // Countdown → dừng khi nộp
   // ===============================
   useEffect(() => {
     if (hasSubmitted) return;
@@ -126,7 +227,7 @@ export const ExamTaking = ({ exam, attemptId }: Props) => {
         setDisplaySeconds(next);
 
         if (next <= 0) {
-          void handleSubmitExam();
+          void handleFinishExam();
           return;
         }
       }
@@ -135,66 +236,68 @@ export const ExamTaking = ({ exam, attemptId }: Props) => {
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [hasSubmitted, handleSubmitExam]);
+  }, [hasSubmitted, handleFinishExam]);
 
   // ===============================
   // Xử lý chọn đáp án / essay
   // ===============================
   const handleSelect = (selected: string[]) => {
-    setAnswers(prev => ({ ...prev, [currentIdx]: selected }));
+    setDraftAnswers(prev => ({ ...prev, [currentIdx]: selected }));
   };
 
   const handleEssay = (content: string) => {
-    setEssayContents(prev => ({ ...prev, [currentIdx]: content }));
+    setDraftEssayContents(prev => ({ ...prev, [currentIdx]: content }));
   };
 
   // ===============================
-  // Lưu câu hiện tại
+  // Điều hướng: TỰ ĐỘNG LƯU nếu có đáp án
   // ===============================
-  const saveCurrentQuestion = useCallback(async () => {
-     if (hasSubmitted || isSubmitting) return;
-    const question = exam.questions[currentIdx];
-    if (!question) return;
+  const goTo = useCallback(
+    (idx: number) => {
+      if (idx === currentIdx) return;
 
-    const entry = buildEntryForQuestion(question, answers[currentIdx], essayContents[currentIdx]);
-    if (!entry) return;
+      const hasAnswer =
+        (answers[currentIdx]?.length ?? 0) > 0 ||
+        (essayContents[currentIdx]?.trim().length ?? 0) > 0;
 
-    const payload: SubmitAttemptInput = { attemptId, answers: [entry] };
-    try {
-      await submitExam(payload);
-    } catch (error){
-         console.error("Lỗi khi lưu câu hỏi:", error);
-         toast.error("Đã xảy ra lỗi khi lưu câu hỏi. Vui lòng thử lại.");
-    }
-
-  }, [answers, attemptId, buildEntryForQuestion, currentIdx, essayContents, exam.questions, submitExam , hasSubmitted, isSubmitting]);
-
-  // ===============================
-  // Điều hướng
-  // ===============================
-  const goTo = useCallback((idx: number) => {
-    if (idx === currentIdx) return;
-    void saveCurrentQuestion().finally(() => setCurrentIdx(idx));
-  }, [currentIdx, saveCurrentQuestion]);
+      if (hasAnswer) {
+        void saveCurrentQuestion().finally(() => setCurrentIdx(idx));
+      } else {
+        setCurrentIdx(idx);
+      }
+    },
+    [currentIdx, answers, essayContents, saveCurrentQuestion]
+  );
 
   const handleNext = useCallback(() => {
     const next = Math.min(total - 1, currentIdx + 1);
     if (next === currentIdx) return;
-    void saveCurrentQuestion().finally(() => setCurrentIdx(next));
-  }, [currentIdx, saveCurrentQuestion, total]);
+
+    const hasAnswer =
+      (answers[currentIdx]?.length ?? 0) > 0 ||
+      (essayContents[currentIdx]?.trim().length ?? 0) > 0;
+
+    if (hasAnswer) {
+      void saveCurrentQuestion().finally(() => setCurrentIdx(next));
+    } else {
+      setCurrentIdx(next);
+    }
+  }, [currentIdx, answers, essayContents, saveCurrentQuestion, total]);
 
   const handlePrev = useCallback(() => {
     const prev = Math.max(0, currentIdx - 1);
     if (prev === currentIdx) return;
-    void saveCurrentQuestion().finally(() => setCurrentIdx(prev));
-  }, [currentIdx, saveCurrentQuestion]);
 
-const handleFinishExam = useCallback(() => {
-  if (hasSubmitted || isSubmitting) return;
-  void saveCurrentQuestion().finally(() => {
-    void handleSubmitExam();
-  });
-}, [saveCurrentQuestion, handleSubmitExam, hasSubmitted, isSubmitting]);
+    const hasAnswer =
+      (answers[currentIdx]?.length ?? 0) > 0 ||
+      (essayContents[currentIdx]?.trim().length ?? 0) > 0;
+
+    if (hasAnswer) {
+      void saveCurrentQuestion().finally(() => setCurrentIdx(prev));
+    } else {
+      setCurrentIdx(prev);
+    }
+  }, [currentIdx, answers, essayContents, saveCurrentQuestion]);
 
   // ===============================
   // Render
@@ -214,10 +317,11 @@ const handleFinishExam = useCallback(() => {
             onNext={handleNext}
             isFirst={currentIdx === 0}
             isLast={currentIdx === total - 1}
-             onSubmit={handleFinishExam} 
+            onSubmit={handleFinishExam}
             timeRemainingLabel={timeLabel}
             timeVariant={timeVariant}
-            isSubmitting={isSubmitting || hasSubmitted}
+            isSubmitting={isAnySubmitting}
+            isSaving={isSavingCurrent}
           />
         </div>
 
@@ -236,7 +340,7 @@ const handleFinishExam = useCallback(() => {
             timeRemainingLabel={timeLabel}
             timeVariant={timeVariant}
             onSubmit={handleFinishExam}
-            isSubmitting={isSubmitting || hasSubmitted}
+            isSubmitting={isAnySubmitting}
           />
         </div>
       </div>

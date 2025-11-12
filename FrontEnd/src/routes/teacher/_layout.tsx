@@ -33,16 +33,16 @@ export function TeacherLayout() {
       icon: ClipboardList,
       href: '/teacher/questions',
     },
-    {
-      title: 'Học sinh',
-      icon: Users,
-      href: '/teacher/students',
-    },
-    {
-      title: 'Thống kê',
-      icon: BarChart3,
-      href: '/teacher/statistics',
-    },
+    // {
+    //   title: 'Học sinh',
+    //   icon: Users,
+    //   href: '/teacher/students',
+    // },
+    // {
+    //   title: 'Thống kê',
+    //   icon: BarChart3,
+    //   href: '/teacher/statistics',
+    // },
   ];
   const router = useRouter();
   const { user, logout } = useSessionStore();

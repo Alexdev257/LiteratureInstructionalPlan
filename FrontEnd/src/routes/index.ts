@@ -15,7 +15,8 @@ import { Route as examDetailRoute } from "./exam/[id]/index";
 import { Route as examDetailLayoutRoute } from "./exam/[id]/_layout";
 import { Route as takeExamLayoutRoute } from "./exam/[id]/[attemptId]/_layout";
 import { Route as takeExamRoute } from "./exam/[id]/[attemptId]/index";
-
+import { Route as ResultLayoutRoute } from "./exam/[id]/result/_layout";
+import { Route as ResultRoute } from "./exam/[id]/result/index";
 // Dashboard
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
 import { Route as dashboardUsersRoute } from "./dashboard/users";
@@ -24,6 +25,7 @@ import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
 // Teacher
 import { Route as teacherLayoutRoute } from "./teacher/_layout";
 import { Route as templateTeacherRoute } from "./teacher/template";
+import { Route as teacherOVerviewRoute } from "./teacher/overview";
 
 // Teacher → Exam
 import { Route as teacherExamLayoutRoute } from "./teacher/exam/_layout";
@@ -76,7 +78,17 @@ const routeTree = rootRoute.addChildren([
     examIndexRoute,
     examDetailLayoutRoute.addChildren([
       examDetailRoute,
-      takeExamLayoutRoute.addChildren([takeExamRoute]),
+      takeExamLayoutRoute.addChildren([
+        takeExamRoute,
+        ResultLayoutRoute.addChildren([
+          ResultRoute
+        ])
+
+      ]
+
+
+      ),
+
     ]),
   ]),
 
@@ -86,6 +98,7 @@ const routeTree = rootRoute.addChildren([
   // Teacher
   teacherLayoutRoute.addChildren([
     templateTeacherRoute,
+    teacherOVerviewRoute,
 
     // Exam (Teacher)
     teacherExamLayoutRoute.addChildren([

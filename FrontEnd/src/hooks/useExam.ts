@@ -3,11 +3,13 @@ import type { CreateExamInput, SubmitAttemptInput, UpdateExamInput } from "@/sch
 import { QUERY_KEY } from "@/utils/constants";
 import type { ExamAttemptQuery, ExamQuery } from "@/utils/type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 
 
 
 export const useExam = () => {
     const queryClient = useQueryClient();
+    const router = useRouter()
     const useGetExam = (filters?: ExamQuery) => {
         return useQuery({
             queryKey: [QUERY_KEY.exam(filters)],
@@ -30,10 +32,10 @@ export const useExam = () => {
             staleTime: 5 * 60 * 1000,
         });
     }
-    const useGetExamIdByStudent = (id: number,attemptId:number) => {
+    const useGetExamIdByStudent = (id: number, attemptId: number) => {
         return useQuery({
             queryKey: [QUERY_KEY.getExamForStudentById(id)],
-            queryFn: () => examApi.getExamById(id,{attemptId}),
+            queryFn: () => examApi.getExamById(id, { AttemptId: attemptId }),
             staleTime: 5 * 60 * 1000,
         });
     }
@@ -89,7 +91,7 @@ export const useExam = () => {
     }
 
     const useStartExam = useMutation({
-        mutationFn: async (data: { ExamId: number; UserId:number}) => {
+        mutationFn: async (data: { ExamId: number; UserId: number }) => {
             return await examApi.startExam(data);
         },
     });
@@ -98,5 +100,11 @@ export const useExam = () => {
             return await examApi.submitAttempt(data);
         },
     });
-    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useSubmitExam,useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
+    const useFinalSubmitExam = () => useMutation({
+        mutationFn: async (data: SubmitAttemptInput) => {
+            return await examApi.submitFinalAttempt(data);
+        },
+    })
+        
+    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent, useGetExamByStudent, useFinalSubmitExam, useSubmitExam, useStartExam, usePutExam, useDeleteExam, useRestoreExam, usePostExam };
 };

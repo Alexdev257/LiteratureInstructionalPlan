@@ -36,10 +36,15 @@ class ExamAPI extends BaseApi {
         return this.postData<{ attemptId: number }>(url, {});
     }
     async submitAttempt(data: SubmitAttemptInput): Promise<ResponseData<ResponseNull>> {
-        const url = this.createUrl(EXAM_ENDPOINT.SUBMIT_EXAM);
+        const url = this.createUrl(EXAM_ENDPOINT.SUBMIT_EXAM); 
         return this.postData<ResponseNull>(url, data);
     }
-
+    
+    async submitFinalAttempt(data: SubmitAttemptInput): Promise<ResponseData<{score:number,feedbacks:string}>> {
+        const url = this.createUrl(EXAM_ENDPOINT.SUBMIT_FINAL_EXAM);
+        return this.postData<{score:number,feedbacks:string}>(url, data);
+    }
+    
 
     async getExamAttempts(param?: ExamAttemptQuery): Promise<ResponseData<PaginationResponse<ExamAttempt>>> {
         const url = this.createUrl(EXAM_ATTEMPT_ENDPOINT.GET_EXAM_ATTEMPTS, param);

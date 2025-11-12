@@ -1,5 +1,5 @@
 // src/components/exam/QuestionCard.tsx
-import { Clock, Target, CheckSquare, Circle, FileText } from "lucide-react";
+import { Clock, CheckSquare, Circle, FileText } from "lucide-react";
 import { QuestionTypeMap, DifficultyMap } from "@/utils/enums";
 import type { Question } from "@/utils/type";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ interface Props {
   timeRemainingLabel: string;
   timeVariant: "normal" | "warning" | "danger";
   isSubmitting: boolean;
+  isSaving: boolean; // Thêm prop
 }
 
 export const QuestionCard = ({
@@ -39,6 +40,7 @@ export const QuestionCard = ({
   timeRemainingLabel,
   timeVariant,
   isSubmitting,
+  isSaving, // Nhận prop
 }: Props) => {
   const typeInfo = QuestionTypeMap[question.questionType];
   const diffInfo = DifficultyMap[question.difficulty];
@@ -86,6 +88,7 @@ export const QuestionCard = ({
           <Checkbox
             checked={isChecked}
             onCheckedChange={() => handleToggle(value)}
+            disabled={isSaving || isSubmitting}
           />
         ) : (
           <input
@@ -95,6 +98,7 @@ export const QuestionCard = ({
             checked={isChecked}
             onChange={() => handleToggle(value)}
             className="w-4 h-4 text-primary"
+            disabled={isSaving || isSubmitting}
           />
         )}
         <span className={isChecked ? "font-medium" : ""}>
@@ -111,11 +115,16 @@ export const QuestionCard = ({
         ? "text-yellow-500"
         : "text-muted-foreground";
 
+  // Nút điều hướng bị disable khi đang lưu hoặc nộp
+  const isNavigationDisabled = isSaving || isSubmitting;
+
   return (
     <div className="p-6 border border-primary/10 rounded-xl bg-gradient-to-br from-background to-secondary/5 hover:shadow-lg transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="border-primary/20">Câu {index + 1}</Badge>
+          <Badge variant="outline" className="border-primary/20">
+            Câu {index + 1}
+          </Badge>
           <Badge className={`${typeInfo.color} text-primary-foreground`}>
             <Icon className="w-3 h-3 mr-1" />
             {typeInfo.label}
@@ -143,48 +152,57 @@ export const QuestionCard = ({
       {isEssay && (
         <div className="space-y-4">
           <div className="flex justify-between text-sm">
-            <span>Số từ: <strong>{wordCount}</strong></span>
-            <span>Gợi ý: <strong>200–300 từ</strong></span>
+            <span>
+              Số từ: <strong>{wordCount}</strong>
+            </span>
+            <span>
+              Gợi ý: <strong>200–300 từ</strong>
+            </span>
           </div>
           <Textarea
             placeholder="Viết câu trả lời của bạn tại đây..."
             className="min-h-[320px] resize-none text-base leading-relaxed"
             value={essayContent}
             onChange={(e) => onUpdateEssay(e.target.value)}
+            disabled={isSaving || isSubmitting}
           />
-          {/* <div className="flex gap-2 text-xs text-muted-foreground">
-            <Button variant="ghost" size="sm">Dàn ý</Button>
-            <Button variant="ghost" size="sm">Kiểm tra chính tả</Button>
-            <Button variant="ghost" size="sm">Đếm từ</Button>
-          </div> */}
+        </div>
+      )}
+
+      {/* Hiển thị trạng thái lưu */}
+      {isSaving && (
+        <div className="flex items-center justify-center py-2 text-sm text-muted-foreground">
+          <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full mr-2" />
+          Đang lưu câu trả lời...
         </div>
       )}
 
       <div className="flex justify-between items-center pt-6 border-t border-primary/10 mt-6">
-        <Button variant="outline" disabled={isFirst} onClick={onPrev} className="border-primary/20">
+        <Button
+          variant="outline"
+          disabled={isFirst || isNavigationDisabled}
+          onClick={onPrev}
+          className="border-primary/20"
+        >
           Câu trước
         </Button>
+
         <div className="flex gap-2">
-          {/* <Button variant="outline" className="border-primary/20">
-            <Target className="w-4 h-4 mr-2 text-primary" />
-            Đánh dấu
-          </Button> */}
           {isLast ? (
-            null
-            // <Button
-            //   className="bg-emerald-600 hover:bg-emerald-700"
-            //   onClick={onSubmit}
-            //   disabled={isSubmitting}
-            // >
-            //   {isSubmitting ? "Đang nộp..." : "Nộp bài"}
-            // </Button>
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700"
+              onClick={onSubmit}
+              disabled={isSubmitting || isSaving}
+            >
+              {isSubmitting ? "Đang nộp..." : "Nộp bài"}
+            </Button>
           ) : (
             <Button
               onClick={onNext}
               className="bg-primary hover:bg-primary/90"
-              disabled={isSubmitting}
+              disabled={isNavigationDisabled}
             >
-              Câu tiếp theo
+              {isSaving ? "Đang lưu..." : "Câu tiếp theo"}
             </Button>
           )}
         </div>
