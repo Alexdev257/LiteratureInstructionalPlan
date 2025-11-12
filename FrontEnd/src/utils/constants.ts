@@ -1,4 +1,4 @@
-import type { BaseFilterPagination, ExamQuery, ExamTypeQuery, GradeLevelQuery, MatrixQuery } from "./type";
+import type { BaseFilterPagination, ExamQuery, ExamTypeQuery, GradeLevelQuery, MatrixQuery, QuestionQuery } from "./type";
 
 export const constDefault = {
     ENTITY_ERROR_STATUS: 422,
@@ -29,6 +29,12 @@ export const QUERY_KEY = {
     getMatrixById: (id: number) => ['matrixById', id],
 
     getUserProfileById: (id: number) => ['userProfileById', id],
+
+    question: (param?: QuestionQuery) => ['question', param],
+    questionById: (id: number) => ['questionById', id],
+
+    examAttempts: (param?: ExamQuery) => ['examAttempts', param],
+    examAttemptById: (id: number) => ['examAttemptById', id],
 
 
 } as const

@@ -19,7 +19,7 @@ export function MatrixMetadata({ matrix }: MatrixMetadataProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg font-semibold">{matrix.createdByUserId}</p>
+          <p className="text-lg font-semibold">{matrix.createdBy.fullName}</p>
         </CardContent>
       </Card>
 

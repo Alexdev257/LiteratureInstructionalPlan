@@ -17,7 +17,7 @@ export function MatrixStats({ matrix }: MatrixStatsProps) {
     {
       icon: BookOpen,
       label: "Khối lớp",
-      value: matrix.gradeLevelId,
+      value: matrix.gradeLevel.name,
       color: "text-foreground",
     },
     {

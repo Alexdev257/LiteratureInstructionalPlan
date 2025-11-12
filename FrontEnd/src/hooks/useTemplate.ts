@@ -1,7 +1,7 @@
 import { templateApi } from "@/lib/api/template/template";
 import type { TemplateInput } from "@/schema/templateSchema";
 import { QUERY_KEY } from "@/utils/constants";
-import type { ResponseData, Template, TemplateQuery } from "@/utils/type"
+import type { TemplateQuery } from "@/utils/type"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 
@@ -22,19 +22,41 @@ export const useTemplate = () => {
          staleTime: 5 * 60 * 1000,
       })
    }
-   const usePostTemplate = useMutation<ResponseData<Template>, Error, TemplateInput>({
+   const usePostTemplate = useMutation({
       mutationFn: async (data: TemplateInput) => {
          return await templateApi.createTemplate(data);
       },
       onSuccess: async () => {
-         const freshData = await templateApi.getTemplates();
-         queryClient.setQueryData([QUERY_KEY.template({ PageNumber: 1, PageSize: 10, search: '' })], freshData);
+         const freshData = await templateApi.getTemplates({ PageNumber: 1, PageSize: 10, Search: '' });
+         queryClient.setQueryData([QUERY_KEY.template({ PageNumber: 1, PageSize: 10, Search: '' })], freshData);
       }
    });
-   const useDeleteTemplate = useMutation<ResponseData<null>, Error, number>({
+   const usePutTemplate = useMutation({
+      mutationFn: async ({ id, data }: { id: number; data: TemplateInput }) => {
+         return await templateApi.updateTemplate(id, data);
+      },
+      onSuccess: async () => {
+         const freshData = await templateApi.getTemplates({ PageNumber: 1, PageSize: 10, Search: '' });
+         queryClient.setQueryData([QUERY_KEY.template({ PageNumber: 1, PageSize: 10, Search: '' })], freshData);
+      }
+   })
+   const useDeleteTemplate = useMutation({
       mutationFn: async (id: number) => {
          return await templateApi.deleteTemplate(id);
+      },
+      onSuccess: async () => {
+         const freshData = await templateApi.getTemplates({ PageNumber: 1, PageSize: 10, Search: '' });
+         queryClient.setQueryData([QUERY_KEY.template({ PageNumber: 1, PageSize: 10, Search: '' })], freshData);
       }
    });
-   return { useGetTemplates, usePostTemplate, useDeleteTemplate, useGetTemplatesById };
+   const useRestoreTemplate = useMutation({
+      mutationFn: async (id: number) => {
+         return await templateApi.restoreTemplate(id);
+      },
+      onSuccess: async () => {
+         const freshData = await templateApi.getTemplates({ PageNumber: 1, PageSize: 10, Search: '' });
+         queryClient.setQueryData([QUERY_KEY.template({ PageNumber: 1, PageSize: 10, Search: '' })], freshData);
+      }
+   })
+   return { useGetTemplates, usePostTemplate, useDeleteTemplate, useGetTemplatesById, usePutTemplate, useRestoreTemplate };
 };

@@ -75,35 +75,50 @@ export type ExamData = {
     examId: number;
     title: string;
     description: string;
-    duration: number;
+    durationMinutes: number;
+    matrixId: number;
+    gradeLevel: GradeLevel;
     examType: ExamType;
-    matrix: Matrix;
+    createdBy: CreateByUser;
     questions: Question[];
-    attempts: number;
-    averageScore: number;
+    createdAt: Date
+}
 
+export type ExamAttemptQuery = BaseFilterPagination & {
+    ExamId?: number;
+    UserId?: string;
+    Status: string;
+    IsAdmin?: boolean;
 }
 
 
 
 
-
+export type ExamAttempt = {
+    examAttemptId: number;
+    examId: number;
+    userId: string;
+    status: string;
+    score: number;
+    feedback: string;
+    startedAt: Date;
+    endTime: Date
+    completedAt: Date;
+}
 
 
 export type Matrix = {
     matrixId: number;
     title: string;
     description: string;
-    gradeLevelId: number;
-    createdByUserId: number;
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
     createdAt: string;
     status: string;
     notes?: string;
     totalQuestions: number;
     totalPoint: number;
     details: MatrixDetail[];
-
-
 }
 export type MatrixDetail = {
     examMatrixDetailId: number;
@@ -114,17 +129,21 @@ export type MatrixDetail = {
     scorePerQuestion: number;
 }
 
+export type Answer = {
+    label: string;
+    text: string;
+}
+
 export type Question = {
     questionId: number;
     content: string;
-    questionType: 'multiple-choice' | 'essay';
-    difficulty: 'easy' | 'medium' | 'hard';
-    answer: string;
-    grade: GradeLevel;
-    createdBy: {
-        userId: string;
-        username: string;
-    };
+    questionType: "1" | "2" | "3";
+    difficulty: "1" | "2" | "3" | "4";
+    answer: Answer[];
+    correctAnswer?: Answer[];
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
+    createdAt: Date;
 
 }
 
@@ -134,15 +153,8 @@ export type Template = {
     filePath: string;
     viewPath: string;
     price: number;
-    gradeLevel: {
-        gradeLevelId: number;
-        name: string;
-    };
-    createdBy: {
-        UserId: string;
-        FullName: string;
-        Email: string;
-    };
+    gradeLevel: GradeLevel;
+    createdBy: CreateByUser;
     totalDownload: number;
     isDeleted: boolean;
     createdAt: Date;
@@ -194,7 +206,6 @@ export type UserFilters = {
     status?: "Active" | "Suspended" | "Banned" | "All";
 };
 
-// Dùng cho modal "Thêm Admin" sau này
 export type CreateAdminInput = {
     fullName: string;
     email: string;
@@ -247,7 +258,7 @@ export type PaginationResponse<T> = {
 export type BaseFilterPagination = {
     PageNumber?: number;
     PageSize?: number;
-    search?: string
+    Search?: string
 }
 export type ExamTypeQuery = BaseFilterPagination & {
     Name?: string;
@@ -257,17 +268,32 @@ export type GradeLevelQuery = BaseFilterPagination & {
 }
 export type ExamQuery = BaseFilterPagination & {
     GradeLevelId?: number;
-    // Difficulty?: 'easy' | 'medium' | 'hard';
     ExamTypeId?: number;
-    // Search?: string;
+    IsShowCorrectAnswer?: boolean;
+    IsAdmin?: boolean;
 }
 
 export type MatrixQuery = BaseFilterPagination & {
     GradeLevelId?: number;
-    status?: string
+    IsAdmin?: boolean;
 }
 
 export type TemplateQuery = BaseFilterPagination & {
     GradeLevelId?: number;
     isDeleted?: boolean
+}
+
+export type CreateByUser = {
+    userId: number;
+    fullName: string;
+    email: string;
+}
+
+export type QuestionQuery = BaseFilterPagination & {
+    QuestionType?: string  // "1" | "2" | "3"
+    Difficulty?: string  // "1" | "2" | "3" | "4"   
+    GradeLevelId?: number;
+    IsShowAnswer?: boolean;
+    IsShowCorrectAnswer?: boolean;
+    IsAdmin?: boolean;
 }

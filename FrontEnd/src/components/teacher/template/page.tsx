@@ -7,10 +7,10 @@ import TemplateListSection from "./_components/TemplateListSection";
 
 
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS : TemplateQuery = {
   PageNumber: 1,
   PageSize: 10,
-  search: '',
+  Search: '',
   GradeLevelId: undefined,
   isDeleted: undefined,
 }

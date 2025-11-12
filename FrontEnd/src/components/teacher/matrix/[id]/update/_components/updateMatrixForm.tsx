@@ -60,11 +60,11 @@ export default function UpdateMatrixForm({ initialData }: UpdateMatrixFormProps)
     defaultValues: {
       title: initialData.title,
       description: initialData.description,
-      gradeLevelId: initialData.gradeLevelId,
+      gradeLevelId: initialData.gradeLevel.gradeLevelId,
       status: initialData.status as "draft" | "active" | "archived",
       notes: initialData.notes,
       createdAt: initialData.createdAt,
-      createdByUserId: initialData.createdByUserId,
+      createdByUserId: initialData.createdBy.userId,
       details: initialData.details?.length > 0
         ? initialData.details.map((d) => ({
           examMatrixDetailId: d.examMatrixDetailId,
@@ -131,7 +131,7 @@ export default function UpdateMatrixForm({ initialData }: UpdateMatrixFormProps)
         onSuccess: (res) => {
           if (res.isSuccess) {
             toast.success(res.message || "Cập nhật ma trận thành công!");
-            router.navigate({ to: "/teacher/matrix" });
+            router.navigate({ to: `/teacher/matrix/${initialData.matrixId}` });
           }
         },
         onError: (error) => {

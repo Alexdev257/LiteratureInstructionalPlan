@@ -4,17 +4,8 @@ import { Search, X } from "lucide-react";
 
 import { useGradeLevel } from "@/hooks/useGradeLevel";
 import { useDebouncedParams } from "@/hooks/useDebounce";
+import type { TemplateQuery } from "@/utils/type";
 
-export type BaseFilterPagination = {
-  PageNumber?: number;
-  PageSize?: number;
-  search?: string;
-};
-
-export type TemplateQuery = BaseFilterPagination & {
-  GradeLevelId?: number;
-  isDeleted?: boolean;
-};
 
 interface TemplateSearchFilterProps {
   queryParams?: Partial<TemplateQuery>;
@@ -24,7 +15,7 @@ interface TemplateSearchFilterProps {
 const DEFAULT_PARAMS: TemplateQuery = {
   PageNumber: 1,
   PageSize: 10,
-  search: "",
+  Search: "",
   GradeLevelId: undefined,
   isDeleted: undefined,
 };
@@ -55,7 +46,7 @@ export default function TemplateSearchFilter({
   const gradeLevels = gradeLevelsData?.data?.items || [];
 
   const hasActiveFilters =
-    !!localParams.search ||
+    !!localParams.Search ||
     localParams.GradeLevelId !== undefined ||
     localParams.isDeleted !== undefined;
 
@@ -79,8 +70,8 @@ export default function TemplateSearchFilter({
               type="text"
               placeholder="Tìm theo tiêu đề template..."
               className="w-full pl-10 pr-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              value={localParams.search || ""}
-              onChange={(e) => updateLocalParam("search", e.target.value)}
+              value={localParams.Search || ""}
+              onChange={(e) => updateLocalParam("Search", e.target.value)}
             />
           </div>
         </div>

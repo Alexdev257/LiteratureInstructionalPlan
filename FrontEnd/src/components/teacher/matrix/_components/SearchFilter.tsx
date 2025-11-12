@@ -15,9 +15,9 @@ interface SearchFilterProps {
 const DEFAULT_PARAMS: MatrixQuery = {
   PageNumber: 1,
   PageSize: 10,
-  search: "",
+  Search: "",
+  IsAdmin: false,
   GradeLevelId: undefined,
-  status: undefined,
 };
 
 export default function SearchFilter({
@@ -51,8 +51,7 @@ export default function SearchFilter({
 
 
   const hasActiveFilters =
-    !!localParams.search ||
-    localParams.status !== undefined ||
+    !!localParams.Search ||
     localParams.GradeLevelId !== undefined;
 
 
@@ -75,14 +74,14 @@ export default function SearchFilter({
               type="text"
               placeholder="Tìm theo tiêu đề ma trận..."
               className="w-full pl-10 pr-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              value={localParams.search || ""}
-              onChange={(e) => updateLocalParam("search", e.target.value)}
+              value={localParams.Search || ""}
+              onChange={(e) => updateLocalParam("Search", e.target.value)}
             />
           </div>
         </div>
 
         {/* Status */}
-        <div className="w-full lg:w-[180px]">
+        {/* <div className="w-full lg:w-[180px]">
           <select
             className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             value={localParams.status ?? ""}
@@ -95,7 +94,7 @@ export default function SearchFilter({
             <option value="draft">Bản nháp</option>
             <option value="archived">Lưu trữ</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Grade Level */}
         <div className="w-full lg:w-[180px]">

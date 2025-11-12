@@ -27,6 +27,28 @@ import { Route as matrixIndexRoute } from "./teacher/matrix/index";
 import { Route as matrixDetailRoute } from "./teacher/matrix/[id]/index";
 import { Route as matrixEditRoute } from "./teacher/matrix/[id]/edit/_layout";
 import { Route as matrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
+import { Route as questionLayoutRoute } from "./teacher/question/_layout";
+import { Route as questionIndexRoute } from "./teacher/question/index";
+import { Route as questionCreateLayoutRoute } from "./teacher/question/create/_layout";
+import { Route as questionCreateIndexRoute } from "./teacher/question/create/index";
+import { Route as questionDetailLayout } from "./teacher/question/[id]/_layout";
+import { Route as questionDetailRoute } from "./teacher/question/[id]/index";
+import { Route as questionEditLayout } from "./teacher/question/[id]/edit/_layout";
+import { Route as editQuestionRoute } from "./teacher/question/[id]/edit/index";
+import {Route as examTeacherLayoutRoute} from "./teacher/exam/_layout";
+import {Route as examTeacherIndexRoute} from "./teacher/exam/index";
+import {Route as examTeacherDetailRoute} from "./teacher/exam/[id]/index";
+import {Route as examTeacherDetailayoutRoute} from "./teacher/exam/[id]/_layout";
+
+import {Route as examSelectMatrixLayoutRoute} from "./teacher/exam/select-matrix/_layout";
+import {Route as examSelectQuestionLayoutRoute} from "./teacher/exam/select-question/_layout";
+import {Route as examSelectQuestionIndexRoute} from "./teacher/exam/select-question/index";
+import {Route as examSelectMatrixIndexRoute} from "./teacher/exam/select-matrix/index";
+import {Route as examReviewMatrixIndexRoute } from "./teacher/exam/review/index";
+import { Route as examReviewMatrixLayoutRoute } from "./teacher/exam/review/_layout";
+
+import {Route as examEditLayoutRoute} from './teacher/exam/[id]/edit/_layout';
+import {Route as examEditIndexRoute} from './teacher/exam/[id]/edit/index';
 
 const routeTree = rootRoute.addChildren([
     homeRoute,
@@ -47,6 +69,47 @@ const routeTree = rootRoute.addChildren([
 
     teacherLayoutRoute.addChildren([
         templateRouteByTeacher,
+
+
+
+
+         //exam 
+        examTeacherLayoutRoute.addChildren([
+            examTeacherIndexRoute,
+            examTeacherDetailayoutRoute.addChildren([
+                examTeacherDetailRoute,
+                examEditLayoutRoute.addChildren([
+                    examEditIndexRoute,
+                ]),
+            ]),
+             
+            examSelectMatrixLayoutRoute.addChildren([
+                examSelectMatrixIndexRoute,
+            ]),
+            examSelectQuestionLayoutRoute.addChildren([
+                examSelectQuestionIndexRoute,
+            ]),
+            examReviewMatrixLayoutRoute.addChildren([
+                examReviewMatrixIndexRoute,
+            ]),
+
+        ]),
+
+        // question routes
+        questionLayoutRoute.addChildren([
+            questionIndexRoute,
+            questionCreateLayoutRoute.addChildren([
+                questionCreateIndexRoute,
+            ]),
+            questionDetailLayout.addChildren([
+                questionDetailRoute,
+                questionEditLayout.addChildren([
+                    editQuestionRoute,
+                ])
+            ]),
+        ]),
+
+        // matrix routes
         matrixLayoutRoute.addChildren([
             matrixIndexRoute,
             matrixCreateLayoutRoute.addChildren([

@@ -10,7 +10,6 @@ import {
   Trash2,
   ArchiveRestore,
   MoreVertical,
-  Loader2,
   FileText,
   DownloadIcon,
 } from "lucide-react";
@@ -44,13 +43,16 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { BasePagination } from "@/components/layout/base/pagination";
-import { useState } from "react";
 import { toast } from "sonner";
 import { useSessionStore } from "@/stores/sessionStore";
 
 import type { Template, TemplateQuery } from "@/utils/type";
 import { CreateTemplateDialog } from "./CreateTemplateDialog";
+
 import { useTemplate } from "@/hooks/useTemplate";
+import { EditTemplateDialog } from "./UpdateTemplateDialog";
+import { useState } from "react";
+
 
 interface TemplateListSectionProps {
   filters: TemplateQuery;
@@ -62,13 +64,12 @@ export default function TemplateListSection({
   onFiltersChange,
 }: TemplateListSectionProps) {
   const { user } = useSessionStore();
-  const { useGetTemplates } = useTemplate();
+  const { useGetTemplates,useDeleteTemplate,useRestoreTemplate} = useTemplate();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
-  const [permanentDeleteDialogOpen, setPermanentDeleteDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState<string>("");
@@ -109,40 +110,46 @@ export default function TemplateListSection({
     setSelectedTemplateTitle(title);
     setRestoreDialogOpen(true);
   };
-
-  const openPermanentDeleteDialog = (id: number, title: string) => {
-    setSelectedTemplateId(id);
-    setSelectedTemplateTitle(title);
-    setPermanentDeleteDialogOpen(true);
-  };
-
-
   const handleDelete = () => {
-    toast.success("Đã xóa template", {
-      description: `"${selectedTemplateTitle}" vào thùng rác`,
+    useDeleteTemplate.mutate(selectedTemplateId!, {
+      onSuccess: () => {
+        toast.success("Xóa thành công", {
+          description: `"${selectedTemplateTitle}" đã được xóa tạm thời`,
+        });
+        setDeleteDialogOpen(false);
+        refetch();
+      } ,
+      onError: (err) => {
+        console.log(err);
+        toast.error("Xóa thất bại", {
+          description:
+            err?.message || "Đã có lỗi xảy ra, vui lòng thử lại",
+        });
+      }
     });
-    setDeleteDialogOpen(false);
-    refetch();
   };
 
   const handleRestore = () => {
-    toast.success("Khôi phục thành công", {
-      description: `"${selectedTemplateTitle}" đã quay lại`,
+    useRestoreTemplate.mutate(selectedTemplateId!, {
+      onSuccess: () => {
+        toast.success("Khôi phục thành công", {
+          description: `"${selectedTemplateTitle}" đã được khôi phục`,
+        });
+        setRestoreDialogOpen(false);
+        refetch();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast.error("Khôi phục thất bại", {
+          description:
+            err?.message || "Đã có lỗi xảy ra, vui lòng thử lại",
+        });
+      }
     });
-    setRestoreDialogOpen(false);
-    refetch();
-  };
-
-  const handlePermanentDelete = () => {
-    toast.success("Xóa vĩnh viễn thành công", {
-      description: `"${selectedTemplateTitle}" đã biến mất mãi mãi`,
-    });
-    setPermanentDeleteDialogOpen(false);
-    refetch();
   };
 
   const canModify = (template: Template) => {
-    return Number(user?.UserId) === template.createdBy?.id;
+     return Number(user?.UserId) === template.createdBy.userId;
   };
 
   const formatPrice = (price: number) => {
@@ -161,14 +168,14 @@ export default function TemplateListSection({
   };
 
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <span className="ml-2 text-muted-foreground">Đang tải dữ liệu...</span>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center py-16">
+  //       <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+  //       <span className="ml-2 text-muted-foreground">Đang tải dữ liệu...</span>
+  //     </div>
+  //   );
+  // }
 
 
   if (isError) {
@@ -189,23 +196,6 @@ export default function TemplateListSection({
   }
 
 
-  if (!isLoading && !isError && templates.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="bg-muted rounded-full p-6 mb-4">
-          <FileText className="h-12 w-12 text-muted-foreground" />
-        </div>
-        <h3 className="text-lg font-semibold mb-2">Không tìm thấy template</h3>
-        <p className="text-muted-foreground text-center max-w-md">
-          Thử thay đổi bộ lọc hoặc tạo template mới
-        </p>
-        <Button onClick={() => setCreateDialogOpen(true)} className="mt-4">
-          <Plus className="h-4 w-4 mr-2" />
-          Tạo template đầu tiên
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -224,6 +214,23 @@ export default function TemplateListSection({
           Tạo Template Mới
         </Button>
       </div>
+      {
+        !isLoading && !isError && templates.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="bg-muted rounded-full p-6 mb-4">
+              <FileText className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Không tìm thấy template</h3>
+            <p className="text-muted-foreground text-center max-w-md">
+              Thử thay đổi bộ lọc hoặc tạo template mới
+            </p>
+            <Button onClick={() => setCreateDialogOpen(true)} className="mt-4">
+              <Plus className="h-4 w-4 mr-2" />
+              Tạo template đầu tiên
+            </Button>
+          </div>
+        )
+      }
 
       {/* Table */}
       <div className="rounded-md border bg-card">
@@ -248,9 +255,8 @@ export default function TemplateListSection({
               return (
                 <TableRow
                   key={template.templateId}
-                  className={`${
-                    isDeleted ? "opacity-60 bg-muted/30" : ""
-                  } hover:bg-muted/50 transition-colors`}
+                  className={`${isDeleted ? "opacity-60 bg-muted/30" : ""
+                    } hover:bg-muted/50 transition-colors`}
                 >
                   {/* STT */}
                   <TableCell className="text-center font-medium">
@@ -284,7 +290,7 @@ export default function TemplateListSection({
                   {/* Lớp */}
                   <TableCell>
                     <Badge variant="secondary">
-                      {template.gradeLevelId?.name || "N/A"}
+                      {template.gradeLevel?.name || "N/A"}
                     </Badge>
                   </TableCell>
 
@@ -301,7 +307,7 @@ export default function TemplateListSection({
                   {/* Người tạo */}
                   <TableCell>
                     <div className="text-sm font-medium">
-                      {template.createdBy?.userName || "N/A"}
+                      {template.createdBy?.fullName || "N/A"}
                     </div>
                   </TableCell>
 
@@ -347,12 +353,12 @@ export default function TemplateListSection({
                               className="text-red-600"
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Xóa tạm thời
+                              Xóa 
                             </DropdownMenuItem>
                           </>
                         )}
 
-                        {hasPermission && isDeleted && (
+                        {isDeleted && (
                           <>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -368,18 +374,7 @@ export default function TemplateListSection({
                               Khôi phục
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() =>
-                                openPermanentDeleteDialog(
-                                  template.templateId,
-                                  template.title
-                                )
-                              }
-                              className="text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Xóa vĩnh viễn
-                            </DropdownMenuItem>
+                           
                           </>
                         )}
                       </DropdownMenuContent>
@@ -408,19 +403,17 @@ export default function TemplateListSection({
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
       />
-
       {/* TODO: Uncomment khi có EditTemplateDialog */}
-      {/* {selectedTemplate && (
-        <EditTemplateDialog
-          open={editDialogOpen}
-          onOpenChange={setEditDialogOpen}
-          template={selectedTemplate}
-          onSuccess={() => {
-            toast.success("Cập nhật thành công!");
-            refetch();
-          }}
-        />
-      )} */}
+       {
+        selectedTemplate && (
+          <EditTemplateDialog
+            open={editDialogOpen}
+            template={selectedTemplate}
+            onOpenChange={setEditDialogOpen}
+          />
+        )
+       }
+    
 
       {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -463,34 +456,6 @@ export default function TemplateListSection({
             <AlertDialogCancel>Hủy</AlertDialogCancel>
             <AlertDialogAction onClick={handleRestore} className="bg-green-600">
               Khôi phục
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Permanent Delete Dialog */}
-      <AlertDialog
-        open={permanentDeleteDialogOpen}
-        onOpenChange={setPermanentDeleteDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-              <Trash2 className="h-5 w-5" />
-              Xóa vĩnh viễn
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              <strong>Không thể hoàn tác!</strong> Xóa vĩnh viễn{" "}
-              <strong>"{selectedTemplateTitle}"</strong>?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handlePermanentDelete}
-              className="bg-red-600"
-            >
-              Xóa vĩnh viễn
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

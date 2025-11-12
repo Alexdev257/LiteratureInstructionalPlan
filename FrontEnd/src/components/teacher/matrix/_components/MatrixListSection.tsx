@@ -2,7 +2,6 @@ import { BasePagination } from "@/components/layout/base/pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,7 +36,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useSessionStore } from "@/stores/sessionStore";
-import { useState } from "react";
+import {  useState } from "react";
 import { toast } from "sonner";
 
 interface MatrixListSectionProps {
@@ -55,12 +54,16 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
 
 
 
+
   // Dialog states
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
   const [selectedMatrixId, setSelectedMatrixId] = useState<number | null>(null);
   const [selectedMatrixTitle, setSelectedMatrixTitle] = useState<string>("");
+ 
 
+
+  
   const handleCreateNew = () => {
     router.navigate({ to: "/teacher/matrix/create" });
   };
@@ -140,6 +143,9 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
   const pageSize = filters.PageSize || 10;
   const gradeLevels = gradeLevelsData?.data?.items || [];
 
+
+  
+
   // Status configuration
   const getStatusConfig = (status: string) => {
     const configs = {
@@ -167,13 +173,29 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
 
   // Check if user can edit/delete
   const canModify = (matrix: Matrix) => {
-    return user?.UserId === matrix.createdByUserId.toString();
+    return Number(user?.UserId) === matrix.createdBy.userId;
   };
 
   // Check if matrix is archived
   const isArchived = (matrix: Matrix) => {
     return matrix.status === 'archived';
   };
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="bg-destructive/10 rounded-full p-6 mb-4">
+          <AlertCircle className="h-12 w-12 text-destructive" />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">Có lỗi xảy ra</h3>
+        <p className="text-muted-foreground text-center max-w-md mb-4">
+          {error?.message || "Không thể tải dữ liệu ma trận."}
+        </p>
+        <Button onClick={() => refetch()} variant="outline">
+          Thử lại
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -194,16 +216,7 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
         </Button>
       </div>
 
-      {/* Error State */}
-      {isError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Lỗi tải dữ liệu</AlertTitle>
-          <AlertDescription>
-            {error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.'}
-          </AlertDescription>
-        </Alert>
-      )}
+
 
       {/* Empty State */}
       {!isLoading && !isError && matrices.length === 0 && (
@@ -216,7 +229,7 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
               Chưa có ma trận nào
             </h3>
             <p className="text-muted-foreground mb-6 text-center max-w-md">
-              {filters.search || filters.GradeLevelId || filters.status
+              {filters.Search || filters.GradeLevelId
                 ? 'Không tìm thấy ma trận phù hợp với bộ lọc. Thử thay đổi điều kiện tìm kiếm.'
                 : 'Bắt đầu tạo ma trận đầu tiên của bạn để quản lý đề thi một cách hiệu quả.'
               }
@@ -324,7 +337,7 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
                       {/* Badges */}
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                          {getGradeLevelName(matrix.gradeLevelId)}
+                          {getGradeLevelName(matrix.gradeLevel.gradeLevelId)}
                         </Badge>
                         <Badge className={statusConfig.className}>
                           {statusConfig.label}
@@ -338,16 +351,24 @@ export default function MatrixListSection({ filters, onFiltersChange }: MatrixLi
                       </div>
 
                       {/* Meta Info */}
-                      <div className="flex flex-wrap gap-3 text-xs text-muted-foreground pt-2 border-t border-border">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {new Date(matrix.createdAt).toLocaleDateString('vi-VN', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
-                          })}
-                        </span>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pt-2 border-t border-border">
+                        <div className="flex gap-2">
+                          <p className="text-sm bg-gray-50"> {matrix.details.reduce((acc, cur) => cur.questionType !== "3" ? acc + cur.quantity : acc, 0)} Trắc nghiệm</p>
+                          <p className="text-sm bg-gray-50"> {matrix.details.reduce((acc, cur) => cur.questionType === "3"  ? acc + cur.quantity : acc, 0)} tự luận</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-4 w-4" />
+                          <span>
+                            {new Date(matrix.createdAt).toLocaleDateString("vi-VN", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
+                          </span>
+                        </div>
                       </div>
+
+
 
                       {/* Notes */}
                       {matrix.notes && (

@@ -18,15 +18,17 @@ export const PUBLIC_ENDPOINT = {
 }
 
 export const ADMIN_ENDPOINT = {
-  GET_USERS: "admin/users",
-  CREATE_ADMIN: "admin/create-teacher",
-  GET_QUESTIONS: "admin/questions",
-  CREATE_QUESTION: "admin/questions"
+    GET_USERS: "admin/users",
+    CREATE_ADMIN: "admin/create-teacher",
+    GET_QUESTIONS: "admin/questions",
+    CREATE_QUESTION: "admin/questions"
 };
 
 export const TEMPLATE_ENDPOINT = {
     GET_TEMPLATES: "Template",
     GET_TEMPLATE_BY_ID: (id: number) => `Template/${id}`,
+    RESTORE_TEMPLATE: (id: number) => `Template/restore/${id}`,
+    DELETE_TEMPLATE: (id: number) => `Template/delete/${id}`,
 }
 
 export const EXAM_TYPE_ENDPOINT = {
@@ -41,7 +43,15 @@ export const GRADE_LEVEL_ENDPOINT = {
 
 export const EXAM_ENDPOINT = {
     GET_EXAMS: "Exam/get-all",
-    GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`
+    GET_EXAM_BY_ID: (id: number) => `Exam/get/${id}`,
+    CREATE_EXAM: "Exam/create-exam-manual",
+    UPDATE_EXAM: (id: number) => `Exam/update-exam/${id}`,
+    DELETE_EXAM: (id: number) => `Exam/delete-exam/${id}`,
+    RESTORE_EXAM: (id: number) => `Exam/restore-exam/${id}`,
+
+    START_EXAM: "Exam/start-exam/",
+    SUBMIT_EXAM: "Exam/submit-exam/",
+
 }
 
 export const MATRIX_ENDPOINT = {
@@ -56,4 +66,18 @@ export const MATRIX_ENDPOINT = {
 export const USER_ENDPOINT = {
     GET_USER_PROFILE: (id: number) => `User/get/${id}`,
     UPDATE_USER_PROFILE: (id: number) => `User/update-user/${id}`,
+}
+
+export const QUESTION_ENDPOINT = {
+    GET_QUESTIONS: "PracticeQuestion/get-all",
+    GET_QUESTION_BY_ID: (id: number) => `PracticeQuestion/get/${id}`,
+    CREATE_QUESTION: "PracticeQuestion/create-question",
+    UPDATE_QUESTION: (id: number) => `PracticeQuestion/update-question/${id}`,
+    DELETE_QUESTION: (id: number) => `PracticeQuestion/delete-question/${id}`,
+    RESTORE_QUESTION: (id: number) => `PracticeQuestion/restore-question/${id}`,
+}
+
+export const EXAM_ATTEMPT_ENDPOINT = {
+    GET_EXAM_ATTEMPTS: "ExamAttempt/get-all",
+    GET_EXAM_ATTEMPT_BY_ID: (id: number) => `ExamAttempt/get/${id}`,
 }

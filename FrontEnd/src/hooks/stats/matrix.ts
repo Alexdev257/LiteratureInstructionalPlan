@@ -6,7 +6,7 @@ import { useMatrix } from "../useMatrix";
 
 export function useMatrixStats() {
   const { useGetMatrices } = useMatrix();
-  const { data, isLoading } = useGetMatrices({ PageSize: 1000 });
+  const { data, isLoading } = useGetMatrices({PageSize:1000});
   
   const stats: StatCard[] = useMemo(() => {
     const matrices = data?.data?.items || [];

@@ -9,9 +9,10 @@ import SearchFilter from './_components/SearchFilter';
 const DEFAULT_FILTERS: MatrixQuery = {
   PageNumber: 1,
   PageSize: 10,
-  search: '',
+  Search: '',
   GradeLevelId: undefined,
-  status: undefined,
+  IsAdmin: false,
+ 
 };
 
 export default function MatrixPage() {

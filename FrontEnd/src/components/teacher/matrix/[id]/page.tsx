@@ -32,20 +32,20 @@ export default function DetailMatrixPage() {
   }
 
   // Loading state
-  if (isLoading) {
-    return (
-      <div className="container max-w-7xl space-y-8 py-8">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 w-full" />
-          ))}
-        </div>
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="container max-w-7xl space-y-8 py-8">
+  //       <Skeleton className="h-12 w-full" />
+  //       <Skeleton className="h-24 w-full" />
+  //       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+  //         {Array.from({ length: 4 }).map((_, i) => (
+  //           <Skeleton key={i} className="h-32 w-full" />
+  //         ))}
+  //       </div>
+  //       <Skeleton className="h-64 w-full" />
+  //     </div>
+  //   );
+  // }
 
   // Error state
   if (isError || !matrix) {
