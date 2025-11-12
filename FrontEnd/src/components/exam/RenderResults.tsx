@@ -25,8 +25,8 @@ interface Props {
 
 const RenderResults = ({ filters, onFiltersChange }: Props) => {
   const router = useRouter();
-  const { useGetExam } = useExam();
-  const { data, isLoading, isError } = useGetExam(filters);
+  const { useGetExamByStudent } = useExam();
+  const { data, isLoading, isError } = useGetExamByStudent(filters);
 
   const exams = data?.data?.items || [];
   const totalPages = data?.data?.totalPages || 1;

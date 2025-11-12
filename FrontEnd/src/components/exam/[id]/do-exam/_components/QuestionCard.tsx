@@ -1,4 +1,4 @@
-
+// src/components/exam/QuestionCard.tsx
 import { Clock, Target, CheckSquare, Circle, FileText } from "lucide-react";
 import { QuestionTypeMap, DifficultyMap } from "@/utils/enums";
 import type { Question } from "@/utils/type";
@@ -57,9 +57,8 @@ export const QuestionCard = ({
     }
   };
 
-  // Xử lý hiển thị đáp án đúng theo dữ liệu thật
   const renderOption = (opt: { label: string; text: string }, i: number) => {
-    const letter = opt.label || String.fromCharCode(65 + i); // Nếu không có label → A, B, C...
+    const letter = opt.label || String.fromCharCode(65 + i);
     const displayText = opt.text || opt.label || `Tùy chọn ${i + 1}`;
     const value = `${letter}. ${displayText}`;
     const isChecked = selectedAnswers.includes(value);
@@ -99,11 +98,10 @@ export const QuestionCard = ({
 
   return (
     <div className="p-6 border border-primary/10 rounded-xl bg-gradient-to-br from-background to-secondary/5 hover:shadow-lg transition-all duration-300">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="border-primary/20">Câu {index + 1}</Badge>
-          <Badge className={`${typeInfo.color} text-white`}>
+          <Badge className={`${typeInfo.color} text-primary-foreground`}>
             <Icon className="w-3 h-3 mr-1" />
             {typeInfo.label}
           </Badge>
@@ -117,19 +115,16 @@ export const QuestionCard = ({
         </div>
       </div>
 
-      {/* Câu hỏi */}
       <div className="p-5 bg-muted/30 rounded-lg mb-6 border border-primary/10">
         <p className="text-lg leading-relaxed font-medium">{question.content}</p>
       </div>
 
-      {/* Trắc nghiệm */}
       {(isMultiple || isSingle) && question.answer?.length > 0 && (
         <div className="space-y-3">
           {question.answer.map((opt, i) => renderOption(opt, i))}
         </div>
       )}
 
-      {/* Tự luận */}
       {isEssay && (
         <div className="space-y-4">
           <div className="flex justify-between text-sm">
@@ -142,15 +137,14 @@ export const QuestionCard = ({
             value={essayContent}
             onChange={(e) => onUpdateEssay(e.target.value)}
           />
-          <div className="flex gap-2 text-xs text-muted-foreground">
+          {/* <div className="flex gap-2 text-xs text-muted-foreground">
             <Button variant="ghost" size="sm">Dàn ý</Button>
             <Button variant="ghost" size="sm">Kiểm tra chính tả</Button>
             <Button variant="ghost" size="sm">Đếm từ</Button>
-          </div>
+          </div> */}
         </div>
       )}
 
-      {/* Navigation */}
       <div className="flex justify-between items-center pt-6 border-t border-primary/10 mt-6">
         <Button variant="outline" disabled={isFirst} onClick={onPrev} className="border-primary/20">
           Câu trước
@@ -161,7 +155,7 @@ export const QuestionCard = ({
             Đánh dấu
           </Button>
           {isLast ? (
-            <Button className="bg-green-600 hover:bg-green-700">Nộp bài</Button>
+            <Button className="bg-emerald-600 hover:bg-emerald-700">Nộp bài</Button>
           ) : (
             <Button onClick={onNext} className="bg-primary hover:bg-primary/90">Câu tiếp theo</Button>
           )}

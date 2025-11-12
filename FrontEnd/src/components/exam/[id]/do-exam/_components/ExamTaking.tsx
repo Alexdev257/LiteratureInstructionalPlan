@@ -2,7 +2,6 @@
 
 
 import { useState } from "react";
-import { ExamHeader } from "./ExamHeader";
 import { QuestionCard } from "./QuestionCard";
 import { QuestionNavigator } from "./QuestionNavigator";
 
@@ -15,13 +14,13 @@ interface Props {
 
 export const ExamTaking = ({ exam }: Props) => {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string[]>>({}); // [A. ..., C. ...]
+  const [answers, setAnswers] = useState<Record<number, string[]>>({});
   const [essayContents, setEssayContents] = useState<Record<number, string>>({});
 
   const total = exam.questions.length;
   const currentQ = exam.questions[currentIdx];
 
-  // Đếm số lượng từng loại
+  
   const countType = (type: "1" | "2" | "3") =>
     exam.questions.filter(q => q.questionType === type).length;
 
@@ -29,7 +28,7 @@ export const ExamTaking = ({ exam }: Props) => {
   const mcSingle = countType("2");
   const essay = countType("3");
 
-  // Tiến độ hoàn thành
+ 
   const completedCount = Object.values(answers).filter(a => a.length > 0).length +
     Object.values(essayContents).filter(v => v.trim().length > 0).length;
   const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
@@ -46,17 +45,7 @@ export const ExamTaking = ({ exam }: Props) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-background via-primary/5 to-secondary/10 min-h-screen">
-      <ExamHeader
-        exam={exam}
-        currentIdx={currentIdx}
-        total={total}
-        progress={progress}
-        mcMulti={mcMulti}
-        mcSingle={mcSingle}
-        essay={essay}
-      />
-
+    <div className="container mx-auto px-4 py-8  min-h-screen">
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
         {/* Main */}
         <div className="lg:col-span-2 space-y-6">

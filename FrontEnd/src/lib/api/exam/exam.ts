@@ -30,6 +30,17 @@ class ExamAPI  extends BaseApi {
         const url = this.createUrl(EXAM_ENDPOINT.RESTORE_EXAM(id));
         return this.patchData<ResponseNull>(url,{});
     }
+
+    async startExam (data: { ExamId: number; UserId:number}): Promise<ResponseData<ResponseNull>> {
+            const url = this.createUrl(EXAM_ENDPOINT.START_EXAM,data);
+            return this.postData<ResponseNull>(url, {});
+    }
+    // async submitExam (data: ): Promise<ResponseData<ResponseNull>> {
+    //         const url = this.createUrl(EXAM_ENDPOINT.SUBMIT_EXAM);
+    //         return this.postData<ResponseNull>(url, data);
+    // }  
+    
+
     async getExamAttempts (param?:ExamAttemptQuery) : Promise<ResponseData<PaginationResponse<ExamAttempt>>> {
         const url = this.createUrl(EXAM_ENDPOINT.GET_EXAMS, param);
         return this.getData<PaginationResponse<ExamAttempt>>(url);

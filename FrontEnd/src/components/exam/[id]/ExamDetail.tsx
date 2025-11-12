@@ -17,6 +17,9 @@ import {
 import { Link, useRouter } from "@tanstack/react-router";
 import type { ExamData, MatrixDetail } from "@/utils/type";
 import { useMatrix } from "@/hooks/useMatrix";
+import { useExam } from "@/hooks/useExam";
+import { useSessionStore } from "@/stores/sessionStore";
+import { toast } from "sonner";
 
 type Props = {
   exam: ExamData;
@@ -39,6 +42,8 @@ const QuestionTypeEnum = {
 export const ExamDetail = ({ exam }: Props) => {
   const router = useRouter();
   const { useGetMatrixById } = useMatrix();
+  const { useStartExam } = useExam();
+  const {user} = useSessionStore();
   const { data: matrixData } = useGetMatrixById(exam.matrixId);
 
   if (!exam) {
@@ -57,6 +62,24 @@ export const ExamDetail = ({ exam }: Props) => {
         </Card>
       </div>
     );
+  } 
+  const handleStartExam = async () => {
+    if (!user?.UserId) {
+      toast.error("Bạn chưa đăng nhập!");
+      return;
+    }
+    useStartExam.mutate({
+       ExamId: exam.examId,
+       UserId: Number(user?.UserId) ,
+    }, {
+      onSuccess: () => {
+        toast.success("Bắt đầu làm bài thành công!");
+        router.navigate({ to: `/exam/${exam.examId}/do-exam` });
+      },
+      onError: (error) => {
+        toast.error(error.message || "Bắt đầu làm bài thất bại!");
+      }
+    });
   }
 
   // === Dữ liệu từ Matrix ===
@@ -118,9 +141,9 @@ export const ExamDetail = ({ exam }: Props) => {
               <ArrowLeft className="w-5 h-5 mr-2" />
               Quay lại
             </Button>
-            <Button onClick={() => router.navigate({ to: `/exam/${exam.examId}/do-exam` })} size="lg" className="flex items-center gap-2 cursor-pointer">
+            <Button onClick={handleStartExam} size="lg" className="flex items-center gap-2 cursor-pointer">
               <Play className="w-5 h-5" />
-              Bắt đầu làm bài
+              Bắt đầu bài thi
             </Button>
           </div>
         </div>
@@ -291,7 +314,7 @@ export const ExamDetail = ({ exam }: Props) => {
                 <p className="text-sm text-muted-foreground">
                   Hãy chuẩn bị tinh thần và bắt đầu thử thách!
                 </p>
-                <Button onClick={()=> router.navigate({to :`/exam/${exam.examId}/do-exam`})} className="w-full cursor-pointer">
+                <Button onClick={handleStartExam} className="w-full cursor-pointer">
                   Bắt đầu ngay
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>

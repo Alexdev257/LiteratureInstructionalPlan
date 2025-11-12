@@ -12,7 +12,7 @@ const DEFAULT_FILTERS: ExamQuery = {
     PageSize: 10,
     Search: '',
     IsAdmin: false,
-    IsShowCorrectAnswer: true,
+    IsShowCorrectAnswer: false,
     GradeLevelId: undefined,
     ExamTypeId: undefined,
 };

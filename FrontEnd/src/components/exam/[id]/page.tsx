@@ -6,8 +6,8 @@ import { useExam } from "@/hooks/useExam";
 
 const DetailExamPage = () => {
     const { examId } = useParams({ from: "/exam/$examId" })
-    const {useGetExamById} = useExam();
-    const {data,isLoading,isError} = useGetExamById(Number(examId));
+    const {useGetExamIdByStudent} = useExam();
+    const {data,isLoading,isError} = useGetExamIdByStudent(Number(examId));
     const examData = data?.data;
     if(isLoading){
         return <div>Loading...</div>

@@ -36,7 +36,7 @@ export default function ClientLayoutWrapper() {
             <RouterProvider router={router}  />
           </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
-          <TanStackRouterDevtools router={router} />  
+          {/* <TanStackRouterDevtools router={router} />   */}
           <Toaster richColors duration={2000} />
         </QueryClientProvider>
       </AuthProvider>

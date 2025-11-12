@@ -12,14 +12,29 @@ export const useExam = () => {
         return useQuery({
             queryKey: [QUERY_KEY.exam(filters)],
             queryFn: () => examApi.getExam(filters),
-            staleTime: 5 * 60 * 1000, 
+            staleTime: 5 * 60 * 1000,
         });
     }
     const useGetExamById = (id: number) => {
         return useQuery({
             queryKey: [QUERY_KEY.getExamById(id)],
-            queryFn: () => examApi.getExamById(id,{ IsShowCorrectAnswer: true}),
-            staleTime: 5 * 60 * 1000, 
+            queryFn: () => examApi.getExamById(id, { IsShowCorrectAnswer: true }),
+            staleTime: 5 * 60 * 1000,
+        });
+    }
+
+    const useGetExamByStudent = (filters?: ExamQuery) => {
+        return useQuery({
+            queryKey: [QUERY_KEY.getExamForStudent(filters)],
+            queryFn: () => examApi.getExam(filters),
+            staleTime: 5 * 60 * 1000,
+        });
+    }
+    const useGetExamIdByStudent = (id: number) => {
+        return useQuery({
+            queryKey: [QUERY_KEY.getExamForStudentById(id)],
+            queryFn: () => examApi.getExamById(id),
+            staleTime: 5 * 60 * 1000,
         });
     }
     const usePostExam = useMutation({
@@ -31,11 +46,11 @@ export const useExam = () => {
         mutationFn: async ({ id, data }: { id: number; data: UpdateExamInput }) => {
             return await examApi.updateExam(id, data);
         },
-        onSuccess: async (_res,variables) => {
+        onSuccess: async (_res, variables) => {
             const { id } = variables;
-            const freshDetail = await examApi.getExamById(id,{ IsShowCorrectAnswer: true });
+            const freshDetail = await examApi.getExamById(id, { IsShowCorrectAnswer: true });
             queryClient.setQueryData([QUERY_KEY.getExamById(id)], freshDetail);
-            
+
             const freshData = await examApi.getExam({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false });
             queryClient.setQueryData([QUERY_KEY.exam({ PageNumber: 1, PageSize: 10, Search: '', IsAdmin: false })], freshData);
         }
@@ -62,15 +77,21 @@ export const useExam = () => {
         return useQuery({
             queryKey: [QUERY_KEY.examAttempts(filters)],
             queryFn: () => examApi.getExamAttempts(filters),
-            staleTime: 5 * 60 * 1000, 
+            staleTime: 5 * 60 * 1000,
         });
     }
     const useGetExamAttemptById = (id: number) => {
         return useQuery({
             queryKey: [QUERY_KEY.examAttemptById(id)],
             queryFn: () => examApi.getExamAttemptById(id),
-            staleTime: 5 * 60 * 1000, 
+            staleTime: 5 * 60 * 1000,
         });
     }
-    return { useGetExam , useGetExamById, useGetExamAttempts, useGetExamAttemptById,usePutExam, useDeleteExam, useRestoreExam, usePostExam};
+
+    const useStartExam = useMutation({
+        mutationFn: async (data: { ExamId: number; UserId:number}) => {
+            return await examApi.startExam(data);
+        },
+    });
+    return { useGetExam, useGetExamById, useGetExamAttempts, useGetExamAttemptById, useGetExamIdByStudent,useGetExamByStudent, useStartExam,usePutExam, useDeleteExam, useRestoreExam, usePostExam };
 };

@@ -69,7 +69,6 @@ export const useMatrix = () => {
         },
     });
 
-
     return { useGetMatrices, useGetMatrixById, usePostMatrix, useDeleteMatrix, useRestoreMatrix, useUpdateMatrix };
 
 }

@@ -25,6 +25,9 @@ export const QUERY_KEY = {
     exam: (param?: ExamQuery) => ['exam', param],
     getExamById: (id: number) => ['examById', id],
 
+    getExamForStudent: (param?: ExamQuery) => ['examForStudent', param],
+    getExamForStudentById: (id: number) => ['examForStudentById', id],
+
     matrix : (param?: MatrixQuery) => ['matrix', param],
     getMatrixById: (id: number) => ['matrixById', id],
 

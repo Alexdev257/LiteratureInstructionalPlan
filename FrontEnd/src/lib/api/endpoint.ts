@@ -49,8 +49,10 @@ export const EXAM_ENDPOINT = {
     DELETE_EXAM: (id: number) => `Exam/delete-exam/${id}`,
     RESTORE_EXAM: (id: number) => `Exam/restore-exam/${id}`,
 
-    START_EXAM: "Exam/start-exam/",
-    SUBMIT_EXAM: "Exam/submit-exam/",
+    START_EXAM: "ExamInteraction/start-exam",
+    SUBMIT_EXAM: "ExamInteraction/submit-exam",
+    SUBMIT_FINAL_EXAM: "ExamInteraction/last-submit-exam",
+
 
 }
 
