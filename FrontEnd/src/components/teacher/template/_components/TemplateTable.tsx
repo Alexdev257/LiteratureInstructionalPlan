@@ -2,20 +2,13 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { TemplateRow } from './TemplateRow';
+// === THAY ĐỔI: IMPORT TYPE TỪ @/utils/type ===
+import type { Template } from '@/utils/type';
 
-interface Template {
-  id: number;
-  stt: number;
-  title: string;
-  price: number;
-  gradeLevel: string;
-  created_at: string;
-  luongMua: number;
-  status: 'active' | 'draft' | 'archived';
-}
+// === XÓA INTERFACE TEMPLATE CŨ Ở ĐÂY ===
 
 interface TemplateTableProps {
-  templates: Template[];
+  templates: Template[]; // <-- Dùng Template từ API
   onView?: (id: number) => void;
   onEdit?: (id: number) => void;
   onDelete: (id: number) => void;
@@ -32,11 +25,11 @@ export function TemplateTable({
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead className="w-16">STT</TableHead>
+            <TableHead className="w-16">ID</TableHead> {/* Sửa STT thành ID */}
             <TableHead>Tiêu đề</TableHead>
             <TableHead>Lớp học</TableHead>
             <TableHead>Giá</TableHead>
-            <TableHead>Lượng mua</TableHead>
+            <TableHead>Lượt mua</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Ngày tạo</TableHead>
             <TableHead className="text-right w-20">Thao tác</TableHead>
@@ -52,7 +45,7 @@ export function TemplateTable({
           ) : (
             templates.map((template) => (
               <TemplateRow
-                key={template.id}
+                key={template.templateId} // <-- Sửa
                 template={template}
                 onView={onView}
                 onEdit={onEdit}

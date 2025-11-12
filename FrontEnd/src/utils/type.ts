@@ -128,13 +128,23 @@ export type Question = {
 }
 
 export type Template = {
-    id: number;
-    title: string;
-    filePath: string;
-    viewPath: string;
+  templateId: number;
+  title: string;
+  filePath: string;
+  viewPath: string;
+  gradeLevel: {
     gradeLevelId: number;
-    price: number;
-    createdBy: number
+    name: string;
+  };
+  price: number;
+  createdBy: {
+    userId: number;
+    fullName: string;
+    email: string;
+  };
+  createdAt: string;
+  totalDownload: number;
+  isDeleted: boolean;
 }
 
 export type ExamFilters = {
@@ -254,4 +264,10 @@ export type MatrixQuery = BaseFilterPagination & {
     GradeLevelId?: number;
     CreatedByUserId?: number;
     IsAdmin?: boolean;
+}
+
+export type TemplateQuery = BaseFilterPagination & {
+  GradeLevelId?: number;
+  CreatedByUserId?: number;
+  Search?: string;
 }

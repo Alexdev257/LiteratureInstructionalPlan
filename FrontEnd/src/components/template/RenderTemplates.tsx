@@ -13,7 +13,7 @@ interface RenderTemplatesProps {
 }
 
 const RenderTemplates = ({ templates, clearFilters }: RenderTemplatesProps) => {
-  const { addToCart, isInCart } = useCartStore(); // 👈 lấy hàm từ store
+  const { addToCart, isInCart } = useCartStore(); 
 
   return (
     <section className="py-8 px-4">
@@ -30,11 +30,12 @@ const RenderTemplates = ({ templates, clearFilters }: RenderTemplatesProps) => {
         {/* Template Cards Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {templates.map((template) => {
-            const selected = isInCart(template.id);
+            // Dùng templateId (dạng number), chuyển sang string cho cart
+            const selected = isInCart(template.templateId.toString());
 
             return (
               <Card
-                key={template.id}
+                key={template.templateId} // <-- Sửa
                 className="group hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/50 overflow-hidden"
               >
                 <CardHeader className="pb-4">
@@ -44,7 +45,7 @@ const RenderTemplates = ({ templates, clearFilters }: RenderTemplatesProps) => {
                       className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20"
                     >
                       <BookOpen className="w-3 h-3 mr-1" />
-                      {template.grade.name}
+                      {template.gradeLevel.name} {/* <-- Sửa */}
                     </Badge>
                     <Badge
                       variant="outline"
@@ -65,86 +66,87 @@ const RenderTemplates = ({ templates, clearFilters }: RenderTemplatesProps) => {
                   </CardTitle>
 
                   <CardDescription className="text-sm leading-relaxed line-clamp-1">
-                    {template.description}
+                    {/* Swagger không có description, dùng lại title hoặc 1 trường khác nếu có */}
+                    {template.title}
                   </CardDescription>
                 </CardHeader>
 
                <CardContent className="pt-0">
-  {/* Thông tin người tạo, lượt tải, đánh giá */}
-  <div className="space-y-3 text-sm text-muted-foreground mb-6 p-4 rounded-lg border border-border bg-muted/30 dark:bg-muted/40 transition-colors">
-    <div className="flex items-center gap-2">
-      <User className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-      <span className="font-medium truncate text-foreground">
-        {template.createdBy.username}
-      </span>
-    </div>
+                  {/* Thông tin người tạo, lượt tải, đánh giá */}
+                  <div className="space-y-3 text-sm text-muted-foreground mb-6 p-4 rounded-lg border border-border bg-muted/30 dark:bg-muted/40 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                      <span className="font-medium truncate text-foreground">
+                        {template.createdBy.fullName} {/* <-- Sửa */}
+                      </span>
+                    </div>
 
-    <div className="flex items-center gap-2">
-      <Download className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-      <span className="font-medium text-foreground">
-        250+ lượt tải
-      </span>
-    </div>
+                    <div className="flex items-center gap-2">
+                      <Download className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                      <span className="font-medium text-foreground">
+                        {template.totalDownload}+ lượt tải {/* <-- Sửa */}
+                      </span>
+                    </div>
 
-    <div className="flex items-center gap-2">
-      <Star className="h-4 w-4 flex-shrink-0 text-yellow-500 fill-yellow-500" />
-      <span className="font-medium text-foreground">4.8/5</span>
-      <span className="text-muted-foreground">(120 đánh giá)</span>
-    </div>
-  </div>
+                    <div className="flex items-center gap-2">
+                      <Star className="h-4 w-4 flex-shrink-0 text-yellow-500 fill-yellow-500" />
+                      <span className="font-medium text-foreground">4.8/5</span>
+                      <span className="text-muted-foreground">(120 đánh giá)</span>
+                    </div>
+                  </div>
 
-  {/* Các nút hành động */}
-  <div className="flex gap-2">
-    <Button
-      variant="outline"
-      size="sm"
-      className="flex-1 border-border hover:border-primary/50 hover:bg-primary/10 text-foreground transition-all duration-200"
-      onClick={() => window.open(template.urlView, "_blank")}
-    >
-      <Eye className="w-4 h-4 mr-2" />
-      Xem trước
-    </Button>
+                  {/* Các nút hành động */}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 border-border hover:border-primary/50 hover:bg-primary/10 text-foreground transition-all duration-200"
+                      onClick={() => window.open(template.viewPath, "_blank")} // <-- Sửa
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Xem trước
+                    </Button>
 
-    {template.price === 0 ? (
-      <Button
-        size="sm"
-        className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-300"
-        onClick={() => window.open(template.urlDownload, "_blank")}
-      >
-        <Download className="w-4 h-4 mr-2" />
-        Tải xuống
-      </Button>
-    ) : (
-      <Button
-        size="sm"
-        className={`flex-1 transition-all duration-300 ${
-          selected
-            ? "bg-green-600 hover:bg-green-700 text-white"
-            : "bg-amber-600 hover:bg-amber-700 text-white"
-        }`}
-        onClick={() =>
-          addToCart({
-            id: template.id,
-            title: template.title,
-            price: template.price,
-          })
-        }
-      >
-        {selected ? (
-          <>
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            Đã thêm
-          </>
-        ) : (
-          <>
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Mua ngay
-          </>
-        )}
-      </Button>
-    )}
-  </div>
-</CardContent>
+                    {template.price === 0 ? (
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-300"
+                        onClick={() => window.open(template.filePath, "_blank")} // <-- Sửa
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Tải xuống
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        className={`flex-1 transition-all duration-300 ${
+                          selected
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-amber-600 hover:bg-amber-700 text-white"
+                        }`}
+                        onClick={() =>
+                          addToCart({
+                            id: template.templateId.toString(), // <-- Sửa
+                            title: template.title,
+                            price: template.price,
+                          })
+                        }
+                      >
+                        {selected ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            Đã thêm
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart className="w-4 h-4 mr-2" />
+                            Mua ngay
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
 
               </Card>
             );

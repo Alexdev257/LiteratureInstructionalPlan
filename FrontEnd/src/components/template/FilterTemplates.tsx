@@ -11,18 +11,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { GradeLevel, Template, TemplateFilters } from "@/utils/type";
-import RenderTemplates from "./RenderTemplates";
+import RenderTemplates from "./RenderTemplates.tsx"; // Sửa lỗi: Thêm phần mở rộng .tsx
 
 interface FilterTemplatesProps {
   templates: Template[];
-  mockGradeLevels: GradeLevel[];
+  mockGradeLevels: GradeLevel[]; // Giữ tên prop để khớp với page.tsx
 }
 
 const FilterTemplates = ({ templates, mockGradeLevels }: FilterTemplatesProps) => {
   const [filters, setFilters] = useState<TemplateFilters>({});
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Price ranges for filtering - Move outside or wrap in useMemo
+  // Price ranges for filtering
   const priceRanges = useMemo(
     () => [
       { id: "all", label: "Tất cả giá", min: 0, max: Infinity },
@@ -38,11 +38,13 @@ const FilterTemplates = ({ templates, mockGradeLevels }: FilterTemplatesProps) =
   const filteredTemplates = useMemo(() => {
     let result = templates;
 
+    // --- SỬA LỖI LOGIC Ở ĐÂY ---
     if (filters.gradeLevel) {
       result = result.filter(
-        (template) => template.grade.gradeLevelId === filters.gradeLevel
+        (template) => template.gradeLevel.gradeLevelId === filters.gradeLevel // Sửa từ 'grade' thành 'gradeLevel'
       );
     }
+    // --- HẾT SỬA LỖI ---
 
     if (filters.priceRange) {
       const range = priceRanges.find((r) => r.id === filters.priceRange);
@@ -53,14 +55,16 @@ const FilterTemplates = ({ templates, mockGradeLevels }: FilterTemplatesProps) =
       }
     }
 
+    // --- SỬA LỖI LOGIC Ở ĐÂY ---
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(
         (template) =>
           template.title.toLowerCase().includes(searchLower) ||
-          template.createdBy.username.toLowerCase().includes(searchLower)
+          template.createdBy.fullName.toLowerCase().includes(searchLower) // Sửa từ 'username' thành 'fullName'
       );
     }
+    // --- HẾT SỬA LỖI ---
 
     return result;
   }, [templates, filters, searchTerm, priceRanges]);
@@ -107,7 +111,7 @@ const FilterTemplates = ({ templates, mockGradeLevels }: FilterTemplatesProps) =
               <div className="relative flex-1 min-w-[250px]">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Tìm kiếm giáo án, bài giảng..."
+                  placeholder="Tìm kiếm giáo án, tác giả..." // Cập nhật placeholder
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 border-primary/20 focus:border-primary"

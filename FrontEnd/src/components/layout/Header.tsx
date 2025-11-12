@@ -70,7 +70,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+         <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/"
               className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
@@ -83,32 +83,26 @@ export default function Header() {
             >
               Đề thi
             </Link>
-            <Link
-              to="/templates"
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-            >
-              Giáo án
-            </Link>
 
-            {user ? (
-              Number(user.RoleId) !== 1 ? (
-                <Link
-                  to="/templates"
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-                >
-                  Giáo án
-                </Link>
-              ) : (
-                <Link
-                  to="/results"
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
-                >
-                  Kết quả
-                </Link>
-              )
-            ) : null}
-          </nav>
-
+            {/* --- Logic đã gộp --- */}
+            {/* Nếu user là Admin (RoleId === 1), hiển thị 'Kết quả' */}
+            {user && Number(user.RoleId) === 1 ? (
+              <Link
+                to="/results" // Giả sử link kết quả là /results
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+              >
+                Kết quả
+              </Link>
+            ) : (
+              // Ngược lại (user là Guest, Student, Teacher), hiển thị 'Giáo án'
+              <Link
+                to="/templates"
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors px-3 py-2 rounded-md hover:bg-primary/10"
+              >
+                Giáo án
+              </Link>
+            )}
+            </nav>
           {/* Right controls */}
           <div className="flex items-center gap-3">
             {/* Shopping Cart - Only show when user is logged in */}

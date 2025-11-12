@@ -1,9 +1,16 @@
 import type { TemplateInput } from "@/schema/templateSchema";
 import { BaseApi } from "../baseFetch"
 import { TEMPLATE_ENDPOINT } from "../endpoint";
-import type { ResponseData, Template } from "@/utils/type";
+import type { ResponseData, Template, PaginationResponse, TemplateQuery } from "@/utils/type";
 
 class TemplateApi extends BaseApi  {
+     // SỬA Ở ĐÂY: Bỏ dấu [] sau Template
+     async getTemplates(params?: TemplateQuery): Promise<ResponseData<PaginationResponse<Template>>> {
+          const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATES, params as Record<string, string | number>);
+          // SỬA Ở ĐÂY: Bỏ dấu [] sau Template
+          return this.getData<PaginationResponse<Template>>(url);
+     }
+
      async createTemplate(data: TemplateInput) : Promise<ResponseData<Template>> {
           const url = this.createUrl(TEMPLATE_ENDPOINT.GET_TEMPLATES);
           

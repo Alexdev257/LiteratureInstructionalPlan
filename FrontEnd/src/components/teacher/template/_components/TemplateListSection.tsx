@@ -16,20 +16,13 @@ import { BasePagination } from '@/components/layout/base/pagination';
 import { CreateTemplateDialog } from './CreateTemplateDialog';
 import { useTemplate } from '@/hooks/useTemplate';
 import { toast } from 'sonner';
+// === THAY ĐỔI: IMPORT TYPE TỪ @/utils/type ===
+import type { Template } from '@/utils/type'; 
 
-interface Template {
-  id: number;
-  stt: number;
-  title: string;
-  price: number;
-  gradeLevel: string;
-  created_at: string;
-  luongMua: number;
-  status: 'active' | 'draft' | 'archived';
-}
+// === XÓA INTERFACE TEMPLATE CŨ Ở ĐÂY ===
 
 interface TemplateListSectionProps {
-  templates: Template[];
+  templates: Template[]; // <-- Dùng Template từ API
 }
 
 export function TemplateListSection({ templates: initialTemplates }: TemplateListSectionProps) {
@@ -43,17 +36,20 @@ export function TemplateListSection({ templates: initialTemplates }: TemplateLis
 
   const handleView = (id: number) => {
     console.log('View template:', id);
+    // TODO: Mở modal xem chi tiết hoặc điều hướng
   };
 
   const handleEdit = (id: number) => {
     console.log('Edit template:', id);
+     // TODO: Mở modal edit
   };
 
   const handleDelete = (id: number) => {
     deleteTemplate.mutate(id, {
       onSuccess: (res) => {
-        setTemplates(prevTemplates => prevTemplates.filter(template => template.id !== id));
-        toast.success(res.message);
+        // Cập nhật state sau khi xóa thành công
+        setTemplates(prevTemplates => prevTemplates.filter(template => template.templateId !== id));
+        toast.success(res.message || "Xóa thành công!");
       },
       onError: (error) => {
         toast.error(error.message || 'Xóa mẫu đề thất bại. Vui lòng thử lại!');
@@ -64,7 +60,7 @@ export function TemplateListSection({ templates: initialTemplates }: TemplateLis
   // Filter and pagination
   const filteredTemplates = templates.filter(template =>
     template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    template.gradeLevel.toLowerCase().includes(searchQuery.toLowerCase())
+    template.gradeLevel.name.toLowerCase().includes(searchQuery.toLowerCase()) // <-- Sửa logic filter
   );
 
   const totalPages = Math.ceil(filteredTemplates.length / itemsPerPage);

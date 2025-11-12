@@ -1,4 +1,4 @@
-import type { ExamQuery, ExamTypeQuery, GradeLevelQuery, MatrixQuery } from "./type";
+import type { ExamQuery, ExamTypeQuery, GradeLevelQuery, MatrixQuery, TemplateQuery } from "./type";
 
 export const constDefault = {
     ENTITY_ERROR_STATUS: 422,
@@ -26,6 +26,7 @@ export const QUERY_KEY = {
 
     matrix : (param?: MatrixQuery) => ['matrix', param],
     getMatrixById: (id: number) => ['matrixById', id],
+    template: (param?: TemplateQuery) => ['template', param],
 
     getUserProfileById: (id: number) => ['userProfileById', id],
 
