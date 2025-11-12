@@ -1,0 +1,12 @@
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/bin/Debug/net8.0/LIP.Domain.deps.json
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/bin/Debug/net8.0/LIP.Domain.dll
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/bin/Debug/net8.0/LIP.Domain.pdb
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.AssemblyInfoInputs.cache
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.AssemblyInfo.cs
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.csproj.CoreCompileInputs.cache
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.sourcelink.json
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.dll
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/refint/LIP.Domain.dll
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/LIP.Domain.pdb
+/home/tiehung/Project/LiteratureInstructionalPlan/BackEnd/LIP.Domain/obj/Debug/net8.0/ref/LIP.Domain.dll

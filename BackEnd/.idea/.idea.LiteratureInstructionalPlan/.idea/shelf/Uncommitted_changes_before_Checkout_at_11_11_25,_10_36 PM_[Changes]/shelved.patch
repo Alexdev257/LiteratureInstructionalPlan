@@ -1,0 +1,85 @@
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\r\nusing LIP.Application.CQRS.Query.User;\r\nusing LIP.Application.DTOs;\r\nusing LIP.Application.DTOs.Response.Template;\r\nusing LIP.Application.Interface.Repository;\r\nusing MediatR;\r\n\r\nnamespace LIP.Application.CQRS.Handler.Template;\r\n\r\npublic class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, TemplateGetResponse>\r\n{\r\n    private readonly ITemplatebookingRepository _templatebookingRepository;\r\n    private readonly ITemplateRepository _templateRepository;\r\n    private readonly IUserRepository _userRepository;\r\n\r\n    public TemplateGetAllQueryHandler(ITemplateRepository templateRepository,\r\n        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\r\n    {\r\n        _templateRepository = templateRepository;\r\n        _templatebookingRepository = templatebookingRepository;\r\n        _userRepository = userRepository;\r\n    }\r\n\r\n    public async Task<TemplateGetResponse> Handle(TemplateGetAllQuery request, CancellationToken cancellationToken)\r\n    {\r\n        var result = await _templateRepository.GetAllAsync(request);\r\n\r\n        var dtoList = new List<TemplateGetDTO>();\r\n\r\n        foreach (var x in result)\r\n        {\r\n            var bookings = await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId);\r\n            var saledCount = bookings.Count();\r\n\r\n            var user = await _userRepository.GetAsync(new UserGetQuery\r\n            {\r\n                UserId = x.CreatedBy!.Value\r\n            });\r\n\r\n            dtoList.Add(new TemplateGetDTO\r\n            {\r\n                FilePath = x.FilePath!,\r\n                Title = x.Title!,\r\n                ViewPath = x.ViewPath!,\r\n                CreatedAt = x.CreatedAt,\r\n                CreatedBy = new CreatedByDTO\r\n                {\r\n                    Email = user!.Email,\r\n                    UserId = user.UserId,\r\n                    FullName = user.FullName\r\n                },\r\n                GradeLevel = new GradeLevelDTO\r\n                {\r\n                    GradeLevelId = x.GradeLevel!.GradeLevelId,\r\n                    Name = x.GradeLevel.Name!\r\n                },\r\n                Price = x.Price,\r\n                TemplateId = x.TemplateId,\r\n                TotalDownload = saledCount,\r\n                IdDeleted = x.IsDeleted\r\n            });\r\n        }\r\n\r\n        dtoList = dtoList.OrderByDescending(d => d.CreatedAt.Value).ToList();\r\n\r\n        var paged = dtoList.ToPagedListAsync(request.PageNumber, request.PageSize);\r\n\r\n        return new TemplateGetResponse\r\n        {\r\n            IsSuccess = true,\r\n            Message = \"Get all templates success\",\r\n            Data = paged\r\n        };\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs	(revision 7878f95b78cf99c436bcc3788c76cecb25860bb0)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs	(date 1762875372247)
+@@ -57,7 +57,7 @@
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+                 TotalDownload = saledCount,
+-                IdDeleted = x.IsDeleted
++                IsDeleted = x.IsDeleted
+             });
+         }
+ 
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\nusing LIP.Application.CQRS.Query.User;\nusing LIP.Application.DTOs.Response.Template;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateGetQueryHandler : IRequestHandler<TemplateGetQuery, TemplateGetByIdResponse>\n{\n    private readonly ITemplateRepository _templateRepository;\n    private readonly ITemplatebookingRepository _templatebookingRepository;\n    private readonly IUserRepository _userRepository;\n    public TemplateGetQueryHandler(ITemplateRepository templateRepository, ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\n    {\n        _templateRepository = templateRepository;\n        _templatebookingRepository = templatebookingRepository;\n        _userRepository = userRepository;\n    }\n\n    public async Task<TemplateGetByIdResponse> Handle(TemplateGetQuery request, CancellationToken cancellationToken)\n    {\n        var result = await _templateRepository.GetAsync(request);\n        if (result != null)\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(result.TemplateId)).Count();\n            var user = (await _userRepository.GetAsync(new UserGetQuery\n            {\n                UserId = result.CreatedBy!.Value,\n            }));\n            return new TemplateGetByIdResponse\n            {                                                                                                                                                                                                       \n                IsSuccess = true,\n                Message = \"Get template by id success\",\n                Data = new TemplateGetDTO\n                {\n                    FilePath = result.FilePath!,\n                    Title = result.Title!,                                                                                                                                                                  \n                    ViewPath = result.ViewPath!,                                                                                    \n                    CreatedAt = result.CreatedAt,\n                    CreatedBy = new CreatedByDTO\n                    {\n                        Email = user!.Email,\n                        UserId = user.UserId,\n                        FullName = user.FullName\n                    },\n                    GradeLevel = new GradeLevelDTO\n                    {\n                        GradeLevelId = result.GradeLevel!.GradeLevelId,\n                        Name = result.GradeLevel.Name!\n                    },\n                    Price = result.Price,\n                    TemplateId = result.TemplateId,\n                    TotalDownload = saledCount,\n                    IdDeleted = result.IsDeleted,\n                }\n            };\n        }\n\n        return new TemplateGetByIdResponse\n        {\n            IsSuccess = false,\n            Message = \"Template not found\"\n        };\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs	(revision 7878f95b78cf99c436bcc3788c76cecb25860bb0)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs	(date 1762875372273)
+@@ -52,7 +52,7 @@
+                     Price = result.Price,
+                     TemplateId = result.TemplateId,
+                     TotalDownload = saledCount,
+-                    IdDeleted = result.IsDeleted,
++                    IsDeleted = result.IsDeleted,
+                 }
+             };
+         }
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\nusing LIP.Application.CQRS.Query.Templatebooking;\nusing LIP.Application.CQRS.Query.User;\nusing LIP.Application.DTOs.Response.Template;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, TemplateGetResponse>\n{\n    private readonly ITemplatebookingRepository _templatebookingRepository;\n    private readonly ITemplateRepository _templateRepository;\n    private readonly IUserRepository _userRepository;\n    public TemplateGetByUserIdHandler(ITemplateRepository templateRepository,\n        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\n    {\n        _templateRepository = templateRepository;\n        _templatebookingRepository = templatebookingRepository;\n        _userRepository = userRepository;\n    }\n\n    public async Task<TemplateGetResponse> Handle(TemplateGetByUserId request, CancellationToken cancellationToken)\n    {\n        var createdTemplates = await _templateRepository.GetTemplateByUserIdAsync(request);\n\n        var bookings = await _templatebookingRepository.GetByUserIdAsync(new TemplatebookingGetByUserIdQuery\n        {\n            UserId = request.UserId\n        });\n        \n        var user = await _userRepository.GetAsync(new UserGetQuery\n        {\n            UserId = request.UserId\n        });\n\n        var bookedTemplateIds = bookings\n            .Where(b => b.TemplateId is not null)\n            .Select(b => (int)b.TemplateId!)\n            .Distinct()\n            .ToList();\n\n        var bookedTemplates = new List<Domain.Entities.Template>();\n        if (bookedTemplateIds.Any()) bookedTemplates = await _templateRepository.GetByIdsAsync(bookedTemplateIds);\n\n\n        var response = new TemplateGetResponse\n        {\n            Data = new DTOs.Response.PaginationResponse<TemplateGetDTO>()\n        };\n\n        var tasks = bookedTemplates.Select(async x =>\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();\n\n            return new TemplateGetDTO\n            {\n                FilePath = x.FilePath!,\n                Title = x.Title!,\n                ViewPath = x.ViewPath!,\n                CreatedAt = x.CreatedAt,\n                CreatedBy = new CreatedByDTO\n                {\n                    Email = user!.Email,\n                    UserId = user.UserId,\n                    FullName = user.FullName\n                },\n                GradeLevel = new GradeLevelDTO\n                {\n                    GradeLevelId = x.GradeLevel!.GradeLevelId,\n                    Name = x.GradeLevel.Name!\n                },\n                Price = x.Price,\n                TemplateId = x.TemplateId,\n                TotalDownload = saledCount,\n                IdDeleted = x.IsDeleted\n            };\n        });\n\n        var tasks2 = createdTemplates.Select(async x =>\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();\n\n            return new TemplateGetDTO\n            {\n                FilePath = x.FilePath!,\n                Title = x.Title!,\n                ViewPath = x.ViewPath!,\n                CreatedAt = x.CreatedAt,\n                CreatedBy = new CreatedByDTO\n                {\n                    Email = user!.Email,\n                    UserId = user.UserId,\n                    FullName = user.FullName\n                },\n                GradeLevel = new GradeLevelDTO\n                {\n                    GradeLevelId = x.GradeLevel!.GradeLevelId,\n                    Name = x.GradeLevel.Name!\n                },\n                Price = x.Price,\n                TemplateId = x.TemplateId,\n                TotalDownload = saledCount,\n                IdDeleted = x.IsDeleted\n            };\n        });\n        \n        response.Data.Items = (await Task.WhenAll(tasks)).ToList();\n        response.Data.Items.AddRange((await Task.WhenAll(tasks2)).ToList());\n\n        response.IsSuccess = true;\n        response.Message = \"Get templates by user id success\";\n        return response;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs	(revision 7878f95b78cf99c436bcc3788c76cecb25860bb0)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs	(date 1762875372280)
+@@ -73,7 +73,7 @@
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+                 TotalDownload = saledCount,
+-                IdDeleted = x.IsDeleted
++                IsDeleted = x.IsDeleted
+             };
+         });
+ 
+@@ -101,7 +101,7 @@
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+                 TotalDownload = saledCount,
+-                IdDeleted = x.IsDeleted
++                IsDeleted = x.IsDeleted
+             };
+         });
+         
+Index: LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace LIP.Application.DTOs.Response.Template;\n\npublic class TemplateGetDTO\n{\n    public int TemplateId { get; set; }\n\n    public string Title { get; set; } = string.Empty;\n    public string FilePath { get; set; } = string.Empty;\n\n    public string ViewPath { get; set; } = string.Empty;\n\n    public GradeLevelDTO? GradeLevel { get; set; }\n\n    public float Price { get; set; }\n\n    public CreatedByDTO? CreatedBy { get; set; }\n\n    public DateTime? CreatedAt { get; set; }\n\n    public int TotalDownload { get; set; }\n    \n    public bool IdDeleted { get; set; }\n}\n\npublic class GradeLevelDTO\n{\n    public int GradeLevelId { get; set; }\n    public string Name { get; set; } = string.Empty;\n    \n\n}\n\npublic class CreatedByDTO\n{\n    public int UserId { get; set; }\n    public string FullName { get; set; } = string.Empty;\n    public string Email { get; set; } = string.Empty;\n}\n\npublic class ExamTypeDTO\n{\n    public int Id { get; set; }\n    public string Name { get; set; } = string.Empty;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs b/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs
+--- a/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs	(revision 7878f95b78cf99c436bcc3788c76cecb25860bb0)
++++ b/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs	(date 1762875372284)
+@@ -19,7 +19,7 @@
+ 
+     public int TotalDownload { get; set; }
+     
+-    public bool IdDeleted { get; set; }
++    public bool IsDeleted { get; set; }
+ }
+ 
+ public class GradeLevelDTO
