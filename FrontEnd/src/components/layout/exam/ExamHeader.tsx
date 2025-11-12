@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, AlertTriangle, User } from "lucide-react";
 import { Link, useParams } from "@tanstack/react-router";
-import { useExam } from "@/hooks/useExam";
-import { useSessionStore } from "@/stores/sessionStore";
+import { mockExamData } from "@/utils/mockAPi";
 
 export const ExamHeader = () => {
   const { examId } = useParams({ from: "/exam/$examId" });
-  const { useGetExamById } = useExam()
-  const { data } = useGetExamById(Number(examId))
-  const user = useSessionStore()
-  const exam = data?.data
+  const exam = mockExamData.find(e => e.examId === Number(examId));
+  
+  // Mock data for exam session
+  const timeRemaining = "142:35";
+  const currentProgress = 30;
 
   return (
     <header className="border-b border-border/40 backdrop-blur-sm bg-background/95 sticky top-0 z-50 shadow-sm">
@@ -41,26 +41,41 @@ export const ExamHeader = () => {
             {/* Timer */}
             <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
               <Clock className="w-4 h-4 text-orange-500" />
-              <span className="font-mono font-medium text-sm">{exam?.durationMinutes} phút</span>
+              <span className="font-mono font-medium text-sm">{timeRemaining}</span>
             </div>
 
-            
+            {/* Progress indicator */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-primary/10 rounded-lg">
+              <div className="text-sm font-medium text-primary">{currentProgress}%</div>
+            </div>
+
             {/* User avatar/login */}
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" className="hidden sm:flex">
                 <User className="w-4 h-4 mr-2" />
-                 {user.user?.FullName}
+                Học sinh
               </Button>
-              {/* <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Trợ giúp</span>
-              </Button> */}
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Mobile progress bar */}
-        
+        <div className="mt-3 md:hidden">
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+            <span>Tiến độ: {currentProgress}%</span>
+            <span>{exam?.examType.examTypeId === 1 ? "Câu 15/50" : "Câu 2/3"}</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <div 
+              className="bg-primary h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${currentProgress}%` }}
+            ></div>
+          </div>
+        </div>
       </div>
     </header>
   );
