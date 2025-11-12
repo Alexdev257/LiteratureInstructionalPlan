@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,31 +7,49 @@ import {
   Clock,
   Users,
   Star,
-  BookOpen,
   Target,
   Trophy,
   Play,
   FileText,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
-import { mockExamData } from "@/utils/mockAPi";
-import { Link } from "@tanstack/react-router";
-
+import { Link, useRouter } from "@tanstack/react-router";
+import type { ExamData, MatrixDetail } from "@/utils/type";
+import { useMatrix } from "@/hooks/useMatrix";
 
 type Props = {
-  examId: number
+  exam: ExamData;
 };
-export const ExamDetail = ({ examId }: Props) => {
-  // Mock attempt ID để demo
-  const attemptId = Math.random().toString(36).substr(2, 9);
-  const exam = mockExamData.find(e => e.examId === Number(examId));
+
+// Enum mapping
+const DifficultyEnum = {
+  "1": { text: "Dễ", color: "bg-green-100 text-green-800 border-green-300" },
+  "2": { text: "Trung bình", color: "bg-yellow-100 text-yellow-800 border-yellow-300" },
+  "3": { text: "Khó", color: "bg-red-100 text-red-800 border-red-300" },
+  "4": { text: "Rất khó", color: "bg-purple-100 text-purple-800 border-purple-300" },
+} as const;
+
+const QuestionTypeEnum = {
+  "1": "Nhiều đáp án",
+  "2": "Một đáp án",
+  "3": "Tự luận",
+} as const;
+
+export const ExamDetail = ({ exam }: Props) => {
+  const router = useRouter();
+  const { useGetMatrixById } = useMatrix();
+  const { data: matrixData } = useGetMatrixById(exam.matrixId);
+
   if (!exam) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="text-center py-12">
           <CardContent>
             <h2 className="text-2xl font-bold mb-4">Không tìm thấy đề thi</h2>
-            <p className="text-muted-foreground mb-6">Đề thi bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+            <p className="text-muted-foreground mb-6">
+              Đề thi bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
+            </p>
             <Link to="/exam">
               <Button>Quay lại danh sách đề thi</Button>
             </Link>
@@ -39,24 +59,54 @@ export const ExamDetail = ({ examId }: Props) => {
     );
   }
 
+  // === Dữ liệu từ Matrix ===
+  const matrix = matrixData?.data;
+  const totalQuestions = matrix?.totalQuestions || 0;
+  const totalPoint = matrix?.totalPoint || 0;
+
+  // Tính độ khó & loại câu hỏi từ details
+  const difficultyCounts = { "1": 0, "2": 0, "3": 0, "4": 0 };
+  const questionTypeCounts = { "1": 0, "2": 0, "3": 0 };
+
+  matrix?.details?.forEach((detail: MatrixDetail) => {
+    difficultyCounts[detail.difficulty] = (difficultyCounts[detail.difficulty] || 0) + detail.quantity;
+    questionTypeCounts[detail.questionType] = (questionTypeCounts[detail.questionType] || 0) + detail.quantity;
+  });
+
+  // Độ khó phổ biến nhất
+  const dominantDifficulty = Object.entries(difficultyCounts).reduce((a, b) =>
+    b[1] > a[1] ? b : a
+  )[0] as keyof typeof DifficultyEnum;
+  const difficultyInfo = DifficultyEnum[dominantDifficulty] || DifficultyEnum["1"];
+
+  // Danh sách loại câu hỏi dưới dạng Badge
+  const questionTypeBadges = Object.entries(questionTypeCounts)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, count]) => count > 0)
+    .map(([type, count]) => {
+      const text = QuestionTypeEnum[type as keyof typeof QuestionTypeEnum];
+      return (
+        <Badge key={type} variant="secondary" className="text-xs">
+          {text} ({count})
+        </Badge>
+      );
+    });
+
+  const createdDate = new Date(exam.createdAt).toLocaleDateString("vi-VN");
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Exam Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-          <Link to="/exam" className="hover:text-foreground">Tất cả đề thi</Link>
-          <span>/</span>
-          <span>Chi tiết đề thi</span>
-        </div>
-
         <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-6">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Badge variant="secondary">
-                Lớp {exam.matrix?.grade.name}
+                Lớp {exam.gradeLevel?.name || "Chưa xác định"}
               </Badge>
-              <Badge variant={exam.examType.examTypeId === 1 ? "default" : "secondary"}>
-                {exam.examType.examTypeId === 1 ? "Trắc nghiệm" : "Tự luận"}
+              <Badge className={difficultyInfo.color} variant="outline">
+                <Target className="w-3 h-3 mr-1" />
+                {difficultyInfo.text}
               </Badge>
             </div>
             <h1 className="text-3xl font-bold mb-2">{exam.title}</h1>
@@ -64,15 +114,13 @@ export const ExamDetail = ({ examId }: Props) => {
           </div>
 
           <div className="flex gap-3">
-            <Link to="/exam/$examId/$attemptId/" params={{ examId, attemptId }}>
-              <Button size="lg" className="flex items-center gap-2 cursor-pointer">
-                <Play className="w-5 h-5" />
-                Bắt đầu làm bài
-              </Button>
-            </Link>
-            <Button variant="outline" size="lg">
-              <BookOpen className="w-5 h-5 mr-2" />
-              Xem đề mẫu
+            <Button variant="outline" size="lg" onClick={() => router.navigate({ to: `/exam` })} className="flex items-center gap-2">
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Quay lại
+            </Button>
+            <Button onClick={() => router.navigate({ to: `/exam/${exam.examId}/do-exam` })} size="lg" className="flex items-center gap-2 cursor-pointer">
+              <Play className="w-5 h-5" />
+              Bắt đầu làm bài
             </Button>
           </div>
         </div>
@@ -94,7 +142,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Clock className="w-5 h-5 text-primary" />
                   <div>
-                    <div className="font-semibold">{exam.duration} phút</div>
+                    <div className="font-semibold">{exam.durationMinutes} phút</div>
                     <div className="text-sm text-muted-foreground">Thời gian làm bài</div>
                   </div>
                 </div>
@@ -102,7 +150,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Target className="w-5 h-5 text-green-500" />
                   <div>
-                    <div className="font-semibold">{exam.matrix.quantity || 50} câu</div>
+                    <div className="font-semibold">{totalQuestions} câu</div>
                     <div className="text-sm text-muted-foreground">Số lượng câu hỏi</div>
                   </div>
                 </div>
@@ -110,7 +158,7 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Users className="w-5 h-5 text-blue-500" />
                   <div>
-                    <div className="font-semibold">{exam.attempts || 0}</div>
+                    <div className="font-semibold">0</div>
                     <div className="text-sm text-muted-foreground">Lượt thi</div>
                   </div>
                 </div>
@@ -118,17 +166,17 @@ export const ExamDetail = ({ examId }: Props) => {
                 <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
                   <Star className="w-5 h-5 text-yellow-500" />
                   <div>
-                    <div className="font-semibold">{exam.averageScore}/10</div>
+                    <div className="font-semibold">10/10</div>
                     <div className="text-sm text-muted-foreground">Điểm trung bình</div>
                   </div>
                 </div>
               </div>
 
-              <div className="border-t pt-6">
+              <div className="border-t pt-6 ">
                 <h4 className="font-semibold mb-3">Mô tả chi tiết</h4>
                 <p className="text-muted-foreground leading-relaxed">
-                  {exam.description} Đề thi này được thiết kế để kiểm tra kiến thức toàn diện của học sinh về {exam.examType?.name || 'Văn học'},
-                  bao gồm các kỹ năng đọc hiểu, phân tích và vận dụng kiến thức vào thực tế.
+                  {(exam.description ? `${exam.description}.` : "Không có mô tả.")} Đề thi gồm{" "}
+                  <strong>{totalQuestions} câu</strong> với tổng điểm <strong>{totalPoint}</strong>.
                 </p>
               </div>
             </CardContent>
@@ -142,26 +190,39 @@ export const ExamDetail = ({ examId }: Props) => {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">1</div>
+                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">
+                    1
+                  </div>
                   <div>
                     <h4 className="font-semibold">Chuẩn bị</h4>
-                    <p className="text-muted-foreground">Đảm bảo kết nối internet ổn định và môi trường yên tĩnh để tập trung làm bài.</p>
+                    <p className="text-muted-foreground">
+                      Đảm bảo kết nối internet ổn định và môi trường yên tĩnh.
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">2</div>
+                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">
+                    2
+                  </div>
                   <div>
                     <h4 className="font-semibold">Thời gian</h4>
-                    <p className="text-muted-foreground">Bạn có {exam.duration} phút để hoàn thành {exam.matrix.quantity || 50} câu hỏi. Hệ thống sẽ tự động nộp bài khi hết thời gian.</p>
+                    <p className="text-muted-foreground">
+                      Bạn có <strong>{exam.durationMinutes} phút</strong> để hoàn thành{" "}
+                      <strong>{totalQuestions} câu hỏi</strong>.
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">3</div>
+                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center font-semibold">
+                    3
+                  </div>
                   <div>
                     <h4 className="font-semibold">Lưu bài</h4>
-                    <p className="text-muted-foreground">Hệ thống tự động lưu đáp án của bạn. Bạn có thể tạm dừng và tiếp tục làm bài sau.</p>
+                    <p className="text-muted-foreground">
+                      Hệ thống tự động lưu đáp án. Bạn có thể tạm dừng và tiếp tục.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -169,31 +230,53 @@ export const ExamDetail = ({ examId }: Props) => {
           </Card>
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar - Thống kê nhanh (UI ĐẸP HƠN) */}
         <div className="space-y-6">
-          {/* Quick Stats */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Thống kê nhanh</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center p-4 bg-primary/5 rounded-lg">
-                <div className="text-2xl font-bold text-primary mb-1">{exam.averageScore}</div>
+            <CardContent className="space-y-5">
+              {/* Điểm trung bình */}
+              <div className="text-center p-5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20">
+                <div className="text-3xl font-bold text-primary mb-1">
+                  10/10
+                </div>
                 <div className="text-sm text-muted-foreground">Điểm trung bình</div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Độ khó:</span>
-                  <Badge variant="secondary">Trung bình</Badge>
+              {/* Thông tin dạng Badge */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Độ khó:</span>
+                  <Badge className={difficultyInfo.color} variant="outline">
+                    {difficultyInfo.text}
+                  </Badge>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Kì thi:</span>
-                  <span className="font-medium">{exam.examType?.name || 'Văn học'}</span>
+
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-muted-foreground">Loại câu hỏi:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {questionTypeBadges.length > 0 ? (
+                      questionTypeBadges
+                    ) : (
+                      <Badge variant="secondary" className="text-xs">Trắc nghiệm</Badge>
+                    )}
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Cập nhật:</span>
-                  <span className="font-medium">1 tuần trước</span>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Tổng điểm:</span>
+                  <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300">
+                    {totalPoint}
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Cập nhật:</span>
+                  <Badge variant="outline" className="text-xs">
+                    {createdDate}
+                  </Badge>
                 </div>
               </div>
             </CardContent>
@@ -206,37 +289,13 @@ export const ExamDetail = ({ examId }: Props) => {
                 <Trophy className="w-12 h-12 text-primary mx-auto" />
                 <h4 className="font-semibold">Sẵn sàng làm bài?</h4>
                 <p className="text-sm text-muted-foreground">
-                  Hãy chuẩn bị tinh thần và bắt đầu thử thách kiến thức của bạn!
+                  Hãy chuẩn bị tinh thần và bắt đầu thử thách!
                 </p>
-                <Link to="/exam/$examId/$attemptId/" params={{ exam, attemptId }}>
-                  <Button className="w-full cursor-pointer">
-                    Bắt đầu ngay
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
+                <Button onClick={()=> router.navigate({to :`/exam/${exam.examId}/do-exam`})} className="w-full cursor-pointer">
+                  Bắt đầu ngay
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Related Exams */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Đề thi liên quan</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {mockExamData.slice(0, 3).filter(e => e.examId !== exam.examId).map((relatedExam) => (
-                <Link
-                  key={relatedExam.examId}
-                  to="/exam/$examId"
-                  params={{ examId: relatedExam.examId.toString() }}
-                  className="block p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors"
-                >
-                  <div className="font-medium text-sm mb-1">{relatedExam.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    Lớp {relatedExam.matrix.grade?.name } • {relatedExam.duration} phút
-                  </div>
-                </Link>
-              ))}
             </CardContent>
           </Card>
         </div>

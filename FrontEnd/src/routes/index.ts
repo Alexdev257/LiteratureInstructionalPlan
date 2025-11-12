@@ -1,137 +1,137 @@
-
-
 import { createRouter } from "@tanstack/react-router";
 import { Route as rootRoute } from "./_root";
 import { Route as homeRoute } from "./home";
+
+// Auth
+import { Route as authLayoutRoute } from "./auth/_layout";
 import { Route as loginRoute } from "./auth/login";
 import { Route as registerRoute } from "./auth/register";
 import { Route as forgotPasswordRoute } from "./auth/forgotpassword";
+
+// Exam (User)
 import { Route as examLayoutRoute } from "./exam/_layout";
 import { Route as examIndexRoute } from "./exam/index";
 import { Route as examDetailRoute } from "./exam/[id]/index";
-import { Route as takeExamLayoutRoute } from "./exam/[id]/[attemptId]/_layout";
-import { Route as takeExamRoute } from "./exam/[id]/[attemptId]/index";
-import { Route as authLayoutRoute } from "./auth/_layout";
+import { Route as examDetailLayoutRoute } from "./exam/[id]/_layout";
+import { Route as takeExamLayoutRoute } from "./exam/[id]/do-exam/_layout";
+import { Route as takeExamRoute } from "./exam/[id]/do-exam/index";
+
+// Dashboard
 import { Route as dashboardLayoutRoute } from "./dashboard/_layout";
 import { Route as dashboardUsersRoute } from "./dashboard/users";
 import { Route as dashboardQuestionsRoute } from "./dashboard/questions";
+
+// Teacher
 import { Route as teacherLayoutRoute } from "./teacher/_layout";
-import { Route as templateRouteByTeacher } from "./teacher/template";
-import { Route as matrixLayoutRoute } from "./teacher/matrix/_layout";
-import { Route as matrixCreateIndexRoute } from "./teacher/matrix/create/index";
-import { Route as editMatrixRoute } from "./teacher/matrix/[id]/edit/index";
+import { Route as templateTeacherRoute } from "./teacher/template";
+
+// Teacher → Exam
+import { Route as teacherExamLayoutRoute } from "./teacher/exam/_layout";
+import { Route as teacherExamIndexRoute } from "./teacher/exam/index";
+import { Route as teacherExamDetailLayoutRoute } from "./teacher/exam/[id]/_layout";
+import { Route as teacherExamDetailRoute } from "./teacher/exam/[id]/index";
+import { Route as teacherExamEditLayoutRoute } from "./teacher/exam/[id]/edit/_layout";
+import { Route as teacherExamEditRoute } from "./teacher/exam/[id]/edit/index";
+import { Route as teacherExamSelectMatrixLayoutRoute } from "./teacher/exam/select-matrix/_layout";
+import { Route as teacherExamSelectMatrixRoute } from "./teacher/exam/select-matrix/index";
+import { Route as teacherExamSelectQuestionLayoutRoute } from "./teacher/exam/select-question/_layout";
+import { Route as teacherExamSelectQuestionRoute } from "./teacher/exam/select-question/index";
+import { Route as teacherExamReviewLayoutRoute } from "./teacher/exam/review/_layout";
+import { Route as teacherExamReviewRoute } from "./teacher/exam/review/index";
+
+// Teacher → Matrix
+import { Route as teacherMatrixLayoutRoute } from "./teacher/matrix/_layout";
+import { Route as teacherMatrixIndexRoute } from "./teacher/matrix/index";
+import { Route as teacherMatrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
+import { Route as teacherMatrixCreateRoute } from "./teacher/matrix/create/index";
+import { Route as teacherMatrixDetailLayoutRoute } from "./teacher/matrix/[id]/_layout";
+import { Route as teacherMatrixDetailRoute } from "./teacher/matrix/[id]/index";
+import { Route as teacherMatrixEditLayoutRoute } from "./teacher/matrix/[id]/edit/_layout";
+import { Route as teacherMatrixEditRoute } from "./teacher/matrix/[id]/edit/index";
+
+// Teacher → Question
+import { Route as teacherQuestionLayoutRoute } from "./teacher/question/_layout";
+import { Route as teacherQuestionIndexRoute } from "./teacher/question/index";
+import { Route as teacherQuestionCreateLayoutRoute } from "./teacher/question/create/_layout";
+import { Route as teacherQuestionCreateRoute } from "./teacher/question/create/index";
+import { Route as teacherQuestionDetailLayoutRoute } from "./teacher/question/[id]/_layout";
+import { Route as teacherQuestionDetailRoute } from "./teacher/question/[id]/index";
+import { Route as teacherQuestionEditLayoutRoute } from "./teacher/question/[id]/edit/_layout";
+import { Route as teacherQuestionEditRoute } from "./teacher/question/[id]/edit/index";
+
+// User Profile
 import { Route as userProfileLayoutRoute } from "./userProfile/_layout";
 import { Route as userProfileRoute } from "./userProfile/[id]/index";
-import { Route as matrixDetailLayoutRoute } from "./teacher/matrix/[id]/_layout";
-import { Route as matrixIndexRoute } from "./teacher/matrix/index";
-import { Route as matrixDetailRoute } from "./teacher/matrix/[id]/index";
-import { Route as matrixEditRoute } from "./teacher/matrix/[id]/edit/_layout";
-import { Route as matrixCreateLayoutRoute } from "./teacher/matrix/create/_layout";
-import { Route as questionLayoutRoute } from "./teacher/question/_layout";
-import { Route as questionIndexRoute } from "./teacher/question/index";
-import { Route as questionCreateLayoutRoute } from "./teacher/question/create/_layout";
-import { Route as questionCreateIndexRoute } from "./teacher/question/create/index";
-import { Route as questionDetailLayout } from "./teacher/question/[id]/_layout";
-import { Route as questionDetailRoute } from "./teacher/question/[id]/index";
-import { Route as questionEditLayout } from "./teacher/question/[id]/edit/_layout";
-import { Route as editQuestionRoute } from "./teacher/question/[id]/edit/index";
-import {Route as examTeacherLayoutRoute} from "./teacher/exam/_layout";
-import {Route as examTeacherIndexRoute} from "./teacher/exam/index";
-import {Route as examTeacherDetailRoute} from "./teacher/exam/[id]/index";
-import {Route as examTeacherDetailayoutRoute} from "./teacher/exam/[id]/_layout";
 
-import {Route as examSelectMatrixLayoutRoute} from "./teacher/exam/select-matrix/_layout";
-import {Route as examSelectQuestionLayoutRoute} from "./teacher/exam/select-question/_layout";
-import {Route as examSelectQuestionIndexRoute} from "./teacher/exam/select-question/index";
-import {Route as examSelectMatrixIndexRoute} from "./teacher/exam/select-matrix/index";
-import {Route as examReviewMatrixIndexRoute } from "./teacher/exam/review/index";
-import { Route as examReviewMatrixLayoutRoute } from "./teacher/exam/review/_layout";
+// Template (User)
+import { Route as templateUserRoute } from "./template";
 
-import {Route as examEditLayoutRoute} from './teacher/exam/[id]/edit/_layout';
-import {Route as examEditIndexRoute} from './teacher/exam/[id]/edit/index';
-
+// ------------------------- ROUTE TREE -------------------------
 const routeTree = rootRoute.addChildren([
-    homeRoute,
-    examLayoutRoute.addChildren([
-        examIndexRoute,
-        examDetailRoute.addChildren([
-            takeExamLayoutRoute.addChildren([
-                takeExamRoute,
-            ]),
-        ]),
+  homeRoute,
+  templateUserRoute,
+
+  // Exam (User)
+  examLayoutRoute.addChildren([
+    examIndexRoute,
+    examDetailLayoutRoute.addChildren([
+      examDetailRoute,
+      takeExamLayoutRoute.addChildren([takeExamRoute]),
+    ]),
+  ]),
+
+  // Auth
+  authLayoutRoute.addChildren([loginRoute, registerRoute, forgotPasswordRoute]),
+
+  // Teacher
+  teacherLayoutRoute.addChildren([
+    templateTeacherRoute,
+
+    // Exam (Teacher)
+    teacherExamLayoutRoute.addChildren([
+      teacherExamIndexRoute,
+      teacherExamDetailLayoutRoute.addChildren([
+        teacherExamDetailRoute,
+        teacherExamEditLayoutRoute.addChildren([teacherExamEditRoute]),
+      ]),
+      teacherExamSelectMatrixLayoutRoute.addChildren([
+        teacherExamSelectMatrixRoute,
+      ]),
+      teacherExamSelectQuestionLayoutRoute.addChildren([
+        teacherExamSelectQuestionRoute,
+      ]),
+      teacherExamReviewLayoutRoute.addChildren([teacherExamReviewRoute]),
     ]),
 
-    authLayoutRoute.addChildren([
-        loginRoute,
-        registerRoute,
-        forgotPasswordRoute,
+    // Matrix
+    teacherMatrixLayoutRoute.addChildren([
+      teacherMatrixIndexRoute,
+      teacherMatrixCreateLayoutRoute.addChildren([teacherMatrixCreateRoute]),
+      teacherMatrixDetailLayoutRoute.addChildren([
+        teacherMatrixDetailRoute,
+        teacherMatrixEditLayoutRoute.addChildren([teacherMatrixEditRoute]),
+      ]),
     ]),
 
-    teacherLayoutRoute.addChildren([
-        templateRouteByTeacher,
-
-
-
-
-         //exam 
-        examTeacherLayoutRoute.addChildren([
-            examTeacherIndexRoute,
-            examTeacherDetailayoutRoute.addChildren([
-                examTeacherDetailRoute,
-                examEditLayoutRoute.addChildren([
-                    examEditIndexRoute,
-                ]),
-            ]),
-             
-            examSelectMatrixLayoutRoute.addChildren([
-                examSelectMatrixIndexRoute,
-            ]),
-            examSelectQuestionLayoutRoute.addChildren([
-                examSelectQuestionIndexRoute,
-            ]),
-            examReviewMatrixLayoutRoute.addChildren([
-                examReviewMatrixIndexRoute,
-            ]),
-
-        ]),
-
-        // question routes
-        questionLayoutRoute.addChildren([
-            questionIndexRoute,
-            questionCreateLayoutRoute.addChildren([
-                questionCreateIndexRoute,
-            ]),
-            questionDetailLayout.addChildren([
-                questionDetailRoute,
-                questionEditLayout.addChildren([
-                    editQuestionRoute,
-                ])
-            ]),
-        ]),
-
-        // matrix routes
-        matrixLayoutRoute.addChildren([
-            matrixIndexRoute,
-            matrixCreateLayoutRoute.addChildren([
-                matrixCreateIndexRoute,
-            ]),
-            matrixDetailLayoutRoute.addChildren([
-                matrixDetailRoute,
-                matrixEditRoute.addChildren([
-                    editMatrixRoute,
-                ])
-            ])
-        ])
+    // Question
+    teacherQuestionLayoutRoute.addChildren([
+      teacherQuestionIndexRoute,
+      teacherQuestionCreateLayoutRoute.addChildren([teacherQuestionCreateRoute]),
+      teacherQuestionDetailLayoutRoute.addChildren([
+        teacherQuestionDetailRoute,
+        teacherQuestionEditLayoutRoute.addChildren([teacherQuestionEditRoute]),
+      ]),
     ]),
+  ]),
 
-    userProfileLayoutRoute.addChildren([
-        userProfileRoute,
-    ]),
+  // User Profile
+  userProfileLayoutRoute.addChildren([userProfileRoute]),
 
-    dashboardLayoutRoute.addChildren([
-        dashboardUsersRoute,
-        dashboardQuestionsRoute,
-    ]),
+  // Dashboard
+  dashboardLayoutRoute.addChildren([
+    dashboardUsersRoute,
+    dashboardQuestionsRoute,
+  ]),
 ]);
 
 export const router = createRouter({ routeTree });

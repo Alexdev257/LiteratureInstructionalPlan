@@ -1,13 +1,25 @@
-import { useParams, Outlet, useLocation} from "@tanstack/react-router";
+import { useParams} from "@tanstack/react-router";
 import { ExamDetail } from "./ExamDetail";
+import { useExam } from "@/hooks/useExam";
 
 
 
 const DetailExamPage = () => {
-    const { examId } = useParams({ from: "/exam/$examId" });
-    const { pathname } = useLocation();
-
-    return pathname.split('/')[3] ? <Outlet /> :<div className="mt-20"> <ExamDetail examId={examId} /></div>;
+    const { examId } = useParams({ from: "/exam/$examId" })
+    const {useGetExamById} = useExam();
+    const {data,isLoading,isError} = useGetExamById(Number(examId));
+    const examData = data?.data;
+    if(isLoading){
+        return <div>Loading...</div>
+    }
+    if(isError || !examData){
+        return <div>Error loading exam data.</div>
+    }
+    return(
+        <div className="mt-20">
+            <ExamDetail exam={examData} />
+        </div>
+    )
 };
 
 export default DetailExamPage;

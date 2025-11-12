@@ -20,7 +20,7 @@ const DEFAULT_PARAMS: TemplateQuery = {
   isDeleted: undefined,
 };
 
-export default function TemplateSearchFilter({
+export default function SearchFilter({
   queryParams,
   onParamsChange,
 }: TemplateSearchFilterProps) {

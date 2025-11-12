@@ -23,7 +23,7 @@ const DEFAULT_PARAMS: ExamQuery = {
   ExamTypeId: undefined,
 };
 
-export default function ExamSearchFilter({
+export default function SearchFilter({
   queryParams,
   onParamsChange,
 }: ExamSearchFilterProps) {
