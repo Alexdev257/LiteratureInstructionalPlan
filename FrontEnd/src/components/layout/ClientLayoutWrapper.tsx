@@ -11,7 +11,7 @@ import { AuthProvider } from "@/context/authContext";
 import { ThemeProvider } from "@/components/theme-provider"
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import envconfig from "@/config/envConfig";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+
 export default function ClientLayoutWrapper() {
   const [queryClient] = useState(
     () =>
@@ -36,7 +36,6 @@ export default function ClientLayoutWrapper() {
             <RouterProvider router={router}  />
           </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
-          {/* <TanStackRouterDevtools router={router} />   */}
           <Toaster richColors duration={2000} />
         </QueryClientProvider>
       </AuthProvider>

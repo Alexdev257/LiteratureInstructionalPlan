@@ -42,7 +42,7 @@ export function CreateTemplateDialog({
   onOpenChange,
 }: CreateTemplateDialogProps) {
   const { useGetGradeLevels } = useGradeLevel();
-  const { usePostTemplate } = useTemplate();
+  const { createTemplate } = useTemplate();
   const {user} = useSessionStore()
   const { data: gradeLevelData } = useGetGradeLevels({ PageNumber: 1, PageSize: 100 }, { enabled: open });
   const gradeLevels = gradeLevelData?.data.items || [];
@@ -59,7 +59,7 @@ export function CreateTemplateDialog({
 
   const onSubmit = async (data: TemplateInput) => {
     try {
-      usePostTemplate.mutate(data, {
+      createTemplate.mutate(data, {
         onSuccess: (res) => {
           if (res.isSuccess) {
             toast.success(res.message || 'Tạo giáo án thành công!');
@@ -192,17 +192,17 @@ export function CreateTemplateDialog({
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
-                  disabled={usePostTemplate.isPending}
+                  disabled={createTemplate.isPending}
                   className="w-full sm:w-auto"
                 >
                   Hủy
                 </Button>
                 <Button 
                   type="submit" 
-                  disabled={usePostTemplate.isPending}
+                  disabled={createTemplate.isPending}
                   className="w-full sm:w-auto"
                 >
-                  {usePostTemplate.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {createTemplate.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Tạo giáo án
                 </Button>
               </div>

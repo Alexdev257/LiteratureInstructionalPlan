@@ -15,14 +15,12 @@ import {
   Battery
 } from "lucide-react";
 import { useParams } from "@tanstack/react-router";
-import { useExam } from "@/hooks/useExam";
-
+import { mockExamData } from "@/utils/mockAPi";
 
 export const ExamFooter = () => {
-  const { examId } = useParams({ from: "/exam/$examId" });
-   const { useGetExamById } = useExam()
-  const { data } = useGetExamById(Number(examId));
-  const exam = data?.data;
+  const { examId } = useParams({ from: "/exam/$examId/$attemptId" });
+  const exam = mockExamData.find(e => e.examId === Number(examId));
+  
   const isEssayExam = exam?.examType.examTypeId === 2;
   const currentTime = new Date().toLocaleTimeString('vi-VN', { 
     hour: '2-digit', 

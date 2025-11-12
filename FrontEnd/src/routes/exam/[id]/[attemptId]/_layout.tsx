@@ -1,5 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
-import { Route as examDetailLayoutRoute } from "../_layout";
+import { Route as examIdRoute } from "../index";
 import { Outlet } from "@tanstack/react-router";
 import { ExamHeader } from "@/components/layout/exam/ExamHeader";
 import ExamFooter from "@/components/layout/exam/ExamFooter";
@@ -17,7 +17,7 @@ const TakeExamLayoutComponent = () => {
 };
 
 export const Route = createRoute({
-  getParentRoute: () => examDetailLayoutRoute,
+  getParentRoute: () => examIdRoute,
   path: "/$attemptId",
   component: TakeExamLayoutComponent,
 });

@@ -44,7 +44,7 @@ import { useRouter } from "@tanstack/react-router";
 export function CreateMatrixForm() {
     const router = useRouter();
     const { user } = useSessionStore();
-    const { usePostMatrix } = useMatrix();
+    const { createMatrix } = useMatrix();
     const { useGetGradeLevels } = useGradeLevel();
     const [totalScore, setTotalScore] = useState(0);
  
@@ -109,13 +109,8 @@ export function CreateMatrixForm() {
             toast.error("Tổng điểm phải lớn hơn 0!");
             return;
         }
-        
-        if (total < 10) {
-            toast.error("Tổng điểm phải bằng 10!");
-            return;
-        }
 
-        usePostMatrix.mutate(
+        createMatrix.mutate(
             {
                 ...data,
                 createdAt: new Date().toISOString(),
@@ -124,7 +119,7 @@ export function CreateMatrixForm() {
                 onSuccess: (res) => {
                     if (res.isSuccess) {
                         toast.success(res.message || "Tạo ma trận thành công!");
-                        router.navigate({ to: "/teacher/matrix" });
+                        router.navigate({ to: "/teacher/matrices" });
                     }
                 },
                 onError: (error) => {
@@ -179,7 +174,7 @@ export function CreateMatrixForm() {
                                         <Input
                                             placeholder="Nhập tiêu đề ma trận..."
                                             {...field}
-                                            disabled={usePostMatrix.isPending}
+                                            disabled={createMatrix.isPending}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -201,7 +196,7 @@ export function CreateMatrixForm() {
                                             placeholder="Nhập mô tả chi tiết..."
                                             rows={4}
                                             {...field}
-                                            disabled={usePostMatrix.isPending}
+                                            disabled={createMatrix.isPending}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -222,7 +217,7 @@ export function CreateMatrixForm() {
                                         <Select
                                             onValueChange={(value) => field.onChange(Number(value))}
                                             value={field.value?.toString()}
-                                            disabled={usePostMatrix.isPending || isLoadingGradeLevels}
+                                            disabled={createMatrix.isPending || isLoadingGradeLevels}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
@@ -253,7 +248,7 @@ export function CreateMatrixForm() {
                                         <Select
                                             onValueChange={field.onChange}
                                             value={field.value}
-                                            disabled={usePostMatrix.isPending}
+                                            disabled={createMatrix.isPending}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
@@ -281,10 +276,10 @@ export function CreateMatrixForm() {
                                     <FormLabel>Ghi chú</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="Thêm ghi chú (bắt buộc)..."
+                                            placeholder="Thêm ghi chú (không bắt buộc)..."
                                             rows={3}
                                             {...field}
-                                            disabled={usePostMatrix.isPending}
+                                            disabled={createMatrix.isPending}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -299,7 +294,7 @@ export function CreateMatrixForm() {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle>Số lượng câu hỏi của từng bài</CardTitle>
+                                <CardTitle>Chi tiết câu hỏi</CardTitle>
                                 <CardDescription>
                                     Thêm các câu hỏi với độ khó và điểm số
                                 </CardDescription>
@@ -324,10 +319,10 @@ export function CreateMatrixForm() {
                                             scorePerQuestion: 0.5,
                                         })
                                     }
-                                    disabled={usePostMatrix.isPending}
+                                    disabled={createMatrix.isPending}
                                 >
                                     <Plus className="w-4 h-4 mr-1" />
-                                    Thêm chi tiết
+                                    Thêm câu hỏi
                                 </Button>
                             </div>
                         </div>
@@ -339,7 +334,7 @@ export function CreateMatrixForm() {
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <h4 className="font-semibold text-sm">
-                                               Phần #{index + 1}
+                                                Câu hỏi #{index + 1}
                                             </h4>
                                             {fields.length > 1 && (
                                                 <Button
@@ -347,7 +342,7 @@ export function CreateMatrixForm() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => remove(index)}
-                                                    disabled={usePostMatrix.isPending}
+                                                    disabled={createMatrix.isPending}
                                                 >
                                                     <Trash2 className="w-4 h-4 text-destructive" />
                                                 </Button>
@@ -367,7 +362,7 @@ export function CreateMatrixForm() {
                                                         <Input
                                                             placeholder="Nhập tên bài học..."
                                                             {...field}
-                                                            disabled={usePostMatrix.isPending}
+                                                            disabled={createMatrix.isPending}
                                                         />
                                                     </FormControl>
                                                     <FormMessage />
@@ -388,7 +383,7 @@ export function CreateMatrixForm() {
                                                         <Select
                                                             onValueChange={field.onChange}
                                                             value={field.value}
-                                                            disabled={usePostMatrix.isPending}
+                                                            disabled={createMatrix.isPending}
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
@@ -396,9 +391,9 @@ export function CreateMatrixForm() {
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="1"> Nhiều đáp án</SelectItem>
-                                                                <SelectItem value="2"> Một đáp án</SelectItem>
-                                                                <SelectItem value="3"> Tự luận</SelectItem>
+                                                                <SelectItem value="1">☑️ Nhiều đáp án</SelectItem>
+                                                                <SelectItem value="2">⭕ Một đáp án</SelectItem>
+                                                                <SelectItem value="3">✍️ Tự luận</SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -418,7 +413,7 @@ export function CreateMatrixForm() {
                                                         <Select
                                                             onValueChange={field.onChange}
                                                             value={field.value}
-                                                            disabled={usePostMatrix.isPending}
+                                                            disabled={createMatrix.isPending}
                                                         >
                                                             <FormControl>
                                                                 <SelectTrigger>
@@ -426,10 +421,10 @@ export function CreateMatrixForm() {
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="1"> Dễ</SelectItem>
-                                                                <SelectItem value="2"> Trung bình</SelectItem>
-                                                                <SelectItem value="3"> Khó</SelectItem>
-                                                                <SelectItem value="4"> Rất khó</SelectItem>
+                                                                <SelectItem value="1">🟢 Dễ</SelectItem>
+                                                                <SelectItem value="2">🟡 Trung bình</SelectItem>
+                                                                <SelectItem value="3">🟠 Khó</SelectItem>
+                                                                <SelectItem value="4">🔴 Rất khó</SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -456,7 +451,7 @@ export function CreateMatrixForm() {
                                                                 onChange={(e) =>
                                                                     field.onChange(Number(e.target.value))
                                                                 }
-                                                                disabled={usePostMatrix.isPending}
+                                                                disabled={createMatrix.isPending}
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -484,7 +479,7 @@ export function CreateMatrixForm() {
                                                                 onChange={(e) =>
                                                                     field.onChange(Number(e.target.value))
                                                                 }
-                                                                disabled={usePostMatrix.isPending}
+                                                                disabled={createMatrix.isPending}
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -524,14 +519,14 @@ export function CreateMatrixForm() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => router.navigate({ to: "/teacher/matrix" })}
-                        disabled={usePostMatrix.isPending}
+                        onClick={() => router.navigate({ to: "/teacher/matrices" })}
+                        disabled={createMatrix.isPending}
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Quay lại
                     </Button>
-                    <Button type="submit" disabled={usePostMatrix.isPending || totalScore > 10 || totalScore === 0 || totalScore < 10}>
-                        {usePostMatrix.isPending ? (
+                    <Button type="submit" disabled={createMatrix.isPending || totalScore > 10}>
+                        {createMatrix.isPending ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                                 Đang tạo...
