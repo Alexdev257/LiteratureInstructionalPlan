@@ -1,0 +1,618 @@
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\nusing LIP.Application.CQRS.Query.User;\nusing LIP.Application.DTOs;\nusing LIP.Application.DTOs.Response.Template;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateGetAllQueryHandler : IRequestHandler<TemplateGetAllQuery, TemplateGetResponse>\n{\n    private readonly ITemplatebookingRepository _templatebookingRepository;\n    private readonly ITemplateRepository _templateRepository;\n    private readonly IUserRepository _userRepository;\n\n    public TemplateGetAllQueryHandler(ITemplateRepository templateRepository,\n        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\n    {\n        _templateRepository = templateRepository;\n        _templatebookingRepository = templatebookingRepository;\n        _userRepository = userRepository;\n    }\n\n    public async Task<TemplateGetResponse> Handle(TemplateGetAllQuery request, CancellationToken cancellationToken)\n    {\n        var result = await _templateRepository.GetAllAsync(request);\n\n        var tasks = result.Select(async x =>\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();\n            var user = await _userRepository.GetAsync(new UserGetQuery\n            {\n                UserId = x.CreatedBy!.Value\n            });\n            return new TemplateGetDTO\n            {\n                FilePath = x.FilePath!,\n                Title = x.Title!,\n                ViewPath = x.ViewPath!,\n                CreatedAt = x.CreatedAt,\n                CreatedBy = new CreatedByDTO\n                {\n                    Email = user!.Email,\n                    Id = user.UserId,\n                    UserName = user.FullName\n                },\n                GradeLevelId = new GradeLevelDTO\n                {\n                    Id = x.GradeLevel!.GradeLevelId,\n                    Name = x.GradeLevel.Name!\n                },\n                Price = x.Price,\n                TemplateId = x.TemplateId,\n                TotalDownload = saledCount\n            };\n        });\n\n        var dtoList = (await Task.WhenAll(tasks)).ToList();\n        var paged = dtoList.ToPagedListAsync(request.PageNumber, request.PageSize);\n\n        return new TemplateGetResponse\n        {\n            IsSuccess = true,\n            Message = \"Get all templates success\",\n            Data = paged\n        };\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetAllQueryHandler.cs	(date 1762864569655)
+@@ -42,16 +42,17 @@
+                 {
+                     Email = user!.Email,
+                     Id = user.UserId,
+-                    UserName = user.FullName
++                    FullName = user.FullName
+                 },
+-                GradeLevelId = new GradeLevelDTO
++                GradeLevel = new GradeLevelDTO
+                 {
+-                    Id = x.GradeLevel!.GradeLevelId,
++                    GradeLevelId = x.GradeLevel!.GradeLevelId,
+                     Name = x.GradeLevel.Name!
+                 },
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+-                TotalDownload = saledCount
++                TotalDownload = saledCount,
++                IdDeleted = x.IsDeleted
+             };
+         });
+ 
+Index: LIP.Application/CQRS/Handler/Template/TemplateDeleteCommandHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Command.Template;\nusing LIP.Application.CQRS.Query.Template;\nusing LIP.Application.DTOs.Response;\nusing LIP.Application.Interface.Helpers;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>\n{\n    private readonly ICloudinaryUpload _cloudinaryUpload;\n    private readonly ITemplateRepository _templateRepository;\n\n    public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)\n    {\n        _templateRepository = templateRepository;\n        _cloudinaryUpload = cloudinaryUpload;\n    }\n\n    public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)\n    {\n        var result = await _templateRepository.GetAsync(new TemplateGetQuery\n        {\n            TemplateId = request.TemplateId\n        });\n\n        var publicId = await _cloudinaryUpload.GetPublicId(result!.FilePath!);\n\n        var isSuccess = await _templateRepository.DeleteAsync(request);\n\n        if (isSuccess)\n        {\n            await _cloudinaryUpload.DeleteFile(publicId);\n            return new CommonResponse<bool>\n            {\n                IsSuccess = true,\n                Message = \"Delete template success\",\n                Data = true\n            };\n        }\n\n        return new CommonResponse<bool>\n        {\n            IsSuccess = false,\n            Message = \"some errors occurred while delete\",\n            Data = false\n        };\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateDeleteCommandHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateDeleteCommandHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateDeleteCommandHandler.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateDeleteCommandHandler.cs	(date 1762864877233)
+@@ -9,13 +9,11 @@
+ 
+ public class TemplateDeleteCommandHandler : IRequestHandler<TemplateDeleteCommand, CommonResponse<bool>>
+ {
+-    private readonly ICloudinaryUpload _cloudinaryUpload;
+     private readonly ITemplateRepository _templateRepository;
+ 
+     public TemplateDeleteCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
+     {
+         _templateRepository = templateRepository;
+-        _cloudinaryUpload = cloudinaryUpload;
+     }
+ 
+     public async Task<CommonResponse<bool>> Handle(TemplateDeleteCommand request, CancellationToken cancellationToken)
+@@ -25,13 +23,10 @@
+             TemplateId = request.TemplateId
+         });
+ 
+-        var publicId = await _cloudinaryUpload.GetPublicId(result!.FilePath!);
+-
+         var isSuccess = await _templateRepository.DeleteAsync(request);
+ 
+         if (isSuccess)
+         {
+-            await _cloudinaryUpload.DeleteFile(publicId);
+             return new CommonResponse<bool>
+             {
+                 IsSuccess = true,
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\nusing LIP.Application.CQRS.Query.User;\nusing LIP.Application.DTOs.Response.Template;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateGetQueryHandler : IRequestHandler<TemplateGetQuery, TemplateGetByIdResponse>\n{\n    private readonly ITemplateRepository _templateRepository;\n    private readonly ITemplatebookingRepository _templatebookingRepository;\n    private readonly IUserRepository _userRepository;\n    public TemplateGetQueryHandler(ITemplateRepository templateRepository, ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\n    {\n        _templateRepository = templateRepository;\n        _templatebookingRepository = templatebookingRepository;\n        _userRepository = userRepository;\n    }\n\n    public async Task<TemplateGetByIdResponse> Handle(TemplateGetQuery request, CancellationToken cancellationToken)\n    {\n        var result = await _templateRepository.GetAsync(request);\n        if (result != null)\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(result.TemplateId)).Count();\n            var user = (await _userRepository.GetAsync(new UserGetQuery\n            {\n                UserId = result.CreatedBy!.Value,\n            }));\n            return new TemplateGetByIdResponse\n            {                                                                                                                                                                                                       \n                IsSuccess = true,\n                Message = \"Get template by id success\",\n                Data = new TemplateGetDTO\n                {\n                    FilePath = result.FilePath!,\n                    Title = result.Title!,                                                                                                                                                                  \n                    ViewPath = result.ViewPath!,                                                                                    \n                    CreatedAt = result.CreatedAt,\n                    CreatedBy = new CreatedByDTO\n                    {\n                        Email = user!.Email,\n                        Id = user.UserId,\n                        UserName = user.FullName\n                    },\n                    GradeLevelId = new GradeLevelDTO\n                    {\n                        Id = result.GradeLevel!.GradeLevelId,\n                        Name = result.GradeLevel.Name!\n                    },\n                    Price = result.Price,\n                    TemplateId = result.TemplateId,\n                    TotalDownload = saledCount\n                }\n            };\n        }\n\n        return new TemplateGetByIdResponse\n        {\n            IsSuccess = false,\n            Message = \"Template not found\"\n        };\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetQueryHandler.cs	(date 1762864625948)
+@@ -42,16 +42,17 @@
+                     {
+                         Email = user!.Email,
+                         Id = user.UserId,
+-                        UserName = user.FullName
++                        FullName = user.FullName
+                     },
+-                    GradeLevelId = new GradeLevelDTO
++                    GradeLevel = new GradeLevelDTO
+                     {
+-                        Id = result.GradeLevel!.GradeLevelId,
++                        GradeLevelId = result.GradeLevel!.GradeLevelId,
+                         Name = result.GradeLevel.Name!
+                     },
+                     Price = result.Price,
+                     TemplateId = result.TemplateId,
+-                    TotalDownload = saledCount
++                    TotalDownload = saledCount,
++                    IdDeleted = result.IsDeleted,
+                 }
+             };
+         }
+Index: LIP.Infrastructure/Repositories/TemplateRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Command.Template;\nusing LIP.Application.CQRS.Query.Template;\nusing LIP.Application.Interface.Repository;\nusing LIP.Domain.Entities;\nusing LIP.Infrastructure.Persistency;\nusing Microsoft.EntityFrameworkCore;\n\nnamespace LIP.Infrastructure.Repositories;\n\npublic class TemplateRepository : ITemplateRepository\n{\n    private readonly ApplicationDbContext _context;\n\n    public TemplateRepository(ApplicationDbContext context)\n    {\n        _context = context;\n    }\n\n    public async Task<Template?> GetAsync(TemplateGetQuery query)\n    {\n        return await _context.Templates\n            .AsNoTracking()\n            .Include(t => t.CreatedByNavigation)\n            .Include(t => t.GradeLevel)\n            //.Include(t => t.Series)\n            .Where(t => !t.IsDeleted)\n            .FirstOrDefaultAsync(t => t.TemplateId == query.TemplateId);\n    }\n\n    public async Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query)\n    {\n        var templates = _context.Templates\n            .AsNoTracking()\n            .Include(t => t.CreatedByNavigation)\n            .Include(t => t.GradeLevel)\n            .Where(t => !t.IsDeleted)\n            .AsQueryable();\n\n        if (!string.IsNullOrEmpty(query.Search))\r\n        {\r\n            templates = templates.Where(t => t.Title.ToLower().Contains(query.Search.ToLower()));\r\n        }\n\n        return await templates.ToListAsync();\n    }\n\n    public async Task<bool> CreateAsync(TemplateCreateCommand command)\n    {\n        var template = new Template\n        {\n            Title = command.Title,\n            FilePath = command.FilePath,\n            ViewPath = command.ViewPath,\n            GradeLevelId = command.GradeLevelId,\n            Price = (float)command.Price!,\n            CreatedBy = command.CreatedBy,\n            CreatedAt = command.CreatedAt\n        };\n\n        _context.Templates.Add(template);\n        await _context.SaveChangesAsync();\n        return true;\n    }\n\n    public async Task<bool> DeleteAsync(TemplateDeleteCommand command)\n    {\n        var template = await _context.Templates.FindAsync(command.TemplateId);\n        if (template == null) return false;\n\n        template.IsDeleted = true;\n        template.DeletedAt = DateTime.UtcNow;\n        await _context.SaveChangesAsync();\n        return true;\n    }\n\n    public async Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query)\n    {\n        var result = await _context.Templates.AsNoTracking()\n            .Include(g => g.GradeLevel)\n            .Include(c => c.CreatedByNavigation)\n            .Where(t => !t.IsDeleted && t.CreatedBy == query.UserId)\n            .ToListAsync();\n\n        return result;\n    }\n\n    public async Task<List<Template>> GetByIdsAsync(List<int>? templateIds)\n    {\n        if (templateIds == null || !templateIds.Any()) return new List<Template>();\n\n        return await _context.Templates\n            .Where(t => templateIds.Contains(t.TemplateId))\n            .Include(g => g.GradeLevel)\n            .Include(o => o.CreatedByNavigation)\n            .AsNoTracking()\n            .ToListAsync();\n    }\n\n    public async Task<bool> UpdateAsync(TemplateUpdateCommand command)\n    {\n        var template = await _context.Templates.FindAsync(command.TemplateId);\n        if (template == null || template.IsDeleted) return false;\n\n        template.Title = command.Title;\n        template.FilePath = command.FilePath;\n        template.GradeLevelId = command.GradeLevelId;\n        //template.SeriesId = command.SeriesId;\n        template.CreatedBy = command.CreatedBy;\n        template.CreatedAt = command.CreatedAt;\n\n        await _context.SaveChangesAsync();\n        return true;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Infrastructure/Repositories/TemplateRepository.cs b/LIP.Infrastructure/Repositories/TemplateRepository.cs
+--- a/LIP.Infrastructure/Repositories/TemplateRepository.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Infrastructure/Repositories/TemplateRepository.cs	(date 1762864788715)
+@@ -104,11 +104,21 @@
+         template.Title = command.Title;
+         template.FilePath = command.FilePath;
+         template.GradeLevelId = command.GradeLevelId;
+-        //template.SeriesId = command.SeriesId;
+-        template.CreatedBy = command.CreatedBy;
+-        template.CreatedAt = command.CreatedAt;
++        template.ViewPath = command.ViewPath;
++        template.Price = (float)command.Price!;
++        
+ 
+         await _context.SaveChangesAsync();
+         return true;
+     }
++    
++    public async Task<bool> RestoreAsync(TemplateRestoreCommand command)
++    {
++        var template = await _context.Templates.FindAsync(command.TemplateId);
++        if (template is not { IsDeleted: true }) return false;
++
++        template.IsDeleted = false;
++        await _context.SaveChangesAsync();
++        return true;
++    }
+ }
+\ No newline at end of file
+Index: LIP.Application/Interface/Repository/ITemplateRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Command.Template;\nusing LIP.Application.CQRS.Query.Template;\nusing LIP.Domain.Entities;\n\nnamespace LIP.Application.Interface.Repository;\n\npublic interface ITemplateRepository\n{\n    Task<Template?> GetAsync(TemplateGetQuery query);\n    Task<IEnumerable<Template>> GetAllAsync(TemplateGetAllQuery query);\n    Task<bool> CreateAsync(TemplateCreateCommand command);\n    Task<bool> DeleteAsync(TemplateDeleteCommand command);\n\n    Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query);\n\n    Task<List<Template>> GetByIdsAsync(List<int> templateIds);\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/Interface/Repository/ITemplateRepository.cs b/LIP.Application/Interface/Repository/ITemplateRepository.cs
+--- a/LIP.Application/Interface/Repository/ITemplateRepository.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/Interface/Repository/ITemplateRepository.cs	(date 1762864997908)
+@@ -14,4 +14,7 @@
+     Task<IEnumerable<Template>> GetTemplateByUserIdAsync(TemplateGetByUserId query);
+ 
+     Task<List<Template>> GetByIdsAsync(List<int> templateIds);
++    Task<bool> UpdateAsync(TemplateUpdateCommand command);
++
++    Task<bool> RestoreAsync(TemplateRestoreCommand command);
+ }
+\ No newline at end of file
+Index: LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Query.Template;\nusing LIP.Application.CQRS.Query.Templatebooking;\nusing LIP.Application.CQRS.Query.User;\nusing LIP.Application.DTOs.Response.Template;\nusing LIP.Application.Interface.Repository;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler.Template;\n\npublic class TemplateGetByUserIdHandler : IRequestHandler<TemplateGetByUserId, TemplateGetResponse>\n{\n    private readonly ITemplatebookingRepository _templatebookingRepository;\n    private readonly ITemplateRepository _templateRepository;\n    private readonly IUserRepository _userRepository;\n    public TemplateGetByUserIdHandler(ITemplateRepository templateRepository,\n        ITemplatebookingRepository templatebookingRepository, IUserRepository userRepository)\n    {\n        _templateRepository = templateRepository;\n        _templatebookingRepository = templatebookingRepository;\n        _userRepository = userRepository;\n    }\n\n    public async Task<TemplateGetResponse> Handle(TemplateGetByUserId request, CancellationToken cancellationToken)\n    {\n        var createdTemplates = await _templateRepository.GetTemplateByUserIdAsync(request);\n\n        var bookings = await _templatebookingRepository.GetByUserIdAsync(new TemplatebookingGetByUserIdQuery\n        {\n            UserId = request.UserId\n        });\n        \n        var user = await _userRepository.GetAsync(new UserGetQuery\n        {\n            UserId = request.UserId\n        });\n\n        var bookedTemplateIds = bookings\n            .Where(b => b.TemplateId is not null)\n            .Select(b => (int)b.TemplateId!)\n            .Distinct()\n            .ToList();\n\n        var bookedTemplates = new List<Domain.Entities.Template>();\n        if (bookedTemplateIds.Any()) bookedTemplates = await _templateRepository.GetByIdsAsync(bookedTemplateIds);\n\n\n        var response = new TemplateGetResponse\n        {\n            Data = new DTOs.Response.PaginationResponse<TemplateGetDTO>()\n        };\n\n        var tasks = bookedTemplates.Select(async x =>\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();\n\n            return new TemplateGetDTO\n            {\n                FilePath = x.FilePath!,\n                Title = x.Title!,\n                ViewPath = x.ViewPath!,\n                CreatedAt = x.CreatedAt,\n                CreatedBy = new CreatedByDTO\n                {\n                    Email = user!.Email,\n                    Id = user.UserId,\n                    UserName = user.FullName\n                },\n                GradeLevelId = new GradeLevelDTO\n                {\n                    Id = x.GradeLevel!.GradeLevelId,\n                    Name = x.GradeLevel.Name!\n                },\n                Price = x.Price,\n                TemplateId = x.TemplateId,\n                TotalDownload = saledCount\n            };\n        });\n\n        var tasks2 = createdTemplates.Select(async x =>\n        {\n            var saledCount = (await _templatebookingRepository.GetByTemplateIdAsync(x.TemplateId)).Count();\n\n            return new TemplateGetDTO\n            {\n                FilePath = x.FilePath!,\n                Title = x.Title!,\n                ViewPath = x.ViewPath!,\n                CreatedAt = x.CreatedAt,\n                CreatedBy = new CreatedByDTO\n                {\n                    Email = user!.Email,\n                    Id = user.UserId,\n                    UserName = user.FullName\n                },\n                GradeLevelId = new GradeLevelDTO\n                {\n                    Id = x.GradeLevel!.GradeLevelId,\n                    Name = x.GradeLevel.Name!\n                },\n                Price = x.Price,\n                TemplateId = x.TemplateId,\n                TotalDownload = saledCount\n            };\n        });\n        \n        response.Data.Items = (await Task.WhenAll(tasks)).ToList();\n        response.Data.Items.AddRange((await Task.WhenAll(tasks2)).ToList());\n\n        response.IsSuccess = true;\n        response.Message = \"Get templates by user id success\";\n        return response;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs
+--- a/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateGetByUserIdHandler.cs	(date 1762864602395)
+@@ -63,16 +63,17 @@
+                 {
+                     Email = user!.Email,
+                     Id = user.UserId,
+-                    UserName = user.FullName
++                    FullName = user.FullName
+                 },
+-                GradeLevelId = new GradeLevelDTO
++                GradeLevel = new GradeLevelDTO
+                 {
+-                    Id = x.GradeLevel!.GradeLevelId,
++                    GradeLevelId = x.GradeLevel!.GradeLevelId,
+                     Name = x.GradeLevel.Name!
+                 },
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+-                TotalDownload = saledCount
++                TotalDownload = saledCount,
++                IdDeleted = x.IsDeleted
+             };
+         });
+ 
+@@ -90,16 +91,17 @@
+                 {
+                     Email = user!.Email,
+                     Id = user.UserId,
+-                    UserName = user.FullName
++                    FullName = user.FullName
+                 },
+-                GradeLevelId = new GradeLevelDTO
++                GradeLevel = new GradeLevelDTO
+                 {
+-                    Id = x.GradeLevel!.GradeLevelId,
++                    GradeLevelId = x.GradeLevel!.GradeLevelId,
+                     Name = x.GradeLevel.Name!
+                 },
+                 Price = x.Price,
+                 TemplateId = x.TemplateId,
+-                TotalDownload = saledCount
++                TotalDownload = saledCount,
++                IdDeleted = x.IsDeleted
+             };
+         });
+         
+Index: LIP.WebApp/Controllers/TemplateController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using LIP.Application.CQRS.Command.Template;\nusing LIP.Application.CQRS.Query.Template;\nusing LIP.Application.DTOs.Request.Template;\nusing MediatR;\nusing Microsoft.AspNetCore.Mvc;\n\nnamespace LIP.WebApp.Controllers;\n\n[Route(\"api/[controller]\")]\n[ApiController]\npublic class TemplateController : ControllerBase\n{\n    private readonly IMediator _mediatoR;\n\n    public TemplateController(IMediator mediatoR)\n    {\n        _mediatoR = mediatoR;\n    }\n\n    [HttpPost]\n    public async Task<IActionResult> UploadTemplate([FromForm] FormData form)\n    {\n        await using var stream = form.File!.OpenReadStream();\n\n        var request = new TemplateCreateRequest\n        {\n            Title = form.Title,\n            GradeLevelId = form.GradeLevelId,\n            Price = form.Price,\n            CreatedBy = form.CreatedById,\n\n            FileName = form.File.FileName,\n            FileStream = stream\n        };\n\n        var result = await _mediatoR.Send(new TemplateCreateCommand\n        {\n            Title = request.Title,\n            GradeLevelId = request.GradeLevelId,\n            Price = request.Price,\n            CreatedBy = request.CreatedBy,\n\n            FileName = request.FileName,\n            FileStream = request.FileStream\n        });\n\n        return StatusCode(result.IsSuccess ? StatusCodes.Status201Created : StatusCodes.Status500InternalServerError,\n            result);\n    }\n\n    /// <summary>\n    ///     Get all templates\n    /// </summary>\n    [HttpGet]\n    public async Task<IActionResult> GetAllTemplates([FromQuery] TemplateGetAllRequest request)\n    {\n        var result = await _mediatoR.Send(new TemplateGetAllQuery{ Search = request.Search ,PageSize = request.PageSize, PageNumber = request.PageNumber });\n\n        return StatusCode(StatusCodes.Status200OK, result);\n    }\n\n    /// <summary>\n    ///     Get template by id\n    /// </summary>\n    [HttpGet(\"{id}\")]\n    public async Task<IActionResult> GetTemplateById([FromRoute] int id)\n    {\n        var result = await _mediatoR.Send(new TemplateGetQuery\n        {\n            TemplateId = id\n        });\n\n        return StatusCode(StatusCodes.Status200OK, result);\n    }\n\n    /// <summary>\n    ///     Get template by user id\n    /// </summary>\n    [HttpGet(\"user/{userId}\")]\n    public async Task<IActionResult> GetTemplatesByUserId([FromRoute] int userId)\n    {\n        var result = await _mediatoR.Send(new TemplateGetByUserId\n        {\n            UserId = userId\n        });\n\n        return StatusCode(StatusCodes.Status200OK, result);\n    }\n\n    public class FormData\n    {\n        public string Title { get; set; } = string.Empty;\n        public int GradeLevelId { get; set; }\n        public decimal Price { get; set; }\n        public int CreatedById { get; set; }\n        public IFormFile? File { get; set; }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.WebApp/Controllers/TemplateController.cs b/LIP.WebApp/Controllers/TemplateController.cs
+--- a/LIP.WebApp/Controllers/TemplateController.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.WebApp/Controllers/TemplateController.cs	(date 1762865040538)
+@@ -87,6 +87,46 @@
+         return StatusCode(StatusCodes.Status200OK, result);
+     }
+ 
++    [HttpPut("{id}")]
++    public async Task<IActionResult> UpdateTemplate([FromRoute] int id, [FromBody] FormData request)
++    {
++        var result = await _mediatoR.Send(new TemplateUpdateCommand
++        {
++            TemplateId = id,
++            Title =  request.Title,
++            GradeLevelId = request.GradeLevelId,
++            Price = request.Price,
++            CreatedBy = request.CreatedById
++        });
++
++        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
++            result);
++    }
++
++    [HttpPatch("delete/{id}")]
++    public async Task<IActionResult> DeleteTemplate([FromRoute] int id)
++    {
++        var result = await _mediatoR.Send(new TemplateDeleteCommand
++        {
++            TemplateId = id
++        });
++        
++        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
++            result);
++    }
++
++    [HttpPatch("restore/{id}")]
++    public async Task<IActionResult> RestoreTemplate([FromRoute] int id)
++    {
++        var result = await _mediatoR.Send(new TemplateRestoreCommand
++        {
++            TemplateId = id
++        });
++        
++        return StatusCode(result.IsSuccess ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
++            result);
++    }
++    
+     public class FormData
+     {
+         public string Title { get; set; } = string.Empty;
+Index: LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace LIP.Application.DTOs.Response.Template;\n\npublic class TemplateGetDTO\n{\n    public int TemplateId { get; set; }\n\n    public string Title { get; set; } = string.Empty;\n    public string FilePath { get; set; } = string.Empty;\n\n    public string ViewPath { get; set; } = string.Empty;\n\n    public GradeLevelDTO? GradeLevelId { get; set; }\n\n    public float Price { get; set; }\n\n    public CreatedByDTO? CreatedBy { get; set; }\n\n    public DateTime? CreatedAt { get; set; }\n\n    public int TotalDownload { get; set; }\n}\n\npublic class GradeLevelDTO\n{\n    public int Id { get; set; }\n    public string Name { get; set; } = string.Empty;\n}\n\npublic class CreatedByDTO\n{\n    public int Id { get; set; }\n    public string UserName { get; set; } = string.Empty;\n    public string Email { get; set; } = string.Empty;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs b/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs
+--- a/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/DTOs/Response/Template/TemplateGetDTO.cs	(date 1762864547096)
+@@ -9,7 +9,7 @@
+ 
+     public string ViewPath { get; set; } = string.Empty;
+ 
+-    public GradeLevelDTO? GradeLevelId { get; set; }
++    public GradeLevelDTO? GradeLevel { get; set; }
+ 
+     public float Price { get; set; }
+ 
+@@ -18,17 +18,21 @@
+     public DateTime? CreatedAt { get; set; }
+ 
+     public int TotalDownload { get; set; }
++    
++    public bool IdDeleted { get; set; }
+ }
+ 
+ public class GradeLevelDTO
+ {
+-    public int Id { get; set; }
++    public int GradeLevelId { get; set; }
+     public string Name { get; set; } = string.Empty;
++    
++
+ }
+ 
+ public class CreatedByDTO
+ {
+     public int Id { get; set; }
+-    public string UserName { get; set; } = string.Empty;
++    public string FullName { get; set; } = string.Empty;
+     public string Email { get; set; } = string.Empty;
+ }
+\ No newline at end of file
+Index: LIP.Application/CQRS/Handler/DumbDataHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Text;\nusing LIP.Application.CQRS.Command.Examtype;\nusing LIP.Application.CQRS.Command.Gradelevel;\nusing LIP.Application.CQRS.Command.Role;\nusing LIP.Application.CQRS.Query.Examtype;\nusing LIP.Application.CQRS.Query.Gradelevel;\nusing LIP.Application.CQRS.Query.Role;\nusing LIP.Application.DTOs.Response;\nusing LIP.Application.Interface.Repository;\nusing LIP.Domain.Entities;\nusing MediatR;\n\nnamespace LIP.Application.CQRS.Handler;\n\npublic class DumbDataHandler : IRequestHandler<DumbDataCommand, CommonResponse<string>>\n{\n    private readonly IExamtypeRepository _examtypeRepository;\n    private readonly IGradelevelRepository _gradelevelRepository;\n    private readonly IRoleRepository _roleRepository;\n\n    public DumbDataHandler(IRoleRepository roleRepository, IGradelevelRepository gradelevelRepository,\n        IExamtypeRepository examtypeRepository)\n    {\n        _roleRepository = roleRepository;\n        _gradelevelRepository = gradelevelRepository;\n        _examtypeRepository = examtypeRepository;\n    }\n\n    public async Task<CommonResponse<string>> Handle(DumbDataCommand request, CancellationToken cancellationToken)\n    {\n        try\n        {\n            // Biến đếm cho mỗi bảng\n            var rolesAddedCount = 0;\n            var gradeLevelsAddedCount = 0;\n            var examTypesAddedCount = 0;\n\n            // 1. Seed dữ liệu cho Roles\n            if (!((await _roleRepository.GetAllAsync(new RoleGetAllQuery())).Count()! > 0))\n            {\n                var roles = new List<Domain.Entities.Role>\n                {\n                    new() { RoleName = \"Admin\" },\n                    new() { RoleName = \"Teacher\" },\n                    new() { RoleName = \"Student\" }\n                };\n                rolesAddedCount = roles.Count;\n                foreach (var role in roles)\n                {\n                    var result = await _roleRepository.CreateAsync(new RoleCreateCommand\n                    {\n                        RoleName = role.RoleName\n                    });\n\n                    if (!result) rolesAddedCount--;\n                }\n            }\n\n            // 2. Seed dữ liệu cho Gradelevels\n            if (!((await _gradelevelRepository.GetAllAsync(new GradelevelGetAllQuery())).Count()! > 0))\n            {\n                var gradeLevels = new List<GradeLevel>();\n                for (var i = 6; i <= 12; i++) gradeLevels.Add(new GradeLevel { Name = $\"Lớp {i}\" });\n                gradeLevelsAddedCount = gradeLevels.Count;\n                foreach (var gradeLevel in gradeLevels)\n                {\n                    var result = await _gradelevelRepository.CreateAsync(new GradelevelCreateCommand\n                    {\n                        Name = gradeLevel.Name\n                    });\n\n                    if (!result) gradeLevelsAddedCount--;\n                }\n            }\n\n            // 3. Seed dữ liệu cho Examtypes\n            if (!((await _examtypeRepository.GetAllAsync(new ExamtypeGetAllQuery())).Count()! > 0))\n            {\n                var examTypes = new List<ExamType>\n                {\n                    new() { Name = \"Kiểm tra 15 phút\" },\n                    new() { Name = \"Kiểm tra 45 phút (1 tiết)\" },\n                    new() { Name = \"Kiểm tra giữa kỳ\" },\n                    new() { Name = \"Kiểm tra cuối kỳ\" },\n                    new() { Name = \"Thi thử\" },\n                    new() { Name = \"Thi tốt nghiệp THPT\" }\n                };\n                examTypesAddedCount = examTypes.Count;\n\n                foreach (var examType in examTypes)\n                {\n                    var result = await _examtypeRepository.CreateAsync(new ExamtypeCreateCommand\n                    {\n                        Name = examType.Name\n                    });\n\n                    if (!result) examTypesAddedCount--;\n                }\n            }\n\n            var totalAdded = rolesAddedCount + gradeLevelsAddedCount + examTypesAddedCount;\n\n            if (totalAdded > 0)\n            {\n                var messageBuilder = new StringBuilder(\"Seeding successful. Added: \");\n                messageBuilder.Append($\"{rolesAddedCount} roles, \");\n                messageBuilder.Append($\"{gradeLevelsAddedCount} grade levels, \");\n                messageBuilder.Append($\"{examTypesAddedCount} exam types.\");\n\n                return new CommonResponse<string>\n                {\n                    Data = messageBuilder.ToString(),\n                    IsSuccess = true,\n                    Message = \"Seeding completed successfully.\"\n                };\n            }\n\n            return new CommonResponse<string>\n            {\n                Data = \"No data was added. All tables already contain data.\",\n                IsSuccess = true,\n                Message = \"Seeding skipped.\"\n            };\n        }\n        catch (Exception ex)\n        {\n            return new CommonResponse<string>\n            {\n                Data = ex.Message,\n                IsSuccess = false,\n                Message = \"An error occurred during seeding.\"\n            };\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/DumbDataHandler.cs b/LIP.Application/CQRS/Handler/DumbDataHandler.cs
+--- a/LIP.Application/CQRS/Handler/DumbDataHandler.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Handler/DumbDataHandler.cs	(date 1762742810163)
+@@ -30,19 +30,17 @@
+     {
+         try
+         {
+-            // Biến đếm cho mỗi bảng
+             var rolesAddedCount = 0;
+             var gradeLevelsAddedCount = 0;
+             var examTypesAddedCount = 0;
+-
+-            // 1. Seed dữ liệu cho Roles
++            
+             if (!((await _roleRepository.GetAllAsync(new RoleGetAllQuery())).Count()! > 0))
+             {
+                 var roles = new List<Domain.Entities.Role>
+                 {
+-                    new() { RoleName = "Admin" },
++                    new() { RoleName = "Student" },
+                     new() { RoleName = "Teacher" },
+-                    new() { RoleName = "Student" }
++                    new() { RoleName = "Admin" }
+                 };
+                 rolesAddedCount = roles.Count;
+                 foreach (var role in roles)
+Index: LIP.Application/CQRS/Command/Template/TemplateUpdateCommand.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using MediatR;\n\nnamespace LIP.Application.CQRS.Command.Template;\n\npublic class TemplateUpdateCommand : IRequest<bool>\n{\n    public int TemplateId { get; set; }\n    public string? Title { get; set; }\n    public string? FilePath { get; set; }\n    public int? GradeLevelId { get; set; }\n    public int? SeriesId { get; set; }\n    public int? CreatedBy { get; set; }\n    public DateTime? CreatedAt { get; set; }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Command/Template/TemplateUpdateCommand.cs b/LIP.Application/CQRS/Command/Template/TemplateUpdateCommand.cs
+--- a/LIP.Application/CQRS/Command/Template/TemplateUpdateCommand.cs	(revision de070a6f9d1892ecf36dfbc8306643f529a102ed)
++++ b/LIP.Application/CQRS/Command/Template/TemplateUpdateCommand.cs	(date 1762863901043)
+@@ -1,14 +1,83 @@
++using LIP.Application.DTOs.Response;
++using LIP.Application.DTOs.Response.Template;
++using LIP.Application.Interface.Validation;
+ using MediatR;
+ 
+ namespace LIP.Application.CQRS.Command.Template;
+ 
+-public class TemplateUpdateCommand : IRequest<bool>
++public class TemplateUpdateCommand : IRequest<TemplateUpdateResponse>, IValidatable<TemplateUpdateResponse>
+ {
+     public int TemplateId { get; set; }
+     public string? Title { get; set; }
+-    public string? FilePath { get; set; }
+     public int? GradeLevelId { get; set; }
+-    public int? SeriesId { get; set; }
++    public decimal? Price { get; set; }
+     public int? CreatedBy { get; set; }
+     public DateTime? CreatedAt { get; set; }
++
++    /// <summary>
++    ///     Result of Upload Cloundinary ( do not need check )
++    /// </summary>
++    public string FilePath { get; set; } = string.Empty;
++
++    public string ViewPath { get; set; } = string.Empty;
++    public string FileName { get; set; } = string.Empty;
++    public Stream? FileStream { get; set; }
++
++    public Task<TemplateUpdateResponse> ValidateAsync()
++    {
++        var response = new TemplateUpdateResponse();
++
++        if (TemplateId <= 0)
++            response.ListErrors.Add(new Errors
++            {
++                Field = "Id",
++                Detail = "Id is required and must be greater than 0."
++            });
++
++        if (string.IsNullOrWhiteSpace(Title))
++            response.ListErrors.Add(new Errors
++            {
++                Field = "Title",
++                Detail = "Title is null or empty"
++            });
++
++        if (!GradeLevelId.HasValue || GradeLevelId <= 0)
++            response.ListErrors.Add(new Errors
++            {
++                Field = "GradeLevelId",
++                Detail = "GradeLevelId is required and must be greater than 0."
++            });
++
++        if (!Price.HasValue || Price <= 0)
++            response.ListErrors.Add(new Errors
++            {
++                Field = "SeriesId",
++                Detail = "SeriesId is required and must be greater than 0."
++            });
++
++        if (!CreatedBy.HasValue || CreatedBy <= 0)
++            response.ListErrors.Add(new Errors
++            {
++                Field = "CreatedBy",
++                Detail = "CreatedBy is required and must be greater than 0."
++            });
++
++        if (string.IsNullOrWhiteSpace(FileName))
++            response.ListErrors.Add(new Errors
++            {
++                Field = "FileName",
++                Detail = "FileName is required and must be greater than 0."
++            });
++
++        if (FileStream == null || FileStream.Length == 0)
++            response.ListErrors.Add(new Errors
++            {
++                Field = "FileStream",
++                Detail = "FileStream is required and must be greater than 0."
++            });
++
++        if (response.ListErrors.Count > 0) response.IsSuccess = false;
++
++        return Task.FromResult(response);
++    }
+ }
+\ No newline at end of file
+Index: LIP.Application/DTOs/Response/Template/TemplateUpdateResponse.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/DTOs/Response/Template/TemplateUpdateResponse.cs b/LIP.Application/DTOs/Response/Template/TemplateUpdateResponse.cs
+new file mode 100644
+--- /dev/null	(date 1762863884152)
++++ b/LIP.Application/DTOs/Response/Template/TemplateUpdateResponse.cs	(date 1762863884152)
+@@ -0,0 +1,6 @@
++namespace LIP.Application.DTOs.Response.Template;
++
++public class TemplateUpdateResponse : CommonResponse<TemplateCreateResponseDTO>
++{
++    
++}
+\ No newline at end of file
+Index: LIP.Application/CQRS/Command/Template/TemplateRestoreCommand.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Command/Template/TemplateRestoreCommand.cs b/LIP.Application/CQRS/Command/Template/TemplateRestoreCommand.cs
+new file mode 100644
+--- /dev/null	(date 1762864945126)
++++ b/LIP.Application/CQRS/Command/Template/TemplateRestoreCommand.cs	(date 1762864945126)
+@@ -0,0 +1,9 @@
++using LIP.Application.DTOs.Response;
++using MediatR;
++
++namespace LIP.Application.CQRS.Command.Template;
++
++public class TemplateRestoreCommand : IRequest<CommonResponse<bool>>
++{
++    public int TemplateId { get; set; }
++}
+\ No newline at end of file
+Index: LIP.Application/CQRS/Handler/Template/TemplateRestoreCommandHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateRestoreCommandHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateRestoreCommandHandler.cs
+new file mode 100644
+--- /dev/null	(date 1762864991360)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateRestoreCommandHandler.cs	(date 1762864991360)
+@@ -0,0 +1,37 @@
++using LIP.Application.CQRS.Command.Template;
++using LIP.Application.DTOs.Response;
++using LIP.Application.Interface.Repository;
++using MediatR;
++
++namespace LIP.Application.CQRS.Handler.Template;
++
++public class TemplateRestoreCommandHandler : IRequestHandler<TemplateRestoreCommand, CommonResponse<bool>>
++{
++    private readonly ITemplateRepository _templateRepository;
++
++    public TemplateRestoreCommandHandler(ITemplateRepository templateRepository)
++    {
++        _templateRepository = templateRepository;
++    }
++
++    public async Task<CommonResponse<bool>> Handle(TemplateRestoreCommand request, CancellationToken cancellationToken)
++    {
++        var result =  await _templateRepository.RestoreAsync(request);
++
++        if (result)
++        {
++            return new CommonResponse<bool>
++            {
++                Data = result,
++                IsSuccess = true,
++                Message = "Restore template success"
++            };
++        }
++        return new CommonResponse<bool>
++        {
++            Data = result,
++            IsSuccess = false,
++            Message = "Some errors occurred while restore"
++        };
++    }
++}
+\ No newline at end of file
+Index: LIP.Application/CQRS/Handler/Template/TemplateUpdateCommandHandler.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/LIP.Application/CQRS/Handler/Template/TemplateUpdateCommandHandler.cs b/LIP.Application/CQRS/Handler/Template/TemplateUpdateCommandHandler.cs
+new file mode 100644
+--- /dev/null	(date 1762864693840)
++++ b/LIP.Application/CQRS/Handler/Template/TemplateUpdateCommandHandler.cs	(date 1762864693840)
+@@ -0,0 +1,79 @@
++using LIP.Application.CQRS.Command.Template;
++using LIP.Application.CQRS.Query.Template;
++using LIP.Application.DTOs.Response.Template;
++using LIP.Application.Interface.Helpers;
++using LIP.Application.Interface.Repository;
++using MediatR;
++
++namespace LIP.Application.CQRS.Handler.Template;
++
++public class TemplateUpdateCommandHandler : IRequestHandler<TemplateUpdateCommand, TemplateUpdateResponse>
++{
++    private readonly ICloudinaryUpload _cloudinaryUpload;
++    private readonly ITemplateRepository _templateRepository;
++
++    public TemplateUpdateCommandHandler(ITemplateRepository templateRepository, ICloudinaryUpload cloudinaryUpload)
++    {
++        _templateRepository = templateRepository;
++        _cloudinaryUpload = cloudinaryUpload;
++    }
++
++    public async Task<TemplateUpdateResponse> Handle(TemplateUpdateCommand request, CancellationToken cancellationToken)
++    {
++        var template = await _templateRepository.GetAsync(new TemplateGetQuery
++        {
++            TemplateId = request.TemplateId
++        });
++
++        if (template == null)
++        {
++            return new TemplateUpdateResponse
++            {
++                IsSuccess = false,
++                Message = "Template not found"
++            };
++        }
++        
++        var result = await _cloudinaryUpload.UploadFileAsync(request.FileStream!, request.FileName);
++        if (!string.IsNullOrEmpty(result.Url) && !string.IsNullOrEmpty(result.ViewUrl))
++        {
++            request.ViewPath = result.ViewUrl;
++            request.FilePath = result.Url;
++
++            var isSuccess = await _templateRepository.UpdateAsync(request);
++            if (isSuccess)
++            {
++                return new TemplateUpdateResponse
++                {
++                    IsSuccess = true,
++                    Message = "Update template success",
++                    Data = new TemplateCreateResponseDTO
++                    {
++                        CreatedBy = request.CreatedBy,
++                        FilePath = result.Url,
++                        ViewPath = result.ViewUrl,
++                        Title = request.Title,
++                        GradeLevelId = request.GradeLevelId,
++                        Price = request.Price
++                    }
++                };
++            }
++            else
++            {
++                return new TemplateUpdateResponse
++                {
++                    IsSuccess = false,
++                    Message = "some errors occurred while update"
++                };
++            }
++        }
++        else
++        {
++            return new TemplateUpdateResponse
++            {
++                IsSuccess = false,
++                Message = "Error uploading file"
++            };
++        }
++    }
++}
+\ No newline at end of file

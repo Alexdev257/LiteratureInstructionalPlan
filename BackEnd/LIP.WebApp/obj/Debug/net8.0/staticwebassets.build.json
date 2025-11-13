@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "KDG74DrrjI9OZBBs91m/0Q19Hun+JwCDmMdRjGXDBB4=",
+  "Source": "LIP.WebApp",
+  "BasePath": "_content/LIP.WebApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
